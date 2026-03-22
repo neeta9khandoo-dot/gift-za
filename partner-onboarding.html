@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Partner with VoucherHub ZA — Earn More, Zero Risk</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;600;700;800;900&family=Instrument+Serif:ital@0;1&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F7F5F0;--white:#FFFFFF;--dark:#0C1A14;--green:#0B7A45;--green2:#0D9455;
+  --gold:#D4A017;--border:#E2DDD6;--sub:#6B7C74;--r:14px;
+  --font:'Cabinet Grotesk',sans-serif;--serif:'Instrument Serif',serif;
+}
+body{background:var(--bg);color:var(--dark);font-family:var(--font);line-height:1.6}
+
+/* HEADER */
+.header{background:var(--dark);padding:18px 40px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:1.3rem;font-weight:900;color:white;letter-spacing:-.5px}
+.logo em{font-style:normal;color:#16C784}
+.logo-tag{font-size:.58rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;background:#16C784;color:#0C1A14;padding:2px 7px;border-radius:3px;margin-left:6px}
+.header-cta{background:#16C784;color:#0C1A14;font-weight:800;font-size:.82rem;padding:9px 20px;border-radius:8px;text-decoration:none;letter-spacing:-.2px}
+
+/* HERO */
+.hero{background:var(--dark);padding:80px 40px 90px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 60% 40%,#16C78415,transparent 65%),radial-gradient(ellipse at 30% 70%,#D4A01710,transparent 60%)}
+.hero-kicker{display:inline-flex;align-items:center;gap:6px;background:#16C78418;border:1px solid #16C78428;color:#16C784;font-size:.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:5px 14px;border-radius:20px;margin-bottom:20px}
+.hero h1{font-family:var(--serif);font-size:clamp(2.4rem,5vw,4rem);color:white;line-height:1.05;letter-spacing:-.5px;margin-bottom:16px;position:relative}
+.hero h1 em{font-style:italic;color:#16C784}
+.hero p{color:#8BA99A;font-size:1rem;max-width:560px;margin:0 auto 32px;line-height:1.75;position:relative}
+.hero-stats{display:flex;justify-content:center;gap:0;flex-wrap:wrap;position:relative;border:1px solid #1E3028;border-radius:14px;overflow:hidden;max-width:600px;margin:0 auto}
+.hst{padding:22px 32px;flex:1;min-width:130px;text-align:center;border-right:1px solid #1E3028}
+.hst:last-child{border-right:none}
+.hst-v{font-size:1.7rem;font-weight:900;color:white;letter-spacing:-1px}
+.hst-l{font-size:.68rem;color:#6A8A7A;text-transform:uppercase;letter-spacing:.8px;margin-top:2px;font-weight:600}
+
+/* HOW IT WORKS */
+.section{padding:64px 40px;max-width:900px;margin:0 auto}
+.section-eyebrow{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--green);margin-bottom:8px}
+.section h2{font-family:var(--serif);font-size:clamp(1.8rem,3.5vw,2.8rem);margin-bottom:12px;line-height:1.1}
+.section p.lead{color:var(--sub);font-size:.98rem;max-width:580px;margin-bottom:44px;line-height:1.75}
+.steps{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
+.step-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:24px;position:relative}
+.step-num{font-family:var(--serif);font-size:2.5rem;color:var(--border);font-weight:700;line-height:1;margin-bottom:10px;display:block}
+.step-icon{font-size:1.6rem;margin-bottom:10px;display:block}
+.step-card h3{font-size:.95rem;font-weight:800;margin-bottom:6px}
+.step-card p{font-size:.8rem;color:var(--sub);line-height:1.65}
+
+/* COMMISSION TABLE */
+.table-wrap{background:var(--white);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:40px}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;padding:11px 16px;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--sub);border-bottom:1px solid var(--border);background:var(--bg)}
+td{padding:13px 16px;font-size:.85rem;border-bottom:1px solid #F0EDE7}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#FAFAF7}
+.g{color:var(--green);font-weight:800}
+.gold{color:var(--gold);font-weight:800}
+.example{background:#F0FBF5;border:1px solid #C8EDD9;border-radius:10px;padding:20px 24px;margin-top:16px}
+.example h4{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--green);margin-bottom:10px}
+.ex-row{display:flex;justify-content:space-between;padding:5px 0;font-size:.85rem;border-bottom:1px solid #D8EFE3}
+.ex-row:last-child{border-bottom:none;font-weight:800;font-size:.92rem;padding-top:10px}
+.ex-row .ex-lbl{color:var(--sub)}
+.ex-row .ex-val{color:var(--dark)}
+.ex-total .ex-val{color:var(--green);font-size:1.05rem}
+
+/* WHAT YOU NEED */
+.checklist{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:40px}
+.checklist li{display:flex;align-items:flex-start;gap:8px;font-size:.85rem;line-height:1.5}
+.checklist li::before{content:"✓";color:var(--green);font-weight:900;flex-shrink:0;margin-top:1px}
+
+/* CTA */
+.cta-section{background:var(--dark);border-radius:20px;padding:56px 40px;text-align:center;margin:0 40px 64px;position:relative;overflow:hidden}
+.cta-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,#16C78418,transparent 60%)}
+.cta-section h2{font-family:var(--serif);font-size:clamp(1.8rem,3.5vw,2.8rem);color:white;margin-bottom:12px;position:relative}
+.cta-section p{color:#8BA99A;margin-bottom:32px;max-width:500px;margin-left:auto;margin-right:auto;font-size:.95rem;position:relative}
+.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative}
+.btn-primary{background:#16C784;color:#0C1A14;font-weight:800;font-size:.92rem;padding:14px 28px;border-radius:9px;text-decoration:none;display:inline-flex;align-items:center;gap:7px;transition:all .2s}
+.btn-primary:hover{background:#13b374;transform:translateY(-1px)}
+.btn-secondary{background:transparent;color:white;font-weight:600;font-size:.88rem;padding:14px 24px;border-radius:9px;text-decoration:none;border:1px solid #2E4840;display:inline-flex;align-items:center;gap:7px;transition:all .2s}
+.btn-secondary:hover{border-color:#4A6860;background:#1A2820}
+
+/* FORM */
+.form-section{max-width:560px;margin:0 auto;padding:0 40px 80px}
+.form-section h2{font-family:var(--serif);font-size:1.8rem;margin-bottom:6px}
+.form-section p{color:var(--sub);font-size:.88rem;margin-bottom:28px}
+.form-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:30px}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--sub);margin-bottom:6px}
+.field input,.field select,.field textarea{width:100%;border:1px solid var(--border);border-radius:8px;padding:11px 13px;font-family:var(--font);font-size:.88rem;color:var(--dark);outline:none;transition:border-color .18s;background:white}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--green)}
+.field textarea{resize:vertical;min-height:80px}
+.field-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.submit-btn{width:100%;padding:14px;background:var(--green);color:white;border:none;border-radius:8px;font-family:var(--font);font-size:.95rem;font-weight:800;cursor:pointer;transition:all .2s;margin-top:6px}
+.submit-btn:hover{background:var(--green2);transform:translateY(-1px)}
+.form-note{font-size:.74rem;color:var(--sub);text-align:center;margin-top:10px}
+
+/* FAQ */
+.faq{max-width:680px;margin:0 auto;padding:0 40px 64px}
+.faq h2{font-family:var(--serif);font-size:1.8rem;margin-bottom:28px}
+.fq{border-bottom:1px solid var(--border);padding:18px 0}
+.fq h3{font-size:.9rem;font-weight:700;margin-bottom:7px}
+.fq p{font-size:.83rem;color:var(--sub);line-height:1.7}
+
+/* FOOTER */
+footer{background:var(--dark);padding:24px 40px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+footer .fl{font-weight:900;color:white;font-size:1.1rem}
+footer .fl em{font-style:normal;color:#16C784}
+footer p{color:#4A6860;font-size:.78rem}
+
+@media(max-width:640px){
+  .hero,.section,.cta-section,.form-section,.faq{padding-left:20px;padding-right:20px}
+  .cta-section{margin:0 16px 48px}
+  .header{padding:16px 20px}
+  .field-2,.checklist{grid-template-columns:1fr}
+  .hst{min-width:100px;padding:16px}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="logo">Voucher<em>Hub</em><span class="logo-tag">ZA</span></div>
+  <a href="#partner-form" class="header-cta">Apply to Partner →</a>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <span class="hero-kicker">🇿🇦 Built for South African Businesses</span>
+  <h1>Sell more.<br/><em>Zero upfront cost.</em></h1>
+  <p>We list your services as digital vouchers, handle all payments, and deliver to customers via WhatsApp. You just show up and deliver the experience.</p>
+  <div class="hero-stats">
+    <div class="hst"><div class="hst-v">R0</div><div class="hst-l">Setup cost</div></div>
+    <div class="hst"><div class="hst-v">24h</div><div class="hst-l">Go live</div></div>
+    <div class="hst"><div class="hst-v">80%+</div><div class="hst-l">You keep</div></div>
+    <div class="hst"><div class="hst-v">Instant</div><div class="hst-l">Payouts via EFT</div></div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section">
+  <p class="section-eyebrow">How it works</p>
+  <h2>From listing to payment<br/>in four steps</h2>
+  <p class="lead">You don't need a website, a payment terminal, or any tech skills. We do all of that.</p>
+  <div class="steps">
+    <div class="step-card">
+      <span class="step-num">01</span>
+      <span class="step-icon">📋</span>
+      <h3>You Apply</h3>
+      <p>Fill in the form below with your business info and the services you want to list as vouchers.</p>
+    </div>
+    <div class="step-card">
+      <span class="step-num">02</span>
+      <span class="step-icon">🛍️</span>
+      <h3>We List Your Services</h3>
+      <p>We create your voucher listings on VoucherHub ZA and set your prices. Live within 24 hours.</p>
+    </div>
+    <div class="step-card">
+      <span class="step-num">03</span>
+      <span class="step-icon">💳</span>
+      <h3>Customer Buys</h3>
+      <p>A customer purchases your voucher. They pay securely online. Their code is sent to WhatsApp instantly.</p>
+    </div>
+    <div class="step-card">
+      <span class="step-num">04</span>
+      <span class="step-icon">💸</span>
+      <h3>You Get Paid</h3>
+      <p>We transfer your share via EFT within 48 hours of the sale. No chasing payments.</p>
+    </div>
+  </div>
+</section>
+
+<!-- COMMISSION -->
+<section class="section" style="padding-top:0">
+  <p class="section-eyebrow">Pricing structure</p>
+  <h2>Simple, transparent splits</h2>
+  <p class="lead">Our commission is deducted from the sale price — you never pay anything upfront or out of pocket.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Your Share</th>
+          <th>Platform Fee</th>
+          <th>Typical Price Range</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>🧖 Wellness & Spa</td><td class="g">80%</td><td>20%</td><td>R400 – R2,500</td></tr>
+        <tr><td>💅 Beauty & Grooming</td><td class="g">75%</td><td>25%</td><td>R300 – R2,000</td></tr>
+        <tr><td>🦁 Adventure & Experiences</td><td class="g">85%</td><td>15%</td><td>R1,200 – R5,000</td></tr>
+        <tr><td>🍷 Dining & Wine</td><td class="g">80%</td><td>20%</td><td>R500 – R2,500</td></tr>
+        <tr><td>🏡 Stays & Getaways</td><td class="g">82%</td><td>18%</td><td>R2,000 – R8,000</td></tr>
+        <tr><td>📚 Skills & Courses</td><td class="gold">70%</td><td>30%</td><td>R500 – R3,000</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="example">
+    <h4>💡 Real Example — Spa Treatment</h4>
+    <div class="ex-row"><span class="ex-lbl">Customer pays</span><span class="ex-val">R 650.00</span></div>
+    <div class="ex-row"><span class="ex-lbl">Platform fee (20%)</span><span class="ex-val">− R 130.00</span></div>
+    <div class="ex-row"><span class="ex-lbl">Payment processing (~2.5%)</span><span class="ex-val">− R 16.25</span></div>
+    <div class="ex-row ex-total"><span class="ex-lbl">You receive (EFT)</span><span class="ex-val">R 503.75</span></div>
+  </div>
+</section>
+
+<!-- WHAT YOU NEED -->
+<section class="section" style="padding-top:0">
+  <p class="section-eyebrow">Requirements</p>
+  <h2>What you need to qualify</h2>
+  <p class="lead">We work with registered SA businesses of all sizes — from solo practitioners to lodges.</p>
+  <ul class="checklist">
+    <li>Registered South African business (any structure)</li>
+    <li>South African bank account for payouts</li>
+    <li>A service or experience customers can book</li>
+    <li>WhatsApp Business number for coordination</li>
+    <li>Ability to honour bookings from voucher holders</li>
+    <li>Response time within 24 hours for bookings</li>
+    <li>At least one photo of your space or service</li>
+    <li>Willing to list at least 1 experience</li>
+  </ul>
+</section>
+
+<!-- CTA -->
+<div class="cta-section">
+  <h2>Ready to grow your bookings?</h2>
+  <p>Join South African spas, safari operators, wine estates, restaurants and more already on VoucherHub ZA. Apply below — it takes 5 minutes.</p>
+  <div class="cta-btns">
+    <a href="#partner-form" class="btn-primary">📋 Apply Now — It's Free</a>
+    <a href="mailto:partners@voucherhub.co.za" class="btn-secondary">✉️ Email Us First</a>
+  </div>
+</div>
+
+<!-- PARTNER FORM -->
+<div class="form-section" id="partner-form">
+  <h2>Partner Application</h2>
+  <p>Fill this in and we'll be in touch within 24 hours to get you listed.</p>
+  <div class="form-card">
+    <div class="field-2">
+      <div class="field"><label>Business Name *</label><input placeholder="Relax Zone Spa"/></div>
+      <div class="field"><label>Category *</label>
+        <select>
+          <option>Wellness & Spa</option>
+          <option>Beauty & Grooming</option>
+          <option>Adventure & Experiences</option>
+          <option>Dining & Wine</option>
+          <option>Stays & Getaways</option>
+          <option>Skills & Courses</option>
+          <option>Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="field-2">
+      <div class="field"><label>City / Town *</label><input placeholder="Pretoria"/></div>
+      <div class="field"><label>Province *</label>
+        <select>
+          <option>Gauteng</option><option>Western Cape</option><option>KwaZulu-Natal</option>
+          <option>Eastern Cape</option><option>Limpopo</option><option>Mpumalanga</option>
+          <option>North West</option><option>Free State</option><option>Northern Cape</option>
+        </select>
+      </div>
+    </div>
+    <div class="field-2">
+      <div class="field"><label>Contact Name *</label><input placeholder="Jane Smith"/></div>
+      <div class="field"><label>WhatsApp Number *</label><input placeholder="+27821234567"/></div>
+    </div>
+    <div class="field"><label>Email Address *</label><input type="email" placeholder="jane@yourspabusiness.co.za"/></div>
+    <div class="field"><label>Website / Instagram (if any)</label><input placeholder="https://yoursite.co.za or @handle"/></div>
+    <div class="field"><label>Describe the voucher(s) you'd like to list</label>
+      <textarea placeholder="e.g. 60-min Swedish massage for R550, Couples spa day for R1,800 including lunch..."></textarea>
+    </div>
+    <button class="submit-btn" onclick="alert('Thanks! We will contact you within 24 hours. 🎉')">
+      Submit Application →
+    </button>
+    <p class="form-note">By applying you agree to our partner terms. No commitment required — you can withdraw listings at any time.</p>
+  </div>
+</div>
+
+<!-- FAQ -->
+<div class="faq">
+  <h2>Common questions</h2>
+  <div class="fq">
+    <h3>When do I get paid?</h3>
+    <p>We do weekly EFT payouts every Friday for all vouchers sold that week. You'll receive an itemised statement showing each voucher sold, our fee, and your net amount.</p>
+  </div>
+  <div class="fq">
+    <h3>What if a customer wants a refund?</h3>
+    <p>Vouchers are non-refundable once issued (this protects you). Customers can however reschedule their bookings directly with you, subject to availability.</p>
+  </div>
+  <div class="fq">
+    <h3>How do I know when a voucher is redeemed?</h3>
+    <p>You'll receive a WhatsApp notification every time one of your vouchers is purchased. When the customer arrives, you scan or enter the code on our Redeem page to validate it instantly.</p>
+  </div>
+  <div class="fq">
+    <h3>Can I set my own prices?</h3>
+    <p>Absolutely. You tell us what price you want to list at and we'll set it accordingly. You can also update prices at any time — just message us.</p>
+  </div>
+  <div class="fq">
+    <h3>Do I need a website or Takealot store?</h3>
+    <p>No. VoucherHub ZA is your storefront. Customers find and buy your voucher directly on our platform, and the payment and delivery are handled automatically.</p>
+  </div>
+  <div class="fq">
+    <h3>What happens to vouchers that are never redeemed?</h3>
+    <p>Unredeemed vouchers expire after the validity period. The revenue stays shared as agreed — you keep your portion regardless of whether the customer books.</p>
+  </div>
+</div>
+
+<footer>
+  <div class="fl">Voucher<em>Hub</em> <span style="color:#4A6860;font-size:.7rem;font-weight:400">ZA</span></div>
+  <p>partners@voucherhub.co.za · WhatsApp: +27 XX XXX XXXX</p>
+  <p style="color:#2E4840;font-size:.72rem">© 2025 VoucherHub ZA · All rights reserved</p>
+</footer>
+
+</body>
+</html>

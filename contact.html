@@ -1,0 +1,986 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Contact Us — GiftSA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --cream: #f5f0e8;
+        --cream2: #ede6d6;
+        --cream3: #e0d8c8;
+        --forest: #1a2e1f;
+        --forest2: #243428;
+        --leaf: #3d6b47;
+        --leaf2: #4e8459;
+        --terra: #c4622d;
+        --terra2: #d4784a;
+        --gold: #b8942a;
+        --gold2: #cda83c;
+        --white: #ffffff;
+        --text: #1a2e1f;
+        --sub: #5a6b5e;
+        --muted: #8a9b8e;
+        --border: #d8d0c0;
+        --border2: #c8bea8;
+        --serif: "Cormorant Garamond", Georgia, serif;
+        --sans: "DM Sans", system-ui, sans-serif;
+        --max: 1280px;
+        --sh1: 0 2px 12px rgba(26, 46, 31, 0.08);
+        --sh2: 0 8px 32px rgba(26, 46, 31, 0.12);
+        --sh3: 0 20px 60px rgba(26, 46, 31, 0.18);
+      }
+      html {
+        scroll-behavior: smooth;
+        -webkit-font-smoothing: antialiased;
+      }
+      body {
+        background: var(--cream);
+        color: var(--text);
+        font-family: var(--sans);
+        font-size: 15px;
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+      button {
+        font-family: var(--sans);
+        cursor: pointer;
+      }
+      .container {
+        max-width: var(--max);
+        margin: 0 auto;
+        padding: 0 32px;
+      }
+      .nav {
+        background: rgba(245, 240, 232, 0.95);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .nav-inner {
+        max-width: var(--max);
+        margin: 0 auto;
+        padding: 0 32px;
+        display: flex;
+        align-items: center;
+        gap: 32px;
+        height: 72px;
+      }
+      .nav-logo {
+        font-family: var(--serif);
+        font-size: 1.7rem;
+        font-weight: 700;
+        color: var(--forest);
+        letter-spacing: -0.5px;
+      }
+      .nav-logo span {
+        color: var(--terra);
+      }
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        margin-left: auto;
+      }
+      .nav-link {
+        padding: 8px 14px;
+        border-radius: 8px;
+        font-size: 0.83rem;
+        font-weight: 500;
+        color: var(--sub);
+        border: none;
+        background: none;
+        cursor: pointer;
+        transition: all 0.18s;
+      }
+      .nav-link:hover {
+        background: var(--cream2);
+        color: var(--text);
+      }
+      .nav-cta {
+        background: var(--forest);
+        color: var(--cream);
+        padding: 9px 20px;
+        border-radius: 8px;
+        font-size: 0.83rem;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .nav-cta:hover {
+        background: var(--forest2);
+        transform: translateY(-1px);
+      }
+      .breadcrumb {
+        padding: 16px 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .breadcrumb-inner {
+        max-width: var(--max);
+        margin: 0 auto;
+        padding: 0 32px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.78rem;
+        color: var(--muted);
+      }
+      .breadcrumb a {
+        color: var(--leaf);
+        font-weight: 600;
+      }
+
+      /* PAGE HERO */
+      .page-hero {
+        background: var(--forest);
+        padding: 72px 0;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+      .page-hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          ellipse at 50% 0%,
+          rgba(61, 107, 71, 0.5),
+          transparent 60%
+        );
+      }
+      .page-hero-inner {
+        position: relative;
+      }
+      .eyebrow {
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: var(--gold2);
+        margin-bottom: 12px;
+      }
+      .page-hero h1 {
+        font-family: var(--serif);
+        font-size: clamp(2.4rem, 4vw, 3.5rem);
+        color: var(--cream);
+        font-weight: 600;
+        margin-bottom: 12px;
+        line-height: 1.1;
+      }
+      .page-hero p {
+        color: rgba(245, 240, 232, 0.6);
+        font-size: 0.95rem;
+        max-width: 520px;
+        margin: 0 auto;
+        line-height: 1.7;
+      }
+
+      /* CHANNELS */
+      .channels {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin: -32px auto 0;
+        max-width: var(--max);
+        padding: 0 32px;
+        position: relative;
+        z-index: 1;
+      }
+      .channel {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 28px;
+        text-align: center;
+        transition:
+          transform 0.25s,
+          box-shadow 0.25s;
+      }
+      .channel:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--sh2);
+      }
+      .ch-icon {
+        font-size: 2rem;
+        margin-bottom: 12px;
+      }
+      .ch-label {
+        font-size: 0.68rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--terra);
+        margin-bottom: 4px;
+      }
+      .ch-title {
+        font-family: var(--serif);
+        font-size: 1.15rem;
+        font-weight: 600;
+        color: var(--forest);
+        margin-bottom: 6px;
+      }
+      .ch-value {
+        font-size: 0.83rem;
+        color: var(--leaf);
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+      .ch-hours {
+        font-size: 0.75rem;
+        color: var(--muted);
+      }
+
+      /* FORM AREA */
+      .contact-layout {
+        display: grid;
+        grid-template-columns: 1fr 1.3fr;
+        gap: 64px;
+        align-items: start;
+        padding: 80px 0;
+      }
+      .contact-info h2 {
+        font-family: var(--serif);
+        font-size: 2rem;
+        font-weight: 600;
+        color: var(--forest);
+        margin-bottom: 12px;
+      }
+      .contact-info p {
+        color: var(--sub);
+        font-size: 0.9rem;
+        line-height: 1.75;
+        margin-bottom: 32px;
+      }
+      .info-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        padding: 16px 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .info-item:last-child {
+        border-bottom: none;
+      }
+      .ii-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 10px;
+        background: rgba(61, 107, 71, 0.08);
+        border: 1px solid rgba(61, 107, 71, 0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        flex-shrink: 0;
+      }
+      .ii-label {
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--muted);
+        margin-bottom: 2px;
+      }
+      .ii-value {
+        font-size: 0.88rem;
+        color: var(--forest);
+        font-weight: 600;
+      }
+      .ii-sub {
+        font-size: 0.75rem;
+        color: var(--sub);
+        margin-top: 2px;
+      }
+
+      .contact-form {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        padding: 40px;
+      }
+      .cf-title {
+        font-family: var(--serif);
+        font-size: 1.6rem;
+        font-weight: 600;
+        color: var(--forest);
+        margin-bottom: 8px;
+      }
+      .cf-sub {
+        font-size: 0.83rem;
+        color: var(--sub);
+        margin-bottom: 28px;
+      }
+      .cf-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        margin-bottom: 14px;
+      }
+      .cf-field {
+        margin-bottom: 14px;
+      }
+      .cf-field label {
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--muted);
+        display: block;
+        margin-bottom: 6px;
+      }
+      .cf-field input,
+      .cf-field select,
+      .cf-field textarea {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1.5px solid var(--border2);
+        border-radius: 9px;
+        font-family: var(--sans);
+        font-size: 0.88rem;
+        color: var(--text);
+        outline: none;
+        transition: border-color 0.2s;
+        background: var(--cream);
+      }
+      .cf-field input:focus,
+      .cf-field select:focus,
+      .cf-field textarea:focus {
+        border-color: var(--leaf);
+        background: var(--white);
+      }
+      .cf-field textarea {
+        resize: vertical;
+        min-height: 120px;
+        line-height: 1.6;
+      }
+      .cf-btn {
+        width: 100%;
+        padding: 15px;
+        background: var(--forest);
+        color: var(--cream);
+        border: none;
+        border-radius: 10px;
+        font-family: var(--serif);
+        font-size: 1.05rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-top: 4px;
+      }
+      .cf-btn:hover:not(:disabled) {
+        background: var(--forest2);
+        transform: translateY(-1px);
+      }
+      .cf-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      .cf-privacy {
+        text-align: center;
+        font-size: 0.72rem;
+        color: var(--muted);
+        margin-top: 10px;
+      }
+      .cf-privacy a {
+        color: var(--leaf);
+      }
+
+      /* FAQ */
+      .faq-section {
+        padding: 72px 0;
+        background: var(--cream2);
+        border-top: 1px solid var(--border);
+      }
+      .faq-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        max-width: 900px;
+        margin: 0 auto;
+      }
+      .faq-item {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 22px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .faq-item:hover {
+        border-color: var(--border2);
+        box-shadow: var(--sh1);
+      }
+      .faq-q {
+        font-weight: 700;
+        font-size: 0.9rem;
+        color: var(--forest);
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 0;
+      }
+      .faq-q .faq-icon {
+        color: var(--terra);
+        font-size: 0.8rem;
+        flex-shrink: 0;
+        transition: transform 0.2s;
+      }
+      .faq-a {
+        font-size: 0.83rem;
+        color: var(--sub);
+        line-height: 1.7;
+        margin-top: 10px;
+        display: none;
+      }
+      .faq-item.open .faq-a {
+        display: block;
+      }
+      .faq-item.open .faq-icon {
+        transform: rotate(180deg);
+      }
+
+      /* FOOTER */
+      footer {
+        background: var(--forest);
+        color: rgba(245, 240, 232, 0.65);
+        padding: 64px 0 32px;
+      }
+      .footer-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+        gap: 48px;
+        margin-bottom: 48px;
+      }
+      .footer-brand {
+        font-family: var(--serif);
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--cream);
+        margin-bottom: 12px;
+      }
+      .footer-brand span {
+        color: var(--terra2);
+      }
+      .footer-tagline {
+        font-size: 0.83rem;
+        line-height: 1.7;
+        margin-bottom: 20px;
+        max-width: 280px;
+      }
+      .footer-col h4 {
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        color: var(--cream);
+        margin-bottom: 16px;
+      }
+      .footer-links {
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+      }
+      .footer-link {
+        font-size: 0.82rem;
+        cursor: pointer;
+        transition: color 0.18s;
+      }
+      .footer-link:hover {
+        color: var(--cream);
+      }
+      .footer-bottom {
+        border-top: 1px solid rgba(245, 240, 232, 0.1);
+        padding-top: 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      .footer-legal {
+        font-size: 0.74rem;
+      }
+      .pay-badge {
+        background: rgba(245, 240, 232, 0.08);
+        border: 1px solid rgba(245, 240, 232, 0.12);
+        border-radius: 5px;
+        padding: 4px 10px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: rgba(245, 240, 232, 0.5);
+      }
+      @media (max-width: 1024px) {
+        .channels {
+          grid-template-columns: 1fr 1fr;
+        }
+        .contact-layout {
+          grid-template-columns: 1fr;
+          gap: 40px;
+        }
+        .footer-grid {
+          grid-template-columns: 1fr 1fr;
+          gap: 32px;
+        }
+      }
+      @media (max-width: 768px) {
+        .container {
+          padding: 0 20px;
+        }
+        .nav-inner {
+          padding: 0 20px;
+        }
+        .channels {
+          padding: 0 20px;
+        }
+        .cf-row {
+          grid-template-columns: 1fr;
+        }
+        .faq-grid {
+          grid-template-columns: 1fr;
+        }
+        .nav-links {
+          display: none;
+        }
+        .footer-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="nav">
+      <div class="nav-inner">
+        <a href="index.html" class="nav-logo">Gift<span>SA</span></a>
+        <div class="nav-links">
+          <a class="nav-link" href="index.html">Experiences</a>
+          <a class="nav-link" href="partners.html">For Partners</a>
+          <a class="nav-link" href="help.html">Help</a>
+          <a class="nav-link" href="about.html">About</a>
+        </div>
+        <button class="nav-cta" onclick="window.location.href = 'index.html'">
+          Browse Experiences
+        </button>
+      </div>
+    </nav>
+
+    <div class="breadcrumb">
+      <div class="breadcrumb-inner">
+        <a href="index.html">Home</a><span>›</span><span>Contact Us</span>
+      </div>
+    </div>
+
+    <div class="page-hero">
+      <div class="container page-hero-inner">
+        <p class="eyebrow">✦ We're Here to Help</p>
+        <h1>Get in touch</h1>
+        <p>
+          Whether you're a customer, partner, or corporate client — our team is
+          ready to help you.
+        </p>
+      </div>
+    </div>
+
+    <!-- CHANNELS -->
+    <div class="channels">
+      <div class="channel">
+        <div class="ch-icon">💬</div>
+        <div class="ch-label">Fastest</div>
+        <div class="ch-title">WhatsApp</div>
+        <div class="ch-value">+27 81 000 0000</div>
+        <div class="ch-hours">Mon–Fri 8am–6pm · Sat 9am–2pm</div>
+      </div>
+      <div class="channel">
+        <div class="ch-icon">✉️</div>
+        <div class="ch-label">General</div>
+        <div class="ch-title">Email</div>
+        <div class="ch-value">hello@giftsa.co.za</div>
+        <div class="ch-hours">Response within 24 hours</div>
+      </div>
+      <div class="channel">
+        <div class="ch-icon">🏢</div>
+        <div class="ch-label">Corporate</div>
+        <div class="ch-title">Business Enquiries</div>
+        <div class="ch-value">corporate@giftsa.co.za</div>
+        <div class="ch-hours">Response within 4 hours</div>
+      </div>
+      <div class="channel">
+        <div class="ch-icon">🤝</div>
+        <div class="ch-label">Partners</div>
+        <div class="ch-title">Partner Support</div>
+        <div class="ch-value">partners@giftsa.co.za</div>
+        <div class="ch-hours">Mon–Fri 9am–5pm</div>
+      </div>
+    </div>
+
+    <!-- CONTACT FORM -->
+    <div class="container">
+      <div class="contact-layout">
+        <div class="contact-info">
+          <h2>Let's talk</h2>
+          <p>
+            Fill in the form and we'll get back to you within one business day.
+            For urgent voucher issues, please WhatsApp us directly — that's the
+            fastest way to get help.
+          </p>
+          <div class="info-item">
+            <div class="ii-icon">📍</div>
+            <div>
+              <div class="ii-label">Office</div>
+              <div class="ii-value">Pretoria, Gauteng</div>
+              <div class="ii-sub">
+                South Africa · No walk-ins — we're fully digital
+              </div>
+            </div>
+          </div>
+          <div class="info-item">
+            <div class="ii-icon">🕐</div>
+            <div>
+              <div class="ii-label">Business Hours</div>
+              <div class="ii-value">Mon–Fri: 8:00am – 6:00pm</div>
+              <div class="ii-sub">
+                Saturday: 9:00am – 2:00pm · Sunday: Closed
+              </div>
+            </div>
+          </div>
+          <div class="info-item">
+            <div class="ii-icon">🏛️</div>
+            <div>
+              <div class="ii-label">Registered Company</div>
+              <div class="ii-value">GiftSA (Pty) Ltd</div>
+              <div class="ii-sub">
+                Registration number: 2024/123456/07 · VAT: 4123456789
+              </div>
+            </div>
+          </div>
+          <div class="info-item">
+            <div class="ii-icon">📱</div>
+            <div>
+              <div class="ii-label">Social Media</div>
+              <div class="ii-value">@GiftSA_ZA</div>
+              <div class="ii-sub">Instagram · Facebook · X (Twitter)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="contact-form">
+          <div class="cf-title">Send us a message</div>
+          <div class="cf-sub">
+            We read every message and respond personally.
+          </div>
+          <div class="cf-row">
+            <div class="cf-field">
+              <label>Your Name *</label
+              ><input id="cf-name" placeholder="Jane Smith" />
+            </div>
+            <div class="cf-field">
+              <label>Email Address *</label
+              ><input id="cf-email" type="email" placeholder="jane@email.com" />
+            </div>
+          </div>
+          <div class="cf-field">
+            <label>Subject</label>
+            <select id="cf-subject">
+              <option value="">Select a topic</option>
+              <option>Voucher purchase help</option>
+              <option>Redemption issue</option>
+              <option>Partner / business enquiry</option>
+              <option>Corporate gifting</option>
+              <option>Technical problem</option>
+              <option>Media / press</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="cf-field">
+            <label>WhatsApp Number (optional)</label
+            ><input id="cf-phone" placeholder="+27821234567" />
+          </div>
+          <div class="cf-field">
+            <label>Message *</label
+            ><textarea
+              id="cf-message"
+              placeholder="Tell us how we can help…"
+            ></textarea>
+          </div>
+          <div
+            id="contactFormStatus"
+            style="display: none; margin-bottom: 12px"
+          ></div>
+          <button
+            class="cf-btn"
+            id="contactSubmitBtn"
+            onclick="submitContactForm()"
+          >
+            Send Message →
+          </button>
+          <p class="cf-privacy">
+            By sending a message you agree to our
+            <a href="privacy.html">Privacy Policy</a>. We never share your data.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="faq-section">
+      <div class="container">
+        <div style="text-align: center; margin-bottom: 40px">
+          <p
+            style="
+              font-size: 0.7rem;
+              font-weight: 700;
+              text-transform: uppercase;
+              letter-spacing: 1.5px;
+              color: var(--terra);
+              margin-bottom: 8px;
+            "
+          >
+            ✦ Quick Answers
+          </p>
+          <h2
+            style="
+              font-family: var(--serif);
+              font-size: 2rem;
+              font-weight: 600;
+              color: var(--forest);
+            "
+          >
+            Common questions
+          </h2>
+        </div>
+        <div class="faq-grid">
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">
+              How quickly are vouchers delivered?
+              <span class="faq-icon">▼</span>
+            </div>
+            <div class="faq-a">
+              Instantly! As soon as your payment is confirmed by PayFast, the
+              voucher code and QR are sent directly to the recipient's WhatsApp.
+              The whole process takes under 30 seconds.
+            </div>
+          </div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">
+              What if my voucher hasn't arrived? <span class="faq-icon">▼</span>
+            </div>
+            <div class="faq-a">
+              Check that the WhatsApp number was entered correctly. If it's been
+              more than 5 minutes after payment confirmation, WhatsApp us at +27
+              81 000 0000 with your order reference and we'll resend
+              immediately.
+            </div>
+          </div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">
+              Can I get a refund on a voucher? <span class="faq-icon">▼</span>
+            </div>
+            <div class="faq-a">
+              Unredeemed vouchers can be refunded within 48 hours of purchase.
+              Once a voucher is redeemed, refunds are handled by the partner
+              business directly. Contact us and we'll facilitate the process.
+            </div>
+          </div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">
+              How do I apply to list my business?
+              <span class="faq-icon">▼</span>
+            </div>
+            <div class="faq-a">
+              Visit our
+              <a
+                href="partners.html"
+                style="color: var(--leaf); font-weight: 600"
+                >Partner Programme</a
+              >
+              page and fill in the application form. We review all applications
+              within 24 hours and contact you via WhatsApp.
+            </div>
+          </div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">
+              Do you offer corporate accounts? <span class="faq-icon">▼</span>
+            </div>
+            <div class="faq-a">
+              Yes! We have dedicated corporate plans for teams of 10 to 10,000+.
+              Visit our
+              <a
+                href="corporate.html"
+                style="color: var(--leaf); font-weight: 600"
+                >Corporate Gifting</a
+              >
+              page or email corporate@giftsa.co.za.
+            </div>
+          </div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">
+              Are payments secure? <span class="faq-icon">▼</span>
+            </div>
+            <div class="faq-a">
+              All payments are processed through PayFast with 256-bit SSL
+              encryption. We never store card details. PayFast is a PCI-DSS
+              Level 1 certified payment gateway.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+      <footer>
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            <div class="footer-brand">Gift<span>SA</span></div>
+            <p class="footer-tagline">
+              South Africa's leading digital gift experience marketplace.
+              Connecting people with unforgettable moments since 2024.
+            </p>
+            <div class="footer-socials">
+              <a class="social-btn" href="#">𝕏</a>
+              <a class="social-btn" href="#">in</a>
+              <a class="social-btn" href="#">f</a>
+              <a class="social-btn" href="#">📸</a>
+            </div>
+          </div>
+          <div>
+            <h4>Experiences</h4>
+            <div class="footer-links">
+              <a class="footer-link">Wellness & Spa</a>
+              <a class="footer-link">Adventure</a>
+              <a class="footer-link">Dining & Wine</a>
+              <a class="footer-link">Stays & Getaways</a>
+              <a class="footer-link">Skills & Courses</a>
+            </div>
+          </div>
+          <div>
+            <h4>Company</h4>
+            <div class="footer-links">
+              <a href="/about-us.html" class="footer-link">About Us</a>
+              <a class="footer-link">Partner Programme</a>
+              <a href="/corporate.html" class="footer-link">Corporate Gifting</a>
+              <a class="footer-link">Blog</a>
+              <a class="footer-link">Careers</a>
+            </div>
+          </div>
+          <div>
+            <h4>Support</h4>
+            <div class="footer-links">
+              <a class="footer-link">Redeem Voucher</a>
+              <a href="/help.html" class="footer-link">Help Centre</a>
+              <a href="/contact.html" class="footer-link">Contact Us</a>
+              <a href="/privacy.html" class="footer-link">Privacy Policy</a>
+              <a href="/terms.html" class="footer-link">Terms of Service</a>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p class="footer-legal">
+            © 2025 GiftSA (Pty) Ltd · All rights reserved · Registered in South
+            Africa
+          </p>
+          <div class="footer-payments">
+            <span
+              style="
+                font-size: 0.72rem;
+                color: rgba(245, 240, 232, 0.3);
+                margin-right: 4px;
+              "
+              >Payments by</span
+            >
+            <span class="pay-badge">PayFast</span>
+            <span class="pay-badge">Visa</span>
+            <span class="pay-badge">MasterCard</span>
+            <span class="pay-badge">SnapScan</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+      import {
+        getFirestore,
+        collection,
+        addDoc,
+        serverTimestamp,
+      } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+      const app = initializeApp({
+        apiKey: "AIzaSyBx01_b7Dkm6QCnZiGnSrRK0dZGf9p5IaY",
+        authDomain: "gift-za.firebaseapp.com",
+        projectId: "gift-za",
+        storageBucket: "gift-za.firebasestorage.app",
+        messagingSenderId: "732762883935",
+        appId: "1:732762883935:web:1fc9b21f71c9ffaa43d8ea",
+      });
+      const db = getFirestore(app);
+      window.submitContactForm = async function () {
+        const btn = document.getElementById("contactSubmitBtn");
+        const statusBox = document.getElementById("contactFormStatus");
+        const data = {
+          name: document.getElementById("cf-name").value.trim(),
+          email: document.getElementById("cf-email").value.trim(),
+          subject: document.getElementById("cf-subject").value,
+          phone: document.getElementById("cf-phone").value.trim(),
+          message: document.getElementById("cf-message").value.trim(),
+          submittedAt: serverTimestamp(),
+          status: "new",
+        };
+        if (!data.name || !data.email || !data.message) {
+          statusBox.style.cssText =
+            "display:block;padding:12px 16px;border-radius:9px;font-size:.85rem;background:#FEF2F2;border:1px solid #EF4444;color:#B91C1C";
+          statusBox.textContent =
+            "Please fill in your name, email, and message.";
+          return;
+        }
+        btn.disabled = true;
+        btn.textContent = "Sending...";
+        try {
+          await addDoc(collection(db, "contact_messages"), data);
+          statusBox.style.cssText =
+            "display:block;padding:12px 16px;border-radius:9px;font-size:.85rem;background:#F0FDF4;border:1px solid #22C55E;color:#15803D";
+          statusBox.innerHTML =
+            "✅ <strong>Message sent!</strong> We'll get back to you within 24 hours.";
+          btn.textContent = "Sent ✓";
+          btn.style.background = "#22C55E";
+        } catch (err) {
+          statusBox.style.cssText =
+            "display:block;padding:12px 16px;border-radius:9px;font-size:.85rem;background:#FEF2F2;border:1px solid #EF4444;color:#B91C1C";
+          statusBox.textContent =
+            "Something went wrong. Please email hello@giftsa.co.za directly.";
+          btn.disabled = false;
+          btn.textContent = "Send Message →";
+        }
+      };
+    </script>
+    <script>
+      function toggleFaq(el) {
+        const isOpen = el.classList.contains("open");
+        document
+          .querySelectorAll(".faq-item")
+          .forEach((i) => i.classList.remove("open"));
+        if (!isOpen) el.classList.add("open");
+      }
+    </script>
+  </body>
+</html>

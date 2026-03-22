@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>About Us — GiftSA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#f5f0e8;--cream2:#ede6d6;--cream3:#e0d8c8;
+  --forest:#1a2e1f;--forest2:#243428;--forest3:#2e4032;
+  --leaf:#3d6b47;--leaf2:#4e8459;--terra:#c4622d;--terra2:#d4784a;
+  --gold:#b8942a;--gold2:#cda83c;--white:#ffffff;
+  --text:#1a2e1f;--sub:#5a6b5e;--muted:#8a9b8e;
+  --border:#d8d0c0;--border2:#c8bea8;
+  --serif:"Cormorant Garamond",Georgia,serif;
+  --sans:"DM Sans",system-ui,sans-serif;
+  --max:1280px;--sh1:0 2px 12px rgba(26,46,31,.08);--sh2:0 8px 32px rgba(26,46,31,.12);--sh3:0 20px 60px rgba(26,46,31,.18);
+}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{background:var(--cream);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.6;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+button{font-family:var(--sans);cursor:pointer}
+.container{max-width:var(--max);margin:0 auto;padding:0 32px}
+
+/* NAV */
+.nav{background:rgba(245,240,232,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.nav-inner{max-width:var(--max);margin:0 auto;padding:0 32px;display:flex;align-items:center;gap:32px;height:72px}
+.nav-logo{font-family:var(--serif);font-size:1.7rem;font-weight:700;color:var(--forest);letter-spacing:-.5px;white-space:nowrap;flex-shrink:0}
+.nav-logo span{color:var(--terra)}
+.nav-links{display:flex;align-items:center;gap:4px;margin-left:auto}
+.nav-link{padding:8px 14px;border-radius:8px;font-size:.83rem;font-weight:500;color:var(--sub);transition:all .18s;white-space:nowrap;border:none;background:none;cursor:pointer}
+.nav-link:hover{background:var(--cream2);color:var(--text)}
+.nav-cta{background:var(--forest);color:var(--cream);padding:9px 20px;border-radius:8px;font-size:.83rem;font-weight:600;border:none;transition:all .2s;cursor:pointer}
+.nav-cta:hover{background:var(--forest2);transform:translateY(-1px)}
+
+/* HERO */
+.hero{position:relative;min-height:420px;display:flex;align-items:center;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:linear-gradient(135deg,rgba(26,46,31,.85) 0%,rgba(26,46,31,.4) 60%,transparent 100%),url("https://images.unsplash.com/photo-1543269865-cbf427effbad?w=1600&q=80") center/cover no-repeat}
+.hero-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(to bottom,transparent 60%,var(--cream) 100%)}
+.hero-content{position:relative;z-index:1;max-width:var(--max);margin:0 auto;padding:80px 32px 100px}
+.eyebrow{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--gold2);margin-bottom:12px}
+.hero h1{font-family:var(--serif);font-size:clamp(2.8rem,5vw,4.5rem);font-weight:600;line-height:1.05;color:var(--white);margin-bottom:16px}
+.hero h1 em{font-style:italic;color:var(--gold2)}
+.hero p{font-size:1.05rem;color:rgba(245,240,232,.8);max-width:540px;line-height:1.75;font-weight:300}
+
+/* BREADCRUMB */
+.breadcrumb{padding:16px 0;border-bottom:1px solid var(--border)}
+.breadcrumb-inner{max-width:var(--max);margin:0 auto;padding:0 32px;display:flex;align-items:center;gap:8px;font-size:.78rem;color:var(--muted)}
+.breadcrumb a{color:var(--leaf);font-weight:600;cursor:pointer}
+.breadcrumb span{color:var(--muted)}
+
+/* SECTIONS */
+.section{padding:72px 0}
+.section-eyebrow{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--terra);margin-bottom:8px}
+.section-title{font-family:var(--serif);font-size:clamp(2rem,3.5vw,3rem);font-weight:600;color:var(--forest);letter-spacing:-.3px;line-height:1.1}
+.section-sub{color:var(--sub);font-size:.9rem;margin-top:8px;line-height:1.7}
+
+/* STORY */
+.story-grid{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center}
+.story-img{position:relative;border-radius:24px;overflow:hidden}
+.story-img img{width:100%;height:480px;object-fit:cover;display:block}
+.story-img-badge{position:absolute;bottom:24px;left:24px;background:var(--white);border-radius:12px;padding:14px 20px;box-shadow:var(--sh2)}
+.story-img-badge .num{font-family:var(--serif);font-size:2rem;font-weight:700;color:var(--forest);line-height:1}
+.story-img-badge .lbl{font-size:.68rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:600}
+.story-text h2{font-family:var(--serif);font-size:2.4rem;font-weight:600;color:var(--forest);line-height:1.1;margin-bottom:20px}
+.story-text p{color:var(--sub);font-size:.92rem;line-height:1.8;margin-bottom:16px}
+.story-text p:last-child{margin-bottom:0}
+
+/* VALUES */
+.values-bg{background:var(--forest);padding:72px 0;position:relative;overflow:hidden}
+.values-bg::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(61,107,71,.4),transparent 50%),radial-gradient(ellipse at 80% 50%,rgba(184,148,42,.2),transparent 50%)}
+.values-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;position:relative}
+.value-card{background:rgba(245,240,232,.06);border:1px solid rgba(245,240,232,.1);border-radius:20px;padding:36px 28px;transition:background .2s}
+.value-card:hover{background:rgba(245,240,232,.1)}
+.value-icon{width:52px;height:52px;border-radius:14px;background:rgba(245,240,232,.1);border:1px solid rgba(245,240,232,.12);display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:20px}
+.value-card h3{font-family:var(--serif);font-size:1.3rem;color:var(--cream);font-weight:600;margin-bottom:10px}
+.value-card p{font-size:.83rem;color:rgba(245,240,232,.55);line-height:1.7}
+
+/* TEAM */
+.team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+.team-card{background:var(--white);border:1px solid var(--border);border-radius:20px;overflow:hidden;transition:transform .25s,box-shadow .25s}
+.team-card:hover{transform:translateY(-5px);box-shadow:var(--sh2)}
+.team-img{height:220px;background:var(--cream2);position:relative;overflow:hidden}
+.team-img img{width:100%;height:100%;object-fit:cover}
+.team-img-ph{height:100%;display:flex;align-items:center;justify-content:center;font-size:3rem;background:linear-gradient(135deg,var(--cream2),var(--cream3))}
+.team-body{padding:20px}
+.team-name{font-family:var(--serif);font-size:1.15rem;font-weight:600;color:var(--forest);margin-bottom:3px}
+.team-role{font-size:.75rem;color:var(--terra);font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px}
+.team-bio{font-size:.8rem;color:var(--sub);line-height:1.6}
+
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border-radius:20px;overflow:hidden;margin:48px 0}
+.stat-item{background:var(--white);padding:40px 28px;text-align:center}
+.stat-num{font-family:var(--serif);font-size:2.8rem;font-weight:700;color:var(--forest);letter-spacing:-1px;line-height:1}
+.stat-lbl{font-size:.72rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:600;margin-top:6px}
+
+/* MILESTONES */
+.timeline{position:relative;padding-left:40px}
+.timeline::before{content:"";position:absolute;left:8px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--leaf),var(--gold))}
+.tl-item{position:relative;margin-bottom:40px}
+.tl-item:last-child{margin-bottom:0}
+.tl-dot{position:absolute;left:-36px;top:4px;width:18px;height:18px;border-radius:50%;background:var(--forest);border:3px solid var(--leaf);flex-shrink:0}
+.tl-year{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--terra);margin-bottom:4px}
+.tl-title{font-family:var(--serif);font-size:1.25rem;font-weight:600;color:var(--forest);margin-bottom:6px}
+.tl-desc{font-size:.85rem;color:var(--sub);line-height:1.7}
+
+/* CTA */
+.cta-band{background:linear-gradient(135deg,var(--forest),var(--forest2));padding:72px 0;text-align:center;position:relative;overflow:hidden}
+.cta-band::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(61,107,71,.5),transparent 60%)}
+.cta-band h2{font-family:var(--serif);font-size:2.4rem;color:var(--cream);margin-bottom:12px;position:relative}
+.cta-band p{color:rgba(245,240,232,.6);font-size:.92rem;margin-bottom:32px;position:relative}
+.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative}
+.btn-primary{background:var(--terra);color:white;padding:14px 32px;border-radius:10px;font-family:var(--serif);font-size:1rem;font-weight:700;border:none;cursor:pointer;transition:all .2s}
+.btn-primary:hover{background:var(--terra2);transform:translateY(-2px)}
+.btn-outline{background:transparent;color:var(--cream);padding:14px 32px;border-radius:10px;font-family:var(--serif);font-size:1rem;font-weight:700;border:1.5px solid rgba(245,240,232,.3);cursor:pointer;transition:all .2s}
+.btn-outline:hover{border-color:rgba(245,240,232,.6);background:rgba(245,240,232,.06)}
+
+/* FOOTER */
+footer{background:var(--forest);color:rgba(245,240,232,.65);padding:64px 0 32px}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px}
+.footer-brand{font-family:var(--serif);font-size:1.8rem;font-weight:700;color:var(--cream);margin-bottom:12px}
+.footer-brand span{color:var(--terra2)}
+.footer-tagline{font-size:.83rem;line-height:1.7;margin-bottom:20px;max-width:280px}
+.footer-col h4{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--cream);margin-bottom:16px}
+.footer-links{display:flex;flex-direction:column;gap:9px}
+.footer-link{font-size:.82rem;cursor:pointer;transition:color .18s}
+.footer-link:hover{color:var(--cream)}
+.footer-bottom{border-top:1px solid rgba(245,240,232,.1);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.footer-legal{font-size:.74rem}
+.pay-badge{background:rgba(245,240,232,.08);border:1px solid rgba(245,240,232,.12);border-radius:5px;padding:4px 10px;font-size:.7rem;font-weight:600;color:rgba(245,240,232,.5)}
+
+@media(max-width:1024px){.story-grid{grid-template-columns:1fr;gap:40px}.team-grid{grid-template-columns:1fr 1fr}.values-grid{grid-template-columns:1fr 1fr}.stats-row{grid-template-columns:1fr 1fr}.footer-grid{grid-template-columns:1fr 1fr;gap:32px}}
+@media(max-width:768px){.container{padding:0 20px}.nav-inner{padding:0 20px}.hero-content{padding:60px 20px 80px}.team-grid{grid-template-columns:1fr}.values-grid{grid-template-columns:1fr}.stats-row{grid-template-columns:1fr 1fr}.nav-links{display:none}.footer-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">Gift<span>SA</span></a>
+    <div class="nav-links">
+      <a class="nav-link" href="index.html">Experiences</a>
+      <a class="nav-link" href="partners.html">For Partners</a>
+      <a class="nav-link" href="index.html#redeem">Redeem</a>
+      <a class="nav-link active" href="about.html">About</a>
+    </div>
+    <button class="nav-cta" onclick="window.location.href='partners.html'">List Your Business</button>
+  </div>
+</nav>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  <div class="breadcrumb-inner">
+    <a href="index.html">Home</a>
+    <span>›</span>
+    <span>About Us</span>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <p class="eyebrow">✦ Our Story</p>
+    <h1>We believe the best gifts<br/>aren't <em>things</em> — they're moments.</h1>
+    <p>GiftSA was founded in Pretoria with a simple idea: make it effortless to give South Africans the experiences they actually want, delivered instantly on WhatsApp.</p>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="container">
+  <div class="stats-row">
+    <div class="stat-item"><div class="stat-num">200+</div><div class="stat-lbl">Curated Experiences</div></div>
+    <div class="stat-item"><div class="stat-num">50+</div><div class="stat-lbl">Partner Businesses</div></div>
+    <div class="stat-item"><div class="stat-num">2,800+</div><div class="stat-lbl">Happy Customers</div></div>
+    <div class="stat-item"><div class="stat-num">4.9★</div><div class="stat-lbl">Average Rating</div></div>
+  </div>
+</div>
+
+<!-- STORY -->
+<section class="section container">
+  <div class="story-grid">
+    <div class="story-img">
+      <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=800&q=80" alt="GiftSA team"/>
+      <div class="story-img-badge">
+        <div class="num">2024</div>
+        <div class="lbl">Founded in Pretoria</div>
+      </div>
+    </div>
+    <div class="story-text">
+      <p class="section-eyebrow">✦ How We Started</p>
+      <h2 class="section-title" style="margin-bottom:20px">Born out of a gifting problem</h2>
+      <p>It started with a birthday. Our founder Neeta wanted to give her sister something truly memorable — not a voucher for a shop, not a gift card that gathers dust — but a real experience. A spa day. A sunset balloon ride. A cooking class. Something she'd actually talk about for months.</p>
+      <p>But finding, booking and sending that gift was harder than it should have been. The experience economy in South Africa was fragmented — great businesses, no easy way to reach them as a gift.</p>
+      <p>So we built GiftSA. A marketplace where every South African experience — from Magaliesberg adventures to Cape Winelands tastings — is just a few clicks away, delivered instantly to anyone in the country via WhatsApp.</p>
+      <p>Today we work with over 50 verified South African businesses and have helped thousands of people give gifts that actually matter.</p>
+    </div>
+  </div>
+</section>
+
+<!-- VALUES -->
+<div class="values-bg">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:48px;position:relative">
+      <p class="section-eyebrow" style="color:var(--gold2)">✦ What Drives Us</p>
+      <h2 class="section-title" style="color:var(--cream)">Our values</h2>
+    </div>
+    <div class="values-grid">
+      <div class="value-card">
+        <div class="value-icon">🇿🇦</div>
+        <h3>Proudly South African</h3>
+        <p>Every experience on our platform is local. We support South African businesses, employ South African people, and celebrate the richness of what this country has to offer.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">✅</div>
+        <h3>Quality You Can Trust</h3>
+        <p>We personally vet every partner before they list. If it's on GiftSA, we stand behind it. Our team visits experiences, reads every review, and removes any listing that doesn't meet our standards.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">⚡</div>
+        <h3>Effortlessly Instant</h3>
+        <p>Gift-giving shouldn't be a chore. We've built everything around speed — instant voucher creation, instant WhatsApp delivery, instant peace of mind. Order in seconds, delight in moments.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">🤝</div>
+        <h3>Partners First</h3>
+        <p>Our business succeeds only when our partners succeed. We keep our fees fair, pay weekly, and give every partner the tools and visibility they need to grow their business through GiftSA.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">🔒</div>
+        <h3>Safe & Secure</h3>
+        <p>Every payment is processed through PayFast with full encryption. Every voucher code is unique and tamper-proof. Every transaction is logged and traceable.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">💚</div>
+        <h3>Meaningful Gifting</h3>
+        <p>We believe experiences create deeper connections than things. We're on a mission to shift gifting culture in South Africa — one unforgettable moment at a time.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MILESTONES -->
+<section class="section container">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:start">
+    <div>
+      <p class="section-eyebrow">✦ Our Journey</p>
+      <h2 class="section-title" style="margin-bottom:36px">From idea to marketplace</h2>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">Early 2024</div>
+          <div class="tl-title">The Idea</div>
+          <div class="tl-desc">Frustrated by fragmented gifting options, Neeta sketches the first version of GiftSA on a napkin after her sister's birthday.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">Mid 2024</div>
+          <div class="tl-title">First 10 Partners</div>
+          <div class="tl-desc">We sign our first ten Pretoria-based businesses — spas, adventure operators, and a wine estate. The platform goes live in beta.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">Late 2024</div>
+          <div class="tl-title">WhatsApp Delivery</div>
+          <div class="tl-desc">We launch instant WhatsApp voucher delivery — turning what was a 24-hour process into something that happens in seconds.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2025</div>
+          <div class="tl-title">National Expansion</div>
+          <div class="tl-desc">We expand to Cape Town, Durban and the Winelands. Over 2,800 customers served. 50+ verified partners. The journey is just beginning.</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <p class="section-eyebrow">✦ Our Team</p>
+      <h2 class="section-title" style="margin-bottom:36px">The people behind GiftSA</h2>
+      <div style="display:flex;flex-direction:column;gap:20px">
+        <div style="display:flex;gap:16px;align-items:center;background:var(--white);border:1px solid var(--border);border-radius:14px;padding:20px">
+          <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--leaf),var(--leaf2));display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:1rem;flex-shrink:0">NK</div>
+          <div>
+            <div style="font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--forest)">Neeta Khandoo</div>
+            <div style="font-size:.72rem;color:var(--terra);font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px">Founder & CEO</div>
+            <div style="font-size:.8rem;color:var(--sub)">Previously in hospitality marketing. Obsessed with South African experiences and making gifting feel genuinely special.</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:16px;align-items:center;background:var(--white);border:1px solid var(--border);border-radius:14px;padding:20px">
+          <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;color:var(--forest);font-weight:700;font-size:1rem;flex-shrink:0">TM</div>
+          <div>
+            <div style="font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--forest)">Thabo Molefe</div>
+            <div style="font-size:.72rem;color:var(--terra);font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px">Head of Partnerships</div>
+            <div style="font-size:.8rem;color:var(--sub)">Builds and manages relationships with our SA partner network. 10 years in the events and tourism industry.</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:16px;align-items:center;background:var(--white);border:1px solid var(--border);border-radius:14px;padding:20px">
+          <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--terra),var(--terra2));display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:1rem;flex-shrink:0">SB</div>
+          <div>
+            <div style="font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--forest)">Sipho Bhengu</div>
+            <div style="font-size:.72rem;color:var(--terra);font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px">Lead Developer</div>
+            <div style="font-size:.8rem;color:var(--sub)">Built the platform from the ground up. Full-stack dev who believes great technology should be invisible.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-band">
+  <div class="container">
+    <h2>Ready to give something unforgettable?</h2>
+    <p>Browse 200+ curated South African experiences — delivered instantly on WhatsApp.</p>
+    <div class="cta-btns">
+      <button class="btn-primary" onclick="window.location.href='index.html'">Browse Experiences →</button>
+      <button class="btn-outline" onclick="window.location.href='partners.html'">Become a Partner</button>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+  <footer>
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            <div class="footer-brand">Gift<span>SA</span></div>
+            <p class="footer-tagline">
+              South Africa's leading digital gift experience marketplace.
+              Connecting people with unforgettable moments since 2024.
+            </p>
+            <div class="footer-socials">
+              <a class="social-btn" href="#">𝕏</a>
+              <a class="social-btn" href="#">in</a>
+              <a class="social-btn" href="#">f</a>
+              <a class="social-btn" href="#">📸</a>
+            </div>
+          </div>
+          <div>
+            <h4>Experiences</h4>
+            <div class="footer-links">
+              <a class="footer-link">Wellness & Spa</a>
+              <a class="footer-link">Adventure</a>
+              <a class="footer-link">Dining & Wine</a>
+              <a class="footer-link">Stays & Getaways</a>
+              <a class="footer-link">Skills & Courses</a>
+            </div>
+          </div>
+          <div>
+            <h4>Company</h4>
+            <div class="footer-links">
+              <a href="/about-us.html" class="footer-link">About Us</a>
+              <a class="footer-link">Partner Programme</a>
+              <a href="/corporate.html" class="footer-link">Corporate Gifting</a>
+              <a class="footer-link">Blog</a>
+              <a class="footer-link">Careers</a>
+            </div>
+          </div>
+          <div>
+            <h4>Support</h4>
+            <div class="footer-links">
+              <a class="footer-link">Redeem Voucher</a>
+              <a href="/help.html" class="footer-link">Help Centre</a>
+              <a href="/contact.html" class="footer-link">Contact Us</a>
+              <a href="/privacy.html" class="footer-link">Privacy Policy</a>
+              <a href="/terms.html" class="footer-link">Terms of Service</a>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p class="footer-legal">
+            © 2025 GiftSA (Pty) Ltd · All rights reserved · Registered in South
+            Africa
+          </p>
+          <div class="footer-payments">
+            <span
+              style="
+                font-size: 0.72rem;
+                color: rgba(245, 240, 232, 0.3);
+                margin-right: 4px;
+              "
+              >Payments by</span
+            >
+            <span class="pay-badge">PayFast</span>
+            <span class="pay-badge">Visa</span>
+            <span class="pay-badge">MasterCard</span>
+            <span class="pay-badge">SnapScan</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+</body>
+</html>

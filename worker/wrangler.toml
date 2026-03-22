@@ -1,0 +1,40 @@
+name = "voucher-worker"
+main = "index.js"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+# ── R2 Bucket binding ────────────────────────────────────────────
+# Step 1: Create the bucket first:
+#   wrangler r2 bucket create voucher-images
+# Step 2: This binding makes it available as env.VOUCHER_IMAGES
+[[r2_buckets]]
+binding     = "VOUCHER_IMAGES"
+bucket_name = "voucher-images"
+
+# ── Non-sensitive config ─────────────────────────────────────────
+[vars]
+APP_ENV    = "production"
+APP_NAME   = "VoucherHub ZA"
+
+# ── Secrets (set via CLI — never commit these) ───────────────────
+# Run each command once in your terminal:
+#
+#   wrangler secret put UPLOAD_SECRET          ← strong random password
+#   wrangler secret put TWILIO_ACCOUNT_SID
+#   wrangler secret put TWILIO_AUTH_TOKEN
+#   wrangler secret put TWILIO_WHATSAPP_FROM   ← e.g. whatsapp:+14155238886
+#   wrangler secret put FIREBASE_PROJECT_ID
+#   wrangler secret put FIREBASE_CLIENT_EMAIL
+#   wrangler secret put FIREBASE_PRIVATE_KEY   ← base64 encoded private key
+#   wrangler secret put PAYFAST_PASSPHRASE
+#   wrangler secret put STRIPE_WEBHOOK_SECRET
+#   wrangler secret put CF_IMAGES_TOKEN        ← only if using cf_images
+#   wrangler secret put CF_ACCOUNT_ID          ← only if using cf_images
+
+# ── Local dev server ─────────────────────────────────────────────
+[dev]
+port           = 8787
+local_protocol = "http"
+
+# ── Optional: bind to custom domain ─────────────────────────────
+# routes = [{ pattern = "api.yourdomain.co.za/*", zone_name = "yourdomain.co.za" }]

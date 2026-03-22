@@ -1,0 +1,1577 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Corporate Gifting — GiftSA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --cream: #f5f0e8;
+        --cream2: #ede6d6;
+        --cream3: #e0d8c8;
+        --forest: #1a2e1f;
+        --forest2: #243428;
+        --leaf: #3d6b47;
+        --leaf2: #4e8459;
+        --terra: #c4622d;
+        --terra2: #d4784a;
+        --gold: #b8942a;
+        --gold2: #cda83c;
+        --white: #ffffff;
+        --text: #1a2e1f;
+        --sub: #5a6b5e;
+        --muted: #8a9b8e;
+        --border: #d8d0c0;
+        --border2: #c8bea8;
+        --serif: "Cormorant Garamond", Georgia, serif;
+        --sans: "DM Sans", system-ui, sans-serif;
+        --max: 1280px;
+        --sh1: 0 2px 12px rgba(26, 46, 31, 0.08);
+        --sh2: 0 8px 32px rgba(26, 46, 31, 0.12);
+        --sh3: 0 20px 60px rgba(26, 46, 31, 0.18);
+      }
+      html {
+        scroll-behavior: smooth;
+        -webkit-font-smoothing: antialiased;
+      }
+      body {
+        background: var(--cream);
+        color: var(--text);
+        font-family: var(--sans);
+        font-size: 15px;
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+      button {
+        font-family: var(--sans);
+        cursor: pointer;
+      }
+      .container {
+        max-width: var(--max);
+        margin: 0 auto;
+        padding: 0 32px;
+      }
+      .nav {
+        background: rgba(245, 240, 232, 0.95);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .nav-inner {
+        max-width: var(--max);
+        margin: 0 auto;
+        padding: 0 32px;
+        display: flex;
+        align-items: center;
+        gap: 32px;
+        height: 72px;
+      }
+      .nav-logo {
+        font-family: var(--serif);
+        font-size: 1.7rem;
+        font-weight: 700;
+        color: var(--forest);
+        letter-spacing: -0.5px;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+      .nav-logo span {
+        color: var(--terra);
+      }
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        margin-left: auto;
+      }
+      .nav-link {
+        padding: 8px 14px;
+        border-radius: 8px;
+        font-size: 0.83rem;
+        font-weight: 500;
+        color: var(--sub);
+        transition: all 0.18s;
+        white-space: nowrap;
+        border: none;
+        background: none;
+        cursor: pointer;
+      }
+      .nav-link:hover {
+        background: var(--cream2);
+        color: var(--text);
+      }
+      .nav-cta {
+        background: var(--forest);
+        color: var(--cream);
+        padding: 9px 20px;
+        border-radius: 8px;
+        font-size: 0.83rem;
+        font-weight: 600;
+        border: none;
+        transition: all 0.2s;
+        cursor: pointer;
+      }
+      .nav-cta:hover {
+        background: var(--forest2);
+        transform: translateY(-1px);
+      }
+      .breadcrumb {
+        padding: 16px 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .breadcrumb-inner {
+        max-width: var(--max);
+        margin: 0 auto;
+        padding: 0 32px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.78rem;
+        color: var(--muted);
+      }
+      .breadcrumb a {
+        color: var(--leaf);
+        font-weight: 600;
+      }
+      .hero {
+        position: relative;
+        min-height: 500px;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+      }
+      .hero-bg {
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(
+            135deg,
+            rgba(26, 46, 31, 0.88) 0%,
+            rgba(26, 46, 31, 0.5) 60%,
+            transparent 100%
+          ),
+          url("https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=1600&q=80")
+            center/cover no-repeat;
+      }
+      .hero-bg::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          to bottom,
+          transparent 60%,
+          var(--cream) 100%
+        );
+      }
+      .hero-content {
+        position: relative;
+        z-index: 1;
+        padding: 80px 32px 100px;
+        max-width: var(--max);
+        margin: 0 auto;
+      }
+      .section {
+        padding: 72px 0;
+      }
+      .eyebrow {
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: var(--terra);
+        margin-bottom: 8px;
+      }
+      .eyebrow-light {
+        color: var(--gold2);
+      }
+      .section-title {
+        font-family: var(--serif);
+        font-size: clamp(1.8rem, 3vw, 2.8rem);
+        font-weight: 600;
+        color: var(--forest);
+        line-height: 1.1;
+        letter-spacing: -0.3px;
+      }
+      .section-title-light {
+        color: var(--cream);
+      }
+
+      /* HERO CONTENT */
+      .hero h1 {
+        font-family: var(--serif);
+        font-size: clamp(2.8rem, 5vw, 4.5rem);
+        font-weight: 600;
+        line-height: 1.05;
+        color: var(--white);
+        margin-bottom: 16px;
+      }
+      .hero h1 em {
+        font-style: italic;
+        color: var(--gold2);
+      }
+      .hero-sub {
+        font-size: 1.05rem;
+        color: rgba(245, 240, 232, 0.78);
+        max-width: 560px;
+        line-height: 1.75;
+        font-weight: 300;
+        margin-bottom: 32px;
+      }
+      .hero-badges {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .hero-badge {
+        background: rgba(245, 240, 232, 0.12);
+        border: 1px solid rgba(245, 240, 232, 0.2);
+        backdrop-filter: blur(8px);
+        border-radius: 10px;
+        padding: 12px 20px;
+        color: var(--cream);
+      }
+      .hero-badge .bnum {
+        font-family: var(--serif);
+        font-size: 1.6rem;
+        font-weight: 700;
+        line-height: 1;
+      }
+      .hero-badge .blbl {
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: rgba(245, 240, 232, 0.55);
+        margin-top: 2px;
+      }
+
+      /* WHY */
+      .why-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+      }
+      .why-card {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 32px;
+        transition:
+          transform 0.25s,
+          box-shadow 0.25s;
+      }
+      .why-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--sh2);
+      }
+      .why-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        background: rgba(61, 107, 71, 0.08);
+        border: 1px solid rgba(61, 107, 71, 0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        margin-bottom: 18px;
+      }
+      .why-card h3 {
+        font-family: var(--serif);
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--forest);
+        margin-bottom: 8px;
+      }
+      .why-card p {
+        font-size: 0.83rem;
+        color: var(--sub);
+        line-height: 1.7;
+      }
+
+      /* HOW IT WORKS */
+      .hiw-dark {
+        background: var(--forest);
+        padding: 72px 0;
+        position: relative;
+        overflow: hidden;
+      }
+      .hiw-dark::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          ellipse at 20% 50%,
+          rgba(61, 107, 71, 0.4),
+          transparent 50%
+        );
+      }
+      .steps {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 0;
+        position: relative;
+      }
+      .steps::before {
+        content: "";
+        position: absolute;
+        top: 28px;
+        left: 10%;
+        right: 10%;
+        height: 2px;
+        background: rgba(245, 240, 232, 0.12);
+      }
+      .step {
+        text-align: center;
+        padding: 0 16px;
+        position: relative;
+      }
+      .step-num {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: var(--forest3);
+        border: 2px solid rgba(245, 240, 232, 0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--serif);
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--cream);
+        margin: 0 auto 16px;
+        position: relative;
+        z-index: 1;
+      }
+      .step h4 {
+        font-size: 0.88rem;
+        font-weight: 700;
+        color: var(--cream);
+        margin-bottom: 6px;
+      }
+      .step p {
+        font-size: 0.75rem;
+        color: rgba(245, 240, 232, 0.5);
+        line-height: 1.6;
+      }
+
+      /* PACKAGES */
+      .packages {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+      }
+      .pkg {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        overflow: hidden;
+        position: relative;
+        transition:
+          transform 0.25s,
+          box-shadow 0.25s;
+      }
+      .pkg:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--sh3);
+      }
+      .pkg.featured {
+        border-color: var(--leaf);
+        box-shadow: 0 0 0 3px rgba(61, 107, 71, 0.1);
+      }
+      .pkg-badge {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: var(--leaf);
+        color: white;
+        font-size: 0.65rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        padding: 4px 10px;
+        border-radius: 4px;
+      }
+      .pkg-head {
+        padding: 28px 28px 20px;
+        border-bottom: 1px solid var(--border);
+      }
+      .pkg-name {
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--terra);
+        margin-bottom: 8px;
+      }
+      .pkg-title {
+        font-family: var(--serif);
+        font-size: 1.6rem;
+        font-weight: 600;
+        color: var(--forest);
+        margin-bottom: 4px;
+      }
+      .pkg-desc {
+        font-size: 0.8rem;
+        color: var(--sub);
+      }
+      .pkg-price {
+        margin-top: 14px;
+        font-family: var(--serif);
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--forest);
+      }
+      .pkg-price small {
+        font-size: 0.8rem;
+        font-weight: 400;
+        color: var(--muted);
+        font-family: var(--sans);
+      }
+      .pkg-body {
+        padding: 24px 28px;
+      }
+      .pkg-feature {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--cream2);
+        font-size: 0.83rem;
+        color: var(--sub);
+      }
+      .pkg-feature:last-child {
+        border-bottom: none;
+      }
+      .pkg-check {
+        color: var(--leaf);
+        font-size: 0.75rem;
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+      .pkg-footer {
+        padding: 0 28px 28px;
+      }
+      .pkg-btn {
+        width: 100%;
+        padding: 14px;
+        border-radius: 10px;
+        font-family: var(--serif);
+        font-size: 1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: none;
+      }
+      .pkg-btn-primary {
+        background: var(--forest);
+        color: var(--cream);
+      }
+      .pkg-btn-primary:hover {
+        background: var(--forest2);
+        transform: translateY(-1px);
+      }
+      .pkg-btn-outline {
+        background: transparent;
+        color: var(--forest);
+        border: 1.5px solid var(--border2) !important;
+      }
+      .pkg-btn-outline:hover {
+        border-color: var(--leaf) !important;
+        color: var(--leaf);
+      }
+
+      /* TESTIMONIAL */
+      .corp-testi {
+        background: var(--cream2);
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        padding: 48px;
+        position: relative;
+      }
+      .corp-testi::before {
+        content: "\201C";
+        font-family: var(--serif);
+        font-size: 8rem;
+        color: rgba(26, 46, 31, 0.06);
+        position: absolute;
+        top: -20px;
+        left: 32px;
+        line-height: 1;
+      }
+      .ct-quote {
+        font-family: var(--serif);
+        font-style: italic;
+        font-size: 1.3rem;
+        line-height: 1.7;
+        color: var(--forest);
+        margin-bottom: 28px;
+        position: relative;
+      }
+      .ct-author {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .ct-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--leaf), var(--gold));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 700;
+        font-size: 0.9rem;
+        flex-shrink: 0;
+      }
+      .ct-name {
+        font-weight: 700;
+        font-size: 0.9rem;
+        color: var(--forest);
+      }
+      .ct-role {
+        font-size: 0.75rem;
+        color: var(--muted);
+      }
+      .ct-logo {
+        margin-left: auto;
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 8px 16px;
+        font-family: var(--serif);
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: var(--muted);
+      }
+
+      /* FORM */
+      .corp-form {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        padding: 40px;
+      }
+      .cf-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 16px;
+      }
+      .cf-field label {
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--muted);
+        display: block;
+        margin-bottom: 6px;
+      }
+      .cf-field input,
+      .cf-field select,
+      .cf-field textarea {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1.5px solid var(--border2);
+        border-radius: 9px;
+        font-family: var(--sans);
+        font-size: 0.88rem;
+        color: var(--text);
+        outline: none;
+        transition: border-color 0.2s;
+        background: var(--cream);
+      }
+      .cf-field input:focus,
+      .cf-field select:focus,
+      .cf-field textarea:focus {
+        border-color: var(--leaf);
+        background: var(--white);
+      }
+      .cf-field textarea {
+        resize: vertical;
+        min-height: 100px;
+        line-height: 1.6;
+      }
+      .cf-submit {
+        width: 100%;
+        padding: 15px;
+        background: var(--forest);
+        color: var(--cream);
+        border: none;
+        border-radius: 10px;
+        font-family: var(--serif);
+        font-size: 1.05rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-top: 8px;
+      }
+      .cf-submit:hover {
+        background: var(--forest2);
+        transform: translateY(-1px);
+      }
+      .cf-note {
+        text-align: center;
+        font-size: 0.75rem;
+        color: var(--muted);
+        margin-top: 10px;
+      }
+
+      /* FOOTER */
+      footer {
+        background: var(--forest);
+        color: rgba(245, 240, 232, 0.65);
+        padding: 64px 0 32px;
+      }
+      .footer-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+        gap: 48px;
+        margin-bottom: 48px;
+      }
+      .footer-brand {
+        font-family: var(--serif);
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--cream);
+        margin-bottom: 12px;
+      }
+      .footer-brand span {
+        color: var(--terra2);
+      }
+      .footer-tagline {
+        font-size: 0.83rem;
+        line-height: 1.7;
+        margin-bottom: 20px;
+        max-width: 280px;
+      }
+      .footer-col h4 {
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        color: var(--cream);
+        margin-bottom: 16px;
+      }
+      .footer-links {
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+      }
+      .footer-link {
+        font-size: 0.82rem;
+        cursor: pointer;
+        transition: color 0.18s;
+      }
+      .footer-link:hover {
+        color: var(--cream);
+      }
+      .footer-bottom {
+        border-top: 1px solid rgba(245, 240, 232, 0.1);
+        padding-top: 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      .footer-legal {
+        font-size: 0.74rem;
+      }
+      .pay-badge {
+        background: rgba(245, 240, 232, 0.08);
+        border: 1px solid rgba(245, 240, 232, 0.12);
+        border-radius: 5px;
+        padding: 4px 10px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: rgba(245, 240, 232, 0.5);
+      }
+      @media (max-width: 1024px) {
+        .why-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+        .packages {
+          grid-template-columns: 1fr;
+        }
+        .steps {
+          grid-template-columns: 1fr 1fr;
+          gap: 24px;
+        }
+        .steps::before {
+          display: none;
+        }
+        .footer-grid {
+          grid-template-columns: 1fr 1fr;
+          gap: 32px;
+        }
+      }
+      @media (max-width: 768px) {
+        .container {
+          padding: 0 20px;
+        }
+        .nav-inner {
+          padding: 0 20px;
+        }
+        .hero-content {
+          padding: 60px 20px 80px;
+        }
+        .why-grid {
+          grid-template-columns: 1fr;
+        }
+        .cf-grid {
+          grid-template-columns: 1fr;
+        }
+        .nav-links {
+          display: none;
+        }
+        .footer-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="nav">
+      <div class="nav-inner">
+        <a href="index.html" class="nav-logo">Gift<span>SA</span></a>
+        <div class="nav-links">
+          <a class="nav-link" href="index.html">Experiences</a>
+          <a class="nav-link" href="partners.html">For Partners</a>
+          <a class="nav-link active" href="corporate.html">Corporate</a>
+          <a class="nav-link" href="about.html">About</a>
+        </div>
+        <button
+          class="nav-cta"
+          onclick="
+            document
+              .getElementById('corpForm')
+              .scrollIntoView({ behavior: 'smooth' })
+          "
+        >
+          Get a Quote
+        </button>
+      </div>
+    </nav>
+
+    <div class="breadcrumb">
+      <div class="breadcrumb-inner">
+        <a href="index.html">Home</a><span>›</span
+        ><span>Corporate Gifting</span>
+      </div>
+    </div>
+
+    <section class="hero">
+      <div class="hero-bg"></div>
+      <div class="hero-content">
+        <p class="eyebrow" style="color: var(--gold2)">✦ Corporate Programme</p>
+        <h1>Give your team gifts<br />they'll <em>actually remember.</em></h1>
+        <p class="hero-sub">
+          From 10 to 10,000 employees — GiftSA handles bulk experience vouchers,
+          custom branding, and WhatsApp delivery for corporate gifting at any
+          scale.
+        </p>
+        <div class="hero-badges">
+          <div class="hero-badge">
+            <div class="bnum">R0</div>
+            <div class="blbl">Setup fee</div>
+          </div>
+          <div class="hero-badge">
+            <div class="bnum">10 min</div>
+            <div class="blbl">From order to delivery</div>
+          </div>
+          <div class="hero-badge">
+            <div class="bnum">10+</div>
+            <div class="blbl">Min. order size</div>
+          </div>
+          <div class="hero-badge">
+            <div class="bnum">200+</div>
+            <div class="blbl">Experiences to choose from</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHY GIFTSA FOR CORPORATES -->
+    <section class="section container">
+      <div style="text-align: center; margin-bottom: 48px">
+        <p class="eyebrow" style="text-align: center">
+          ✦ Why Corporate Clients Choose Us
+        </p>
+        <h2 class="section-title">Gifting that works at scale</h2>
+      </div>
+      <div class="why-grid">
+        <div class="why-card">
+          <div class="why-icon">⚡</div>
+          <h3>Instant Bulk Delivery</h3>
+          <p>
+            Send 10 or 10,000 vouchers simultaneously. Each recipient gets their
+            unique code and QR on WhatsApp within seconds of your order being
+            confirmed.
+          </p>
+        </div>
+        <div class="why-card">
+          <div class="why-icon">🎨</div>
+          <h3>Custom Branding</h3>
+          <p>
+            Add your company logo, brand colours, and a personal message to
+            every voucher. Available on Corporate and Enterprise plans.
+          </p>
+        </div>
+        <div class="why-card">
+          <div class="why-icon">📊</div>
+          <h3>Full Redemption Reporting</h3>
+          <p>
+            Track who redeemed, when, and which experience they chose. Live
+            dashboard with CSV export for your HR or finance team.
+          </p>
+        </div>
+        <div class="why-card">
+          <div class="why-icon">💳</div>
+          <h3>Flexible Payment</h3>
+          <p>
+            Pay by EFT, corporate card, or purchase order. We issue a full tax
+            invoice within 24 hours. Net-30 terms available for established
+            accounts.
+          </p>
+        </div>
+        <div class="why-card">
+          <div class="why-icon">🤝</div>
+          <h3>Dedicated Account Manager</h3>
+          <p>
+            Enterprise clients get a named account manager — a real person you
+            can call or WhatsApp when you need support.
+          </p>
+        </div>
+        <div class="why-card">
+          <div class="why-icon">🌍</div>
+          <h3>National Coverage</h3>
+          <p>
+            Experiences across Gauteng, Western Cape, KwaZulu-Natal, Eastern
+            Cape and more. Your team can use vouchers wherever they are in South
+            Africa.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <div class="hiw-dark">
+      <div class="container">
+        <div
+          style="text-align: center; margin-bottom: 48px; position: relative"
+        >
+          <p class="eyebrow eyebrow-light">✦ Process</p>
+          <h2 class="section-title section-title-light">
+            How corporate gifting works
+          </h2>
+        </div>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">01</div>
+            <h4>Choose a Plan</h4>
+            <p>
+              Select Starter, Corporate, or Enterprise based on your team size
+              and needs.
+            </p>
+          </div>
+          <div class="step">
+            <div class="step-num">02</div>
+            <h4>Pick Experiences</h4>
+            <p>
+              Choose specific vouchers or give recipients a choice from a
+              curated selection.
+            </p>
+          </div>
+          <div class="step">
+            <div class="step-num">03</div>
+            <h4>Upload Recipients</h4>
+            <p>
+              Upload your team's names and WhatsApp numbers via CSV or enter
+              manually.
+            </p>
+          </div>
+          <div class="step">
+            <div class="step-num">04</div>
+            <h4>Confirm & Pay</h4>
+            <p>We send a detailed quote and tax invoice. Pay by EFT or card.</p>
+          </div>
+          <div class="step">
+            <div class="step-num">05</div>
+            <h4>Vouchers Delivered</h4>
+            <p>
+              All vouchers delivered to recipients' WhatsApp simultaneously.
+              Instantly.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PACKAGES -->
+    <section class="section container">
+      <div style="text-align: center; margin-bottom: 48px">
+        <p class="eyebrow">✦ Plans</p>
+        <h2 class="section-title">Corporate packages</h2>
+        <p style="color: var(--sub); font-size: 0.9rem; margin-top: 8px">
+          Volume discounts apply. Contact us for custom pricing on 500+
+          vouchers.
+        </p>
+      </div>
+      <div class="packages">
+        <div class="pkg">
+          <div class="pkg-head">
+            <div class="pkg-name">Starter</div>
+            <div class="pkg-title">Small Teams</div>
+            <div class="pkg-desc">
+              Perfect for teams of 10–50 people. Year-end gifts, milestone
+              rewards, thank-you vouchers.
+            </div>
+            <div class="pkg-price">Market <small>price + 0% markup</small></div>
+          </div>
+          <div class="pkg-body">
+            <div class="pkg-feature">
+              <span class="pkg-check">✓</span> 10–50 vouchers per order
+            </div>
+            <div class="pkg-feature">
+              <span class="pkg-check">✓</span> Instant WhatsApp delivery
+            </div>
+            <div class="pkg-feature">
+              <span class="pkg-check">✓</span> Custom gift message per recipient
+            </div>
+            <div class="pkg-feature">
+              <span class="pkg-check">✓</span> Full redemption report
+            </div>
+            <div class="pkg-feature">
+              <span class="pkg-check">✓</span> EFT or card payment
+            </div>
+            <div class="pkg-feature">
+              <span class="pkg-check">✓</span> Tax invoice within 24 hrs
+            </div>
+          </div>
+          <div class="pkg-footer">
+            <button
+              class="pkg-btn pkg-btn-outline"
+              onclick="
+                document
+                  .getElementById('corpForm')
+                  .scrollIntoView({ behavior: 'smooth' })
+              "
+            >
+              Get Started →
+            </button>
+          </div>
+        </div>
+        <div class="pkg featured">
+          <div class="pkg-badge">Most Popular</div>
+          <div class="pkg-head">
+            <div class="pkg-name">Corporate</div>
+            <div class="pkg-title">Growing Companies</div>
+            <div class="pkg-desc">
+              For HR teams running recurring incentive, wellness, or recognition
+              programmes.
+            </div>
+            <div class="pkg-price">
+              5% <small>volume discount on all orders</small>
+            </div>
+          </div>
+          <div class="pkg-body">
+            <div class="pkg-feature">
+              <span class="pkg-check">✓</span> 51–499 vouchers per order
+            </div>
+            <div class="pkg-feature">
+              <span class="pkg-check">✓</span> Everything in Starter
+            </div>
+            <div class="pkg-feature">
+              <span class="pkg-check">✓</span> Custom branded voucher design
+            </div>
+            <div class="pkg-feature">
+              <span class="pkg-check">✓</span> Recipient choice of experience
+              category
+            </div>
+            <div class="pkg-feature">
+              <span class="pkg-check">✓</span> Dedicated support contact
+            </div>
+            <div class="pkg-feature">
+              <span class="pkg-check">✓</span> Net-30 payment terms
+            </div>
+            <div class="pkg-feature">
+              <span class="pkg-check">✓</span> Quarterly usage reporting
+            </div>
+          </div>
+          <div class="pkg-footer">
+            <button
+              class="pkg-btn pkg-btn-primary"
+              onclick="
+                document
+                  .getElementById('corpForm')
+                  .scrollIntoView({ behavior: 'smooth' })
+              "
+            >
+              Get a Quote →
+            </button>
+          </div>
+        </div>
+        <div class="pkg">
+          <div class="pkg-head">
+            <div class="pkg-name">Enterprise</div>
+            <div class="pkg-title">Large Organisations</div>
+            <div class="pkg-desc">
+              For 500+ recipient programmes. Fully managed, API access,
+              white-label options.
+            </div>
+            <div class="pkg-price">
+              10%+ <small>volume discount — custom pricing</small>
+            </div>
+          </div>
+          <div class="pkg-body">
+            <div class="pkg-feature">
+              <span class="pkg-check">✓</span> 500+ vouchers per order
+            </div>
+            <div class="pkg-feature">
+              <span class="pkg-check">✓</span> Everything in Corporate
+            </div>
+            <div class="pkg-feature">
+              <span class="pkg-check">✓</span> Named account manager
+            </div>
+            <div class="pkg-feature">
+              <span class="pkg-check">✓</span> White-label voucher portal
+            </div>
+            <div class="pkg-feature">
+              <span class="pkg-check">✓</span> API integration available
+            </div>
+            <div class="pkg-feature">
+              <span class="pkg-check">✓</span> Custom experience curation
+            </div>
+            <div class="pkg-feature">
+              <span class="pkg-check">✓</span> SLA-backed support
+            </div>
+          </div>
+          <div class="pkg-footer">
+            <button
+              class="pkg-btn pkg-btn-outline"
+              onclick="
+                document
+                  .getElementById('corpForm')
+                  .scrollIntoView({ behavior: 'smooth' })
+              "
+            >
+              Contact Sales →
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TESTIMONIAL -->
+    <div class="container" style="margin-bottom: 72px">
+      <div class="corp-testi">
+        <div
+          style="
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            align-items: center;
+          "
+        >
+          <div>
+            <div class="ct-quote">
+              "We sent 230 year-end vouchers to our entire team via GiftSA.
+              Every single employee got their voucher within minutes. The
+              reporting dashboard made expense reconciliation effortless. We're
+              already planning our next order."
+            </div>
+            <div class="ct-author">
+              <div class="ct-avatar">MK</div>
+              <div>
+                <div class="ct-name">Michelle Kotze</div>
+                <div class="ct-role">
+                  HR Director · Cape Town Consulting Firm
+                </div>
+              </div>
+              <div class="ct-logo">⭐⭐⭐⭐⭐</div>
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px">
+            <div
+              style="
+                background: var(--forest);
+                border-radius: 16px;
+                padding: 24px;
+                text-align: center;
+                color: var(--cream);
+              "
+            >
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: 2.2rem;
+                  font-weight: 700;
+                  line-height: 1;
+                "
+              >
+                230
+              </div>
+              <div
+                style="
+                  font-size: 0.7rem;
+                  text-transform: uppercase;
+                  letter-spacing: 1px;
+                  color: rgba(245, 240, 232, 0.5);
+                  margin-top: 4px;
+                "
+              >
+                Vouchers sent
+              </div>
+            </div>
+            <div
+              style="
+                background: var(--leaf);
+                border-radius: 16px;
+                padding: 24px;
+                text-align: center;
+                color: white;
+              "
+            >
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: 2.2rem;
+                  font-weight: 700;
+                  line-height: 1;
+                "
+              >
+                &lt;5 min
+              </div>
+              <div
+                style="
+                  font-size: 0.7rem;
+                  text-transform: uppercase;
+                  letter-spacing: 1px;
+                  color: rgba(255, 255, 255, 0.6);
+                  margin-top: 4px;
+                "
+              >
+                Delivery time
+              </div>
+            </div>
+            <div
+              style="
+                background: var(--gold);
+                border-radius: 16px;
+                padding: 24px;
+                text-align: center;
+                color: var(--forest);
+              "
+            >
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: 2.2rem;
+                  font-weight: 700;
+                  line-height: 1;
+                "
+              >
+                100%
+              </div>
+              <div
+                style="
+                  font-size: 0.7rem;
+                  text-transform: uppercase;
+                  letter-spacing: 1px;
+                  color: rgba(26, 46, 31, 0.6);
+                  margin-top: 4px;
+                "
+              >
+                Redemption rate
+              </div>
+            </div>
+            <div
+              style="
+                background: var(--terra);
+                border-radius: 16px;
+                padding: 24px;
+                text-align: center;
+                color: white;
+              "
+            >
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: 2.2rem;
+                  font-weight: 700;
+                  line-height: 1;
+                "
+              >
+                4.9★
+              </div>
+              <div
+                style="
+                  font-size: 0.7rem;
+                  text-transform: uppercase;
+                  letter-spacing: 1px;
+                  color: rgba(255, 255, 255, 0.6);
+                  margin-top: 4px;
+                "
+              >
+                Team rating
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FORM -->
+    <section class="section container" id="corpForm">
+      <div
+        style="
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 64px;
+          align-items: start;
+        "
+      >
+        <div>
+          <p class="eyebrow">✦ Get Started</p>
+          <h2 class="section-title" style="margin-bottom: 16px">
+            Request a corporate quote
+          </h2>
+          <p
+            style="
+              color: var(--sub);
+              font-size: 0.9rem;
+              line-height: 1.75;
+              margin-bottom: 28px;
+            "
+          >
+            Fill in the form and a member of our corporate team will send you a
+            detailed proposal within 4 business hours.
+          </p>
+          <div style="display: flex; flex-direction: column; gap: 14px">
+            <div style="display: flex; align-items: flex-start; gap: 12px">
+              <div
+                style="
+                  width: 36px;
+                  height: 36px;
+                  border-radius: 9px;
+                  background: rgba(61, 107, 71, 0.08);
+                  border: 1px solid rgba(61, 107, 71, 0.15);
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 0.95rem;
+                  flex-shrink: 0;
+                "
+              >
+                📞
+              </div>
+              <div>
+                <div
+                  style="
+                    font-weight: 600;
+                    font-size: 0.85rem;
+                    color: var(--forest);
+                  "
+                >
+                  Prefer to talk?
+                </div>
+                <div style="font-size: 0.8rem; color: var(--sub)">
+                  WhatsApp us on <strong>+27 81 000 0000</strong> — we respond
+                  within 30 minutes during business hours.
+                </div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: flex-start; gap: 12px">
+              <div
+                style="
+                  width: 36px;
+                  height: 36px;
+                  border-radius: 9px;
+                  background: rgba(61, 107, 71, 0.08);
+                  border: 1px solid rgba(61, 107, 71, 0.15);
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 0.95rem;
+                  flex-shrink: 0;
+                "
+              >
+                ✉️
+              </div>
+              <div>
+                <div
+                  style="
+                    font-weight: 600;
+                    font-size: 0.85rem;
+                    color: var(--forest);
+                  "
+                >
+                  Email us
+                </div>
+                <div style="font-size: 0.8rem; color: var(--sub)">
+                  corporate@giftsa.co.za — for detailed RFPs and procurement
+                  requirements.
+                </div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: flex-start; gap: 12px">
+              <div
+                style="
+                  width: 36px;
+                  height: 36px;
+                  border-radius: 9px;
+                  background: rgba(61, 107, 71, 0.08);
+                  border: 1px solid rgba(61, 107, 71, 0.15);
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 0.95rem;
+                  flex-shrink: 0;
+                "
+              >
+                🧾
+              </div>
+              <div>
+                <div
+                  style="
+                    font-weight: 600;
+                    font-size: 0.85rem;
+                    color: var(--forest);
+                  "
+                >
+                  B-BBEE & Tax
+                </div>
+                <div style="font-size: 0.8rem; color: var(--sub)">
+                  We are a Level 4 B-BBEE contributor. Full tax invoices and
+                  compliance documents available on request.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="corp-form">
+          <h3
+            style="
+              font-family: var(--serif);
+              font-size: 1.5rem;
+              color: var(--forest);
+              margin-bottom: 24px;
+            "
+          >
+            Tell us about your needs
+          </h3>
+          <div class="cf-grid">
+            <div class="cf-field">
+              <label>Your Name *</label
+              ><input id="corp-name" placeholder="Jane Smith" />
+            </div>
+            <div class="cf-field">
+              <label>Company Name *</label
+              ><input id="corp-company" placeholder="Acme Corp (Pty) Ltd" />
+            </div>
+            <div class="cf-field">
+              <label>Work Email *</label
+              ><input
+                id="corp-email"
+                type="email"
+                placeholder="jane@acme.co.za"
+              />
+            </div>
+            <div class="cf-field">
+              <label>WhatsApp Number</label
+              ><input id="corp-phone" placeholder="+27821234567" />
+            </div>
+            <div class="cf-field">
+              <label>Number of Recipients *</label>
+              <select id="corp-size">
+                <option value="">Select team size</option>
+                <option>10–50 people</option>
+                <option>51–200 people</option>
+                <option>201–500 people</option>
+                <option>500+ people</option>
+              </select>
+            </div>
+            <div class="cf-field">
+              <label>Budget Per Person</label>
+              <select id="corp-budget">
+                <option value="">Select budget</option>
+                <option>Under R500 per person</option>
+                <option>R500–R1,000</option>
+                <option>R1,000–R2,500</option>
+                <option>R2,500+</option>
+              </select>
+            </div>
+          </div>
+          <div class="cf-field" style="margin-bottom: 16px">
+            <label>Occasion / Notes</label
+            ><textarea
+              id="corp-notes"
+              placeholder="e.g. Year-end gifts for our sales team, wellness focus preferred, deadline is 30 November…"
+            ></textarea>
+          </div>
+          <div id="corpFormStatus" style="display: none"></div>
+          <button class="cf-submit" onclick="submitCorpForm()">
+            Send Enquiry →
+          </button>
+          <p class="cf-note">
+            Response within 4 business hours · No obligation · Tax invoice
+            provided
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+      <footer>
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            <div class="footer-brand">Gift<span>SA</span></div>
+            <p class="footer-tagline">
+              South Africa's leading digital gift experience marketplace.
+              Connecting people with unforgettable moments since 2024.
+            </p>
+            <div class="footer-socials">
+              <a class="social-btn" href="#">𝕏</a>
+              <a class="social-btn" href="#">in</a>
+              <a class="social-btn" href="#">f</a>
+              <a class="social-btn" href="#">📸</a>
+            </div>
+          </div>
+          <div>
+            <h4>Experiences</h4>
+            <div class="footer-links">
+              <a class="footer-link">Wellness & Spa</a>
+              <a class="footer-link">Adventure</a>
+              <a class="footer-link">Dining & Wine</a>
+              <a class="footer-link">Stays & Getaways</a>
+              <a class="footer-link">Skills & Courses</a>
+            </div>
+          </div>
+          <div>
+            <h4>Company</h4>
+            <div class="footer-links">
+              <a href="/about-us.html" class="footer-link">About Us</a>
+              <a class="footer-link">Partner Programme</a>
+              <a href="/corporate.html" class="footer-link">Corporate Gifting</a>
+              <a class="footer-link">Blog</a>
+              <a class="footer-link">Careers</a>
+            </div>
+          </div>
+          <div>
+            <h4>Support</h4>
+            <div class="footer-links">
+              <a class="footer-link">Redeem Voucher</a>
+              <a href="/help.html" class="footer-link">Help Centre</a>
+              <a href="/contact.html" class="footer-link">Contact Us</a>
+              <a href="/privacy.html" class="footer-link">Privacy Policy</a>
+              <a href="/terms.html" class="footer-link">Terms of Service</a>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p class="footer-legal">
+            © 2025 GiftSA (Pty) Ltd · All rights reserved · Registered in South
+            Africa
+          </p>
+          <div class="footer-payments">
+            <span
+              style="
+                font-size: 0.72rem;
+                color: rgba(245, 240, 232, 0.3);
+                margin-right: 4px;
+              "
+              >Payments by</span
+            >
+            <span class="pay-badge">PayFast</span>
+            <span class="pay-badge">Visa</span>
+            <span class="pay-badge">MasterCard</span>
+            <span class="pay-badge">SnapScan</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+      import {
+        getFirestore,
+        collection,
+        addDoc,
+        serverTimestamp,
+      } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+      const app = initializeApp({
+        apiKey: "AIzaSyBx01_b7Dkm6QCnZiGnSrRK0dZGf9p5IaY",
+        authDomain: "gift-za.firebaseapp.com",
+        projectId: "gift-za",
+        storageBucket: "gift-za.firebasestorage.app",
+        messagingSenderId: "732762883935",
+        appId: "1:732762883935:web:1fc9b21f71c9ffaa43d8ea",
+      });
+      const db = getFirestore(app);
+
+      window.submitCorpForm = async function () {
+        const btn = document.querySelector(".cf-submit");
+        const statusBox = document.getElementById("corpFormStatus");
+        const data = {
+          name: document.getElementById("corp-name").value.trim(),
+          company: document.getElementById("corp-company").value.trim(),
+          email: document.getElementById("corp-email").value.trim(),
+          phone: document.getElementById("corp-phone").value.trim(),
+          size: document.getElementById("corp-size").value,
+          budget: document.getElementById("corp-budget").value,
+          notes: document.getElementById("corp-notes").value.trim(),
+          submittedAt: serverTimestamp(),
+          status: "new",
+          type: "corporate_enquiry",
+        };
+        if (!data.name || !data.company || !data.email) {
+          statusBox.style.cssText =
+            "display:block;padding:12px 16px;border-radius:9px;margin-bottom:12px;font-size:.85rem;background:#FEF2F2;border:1px solid #EF4444;color:#B91C1C";
+          statusBox.textContent =
+            "Please fill in your name, company, and email.";
+          return;
+        }
+        btn.disabled = true;
+        btn.textContent = "Sending...";
+        try {
+          await addDoc(collection(db, "corporate_enquiries"), data);
+          statusBox.style.cssText =
+            "display:block;padding:12px 16px;border-radius:9px;margin-bottom:12px;font-size:.85rem;background:#F0FDF4;border:1px solid #22C55E;color:#15803D";
+          statusBox.innerHTML =
+            "✅ <strong>Enquiry received!</strong> Our corporate team will be in touch within 4 business hours.";
+          btn.textContent = "Sent ✓";
+          btn.style.background = "#22C55E";
+        } catch (err) {
+          statusBox.style.cssText =
+            "display:block;padding:12px 16px;border-radius:9px;margin-bottom:12px;font-size:.85rem;background:#FEF2F2;border:1px solid #EF4444;color:#B91C1C";
+          statusBox.textContent =
+            "Something went wrong. Please email us at corporate@giftsa.co.za";
+          btn.disabled = false;
+          btn.textContent = "Send Enquiry →";
+        }
+      };
+    </script>
+  </body>
+</html>

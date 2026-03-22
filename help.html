@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Help Centre — GiftSA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--cream:#f5f0e8;--cream2:#ede6d6;--cream3:#e0d8c8;--forest:#1a2e1f;--forest2:#243428;--leaf:#3d6b47;--terra:#c4622d;--terra2:#d4784a;--gold2:#cda83c;--white:#ffffff;--text:#1a2e1f;--sub:#5a6b5e;--muted:#8a9b8e;--border:#d8d0c0;--border2:#c8bea8;--serif:"Cormorant Garamond",Georgia,serif;--sans:"DM Sans",system-ui,sans-serif;--max:1280px;--sh1:0 2px 12px rgba(26,46,31,.08);--sh2:0 8px 32px rgba(26,46,31,.12)}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{background:var(--cream);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.6;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+button{font-family:var(--sans);cursor:pointer}
+.container{max-width:var(--max);margin:0 auto;padding:0 32px}
+.nav{background:rgba(245,240,232,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.nav-inner{max-width:var(--max);margin:0 auto;padding:0 32px;display:flex;align-items:center;gap:32px;height:72px}
+.nav-logo{font-family:var(--serif);font-size:1.7rem;font-weight:700;color:var(--forest);letter-spacing:-.5px}
+.nav-logo span{color:var(--terra)}
+.nav-links{display:flex;align-items:center;gap:4px;margin-left:auto}
+.nav-link{padding:8px 14px;border-radius:8px;font-size:.83rem;font-weight:500;color:var(--sub);border:none;background:none;cursor:pointer;transition:all .18s}
+.nav-link:hover{background:var(--cream2);color:var(--text)}
+.nav-cta{background:var(--forest);color:var(--cream);padding:9px 20px;border-radius:8px;font-size:.83rem;font-weight:600;border:none;cursor:pointer;transition:all .2s}
+.nav-cta:hover{background:var(--forest2);transform:translateY(-1px)}
+.breadcrumb{padding:16px 0;border-bottom:1px solid var(--border)}
+.breadcrumb-inner{max-width:var(--max);margin:0 auto;padding:0 32px;display:flex;align-items:center;gap:8px;font-size:.78rem;color:var(--muted)}
+.breadcrumb a{color:var(--leaf);font-weight:600}
+
+/* HERO SEARCH */
+.help-hero{background:var(--forest);padding:64px 0;text-align:center;position:relative;overflow:hidden}
+.help-hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(61,107,71,.5),transparent 60%)}
+.help-hero-inner{position:relative;max-width:640px;margin:0 auto;padding:0 32px}
+.help-hero h1{font-family:var(--serif);font-size:2.8rem;color:var(--cream);font-weight:600;margin-bottom:8px}
+.help-hero p{color:rgba(245,240,232,.6);font-size:.9rem;margin-bottom:28px}
+.help-search{display:flex;background:var(--white);border-radius:12px;overflow:hidden;box-shadow:0 20px 60px rgba(26,46,31,.3)}
+.help-search input{flex:1;padding:16px 20px;border:none;outline:none;font-family:var(--sans);font-size:.92rem;color:var(--text)}
+.help-search input::placeholder{color:var(--muted)}
+.help-search-btn{background:var(--terra);color:white;border:none;padding:0 24px;font-weight:700;font-size:.85rem;cursor:pointer;transition:background .2s;white-space:nowrap}
+.help-search-btn:hover{background:var(--terra2)}
+
+/* CATEGORIES */
+.help-cats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:40px 0}
+.help-cat{background:var(--white);border:1px solid var(--border);border-radius:20px;padding:28px;cursor:pointer;transition:all .2s;text-align:center}
+.help-cat:hover{border-color:var(--leaf);box-shadow:var(--sh2);transform:translateY(-3px)}
+.help-cat.active{border-color:var(--leaf);background:rgba(61,107,71,.04)}
+.hc-icon{font-size:2rem;margin-bottom:12px}
+.hc-title{font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--forest);margin-bottom:4px}
+.hc-count{font-size:.75rem;color:var(--muted)}
+
+/* ARTICLES LAYOUT */
+.help-layout{display:grid;grid-template-columns:260px 1fr;gap:40px;padding:48px 0}
+
+/* SIDEBAR */
+.help-sidebar{}
+.sidebar-section{margin-bottom:28px}
+.sidebar-title{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.sidebar-link{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:8px;font-size:.83rem;color:var(--sub);cursor:pointer;transition:all .18s;margin-bottom:2px}
+.sidebar-link:hover{background:var(--cream2);color:var(--text)}
+.sidebar-link.active{background:rgba(61,107,71,.08);color:var(--leaf);font-weight:600}
+.sidebar-link-icon{font-size:.85rem;flex-shrink:0}
+
+/* ARTICLES */
+.help-articles{}
+.article-section{margin-bottom:40px}
+.section-header{display:flex;align-items:center;gap:10px;margin-bottom:20px;padding-bottom:12px;border-bottom:2px solid var(--border)}
+.section-header-icon{font-size:1.4rem}
+.section-header h2{font-family:var(--serif);font-size:1.4rem;font-weight:600;color:var(--forest)}
+.article-list{display:flex;flex-direction:column;gap:8px}
+.article-item{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:18px 20px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all .2s}
+.article-item:hover{border-color:var(--border2);box-shadow:var(--sh1);transform:translateX(3px)}
+.article-item.open{border-color:var(--leaf)}
+.ai-icon{font-size:1rem;flex-shrink:0}
+.ai-content{flex:1}
+.ai-q{font-weight:600;font-size:.88rem;color:var(--forest);margin-bottom:0}
+.ai-a{font-size:.83rem;color:var(--sub);line-height:1.7;margin-top:8px;display:none}
+.article-item.open .ai-a{display:block}
+.ai-arrow{color:var(--muted);font-size:.8rem;transition:transform .2s;flex-shrink:0}
+.article-item.open .ai-arrow{transform:rotate(180deg);color:var(--leaf)}
+
+/* STILL NEED HELP */
+.still-help{background:linear-gradient(135deg,var(--forest),var(--forest2));border-radius:24px;padding:48px;text-align:center;position:relative;overflow:hidden;margin:40px 0}
+.still-help::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(61,107,71,.4),transparent 60%)}
+.still-help-inner{position:relative}
+.still-help h2{font-family:var(--serif);font-size:2rem;color:var(--cream);margin-bottom:8px}
+.still-help p{color:rgba(245,240,232,.6);font-size:.88rem;margin-bottom:28px}
+.sh-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.sh-btn{display:flex;align-items:center;gap:8px;padding:13px 24px;border-radius:10px;font-weight:600;font-size:.88rem;cursor:pointer;transition:all .2s;border:none}
+.sh-btn-wa{background:#25D366;color:white}
+.sh-btn-wa:hover{background:#1eb557}
+.sh-btn-email{background:rgba(245,240,232,.1);color:var(--cream);border:1.5px solid rgba(245,240,232,.2)!important}
+.sh-btn-email:hover{background:rgba(245,240,232,.18)}
+
+footer{background:var(--forest);color:rgba(245,240,232,.65);padding:64px 0 32px}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px}
+.footer-brand{font-family:var(--serif);font-size:1.8rem;font-weight:700;color:var(--cream);margin-bottom:12px}
+.footer-brand span{color:var(--terra2)}
+.footer-tagline{font-size:.83rem;line-height:1.7;margin-bottom:20px;max-width:280px}
+.footer-col h4{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--cream);margin-bottom:16px}
+.footer-links{display:flex;flex-direction:column;gap:9px}
+.footer-link{font-size:.82rem;cursor:pointer;transition:color .18s}
+.footer-link:hover{color:var(--cream)}
+.footer-bottom{border-top:1px solid rgba(245,240,232,.1);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.footer-legal{font-size:.74rem}
+.pay-badge{background:rgba(245,240,232,.08);border:1px solid rgba(245,240,232,.12);border-radius:5px;padding:4px 10px;font-size:.7rem;font-weight:600;color:rgba(245,240,232,.5)}
+@media(max-width:1024px){.help-cats{grid-template-columns:1fr 1fr}.help-layout{grid-template-columns:1fr}.help-sidebar{display:none}.footer-grid{grid-template-columns:1fr 1fr;gap:32px}}
+@media(max-width:768px){.container{padding:0 20px}.nav-inner{padding:0 20px}.help-hero-inner{padding:0 20px}.help-cats{grid-template-columns:1fr}.nav-links{display:none}.footer-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">Gift<span>SA</span></a>
+    <div class="nav-links">
+      <a class="nav-link" href="index.html">Experiences</a>
+      <a class="nav-link" href="partners.html">For Partners</a>
+      <a class="nav-link active" href="help.html">Help</a>
+      <a class="nav-link" href="contact.html">Contact</a>
+    </div>
+    <button class="nav-cta" onclick="window.location.href='index.html'">Browse Experiences</button>
+  </div>
+</nav>
+
+<div class="breadcrumb">
+  <div class="breadcrumb-inner">
+    <a href="index.html">Home</a><span>›</span><span>Help Centre</span>
+  </div>
+</div>
+
+<div class="help-hero">
+  <div class="help-hero-inner">
+    <h1>How can we help?</h1>
+    <p>Search our help articles or browse by topic below.</p>
+    <div class="help-search">
+      <input type="text" id="helpSearchInput" placeholder="Search for answers… e.g. 'voucher not received'" oninput="filterArticles(this.value)"/>
+      <button class="help-search-btn">Search</button>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <!-- CATS -->
+  <div class="help-cats">
+    <div class="help-cat active" onclick="scrollTo('buying')">
+      <div class="hc-icon">🛍️</div>
+      <div class="hc-title">Buying Vouchers</div>
+      <div class="hc-count">8 articles</div>
+    </div>
+    <div class="help-cat" onclick="scrollTo('redeeming')">
+      <div class="hc-icon">🎟️</div>
+      <div class="hc-title">Redeeming Vouchers</div>
+      <div class="hc-count">6 articles</div>
+    </div>
+    <div class="help-cat" onclick="scrollTo('partners')">
+      <div class="hc-icon">🤝</div>
+      <div class="hc-title">Partner Accounts</div>
+      <div class="hc-count">7 articles</div>
+    </div>
+    <div class="help-cat" onclick="scrollTo('payments')">
+      <div class="hc-icon">💳</div>
+      <div class="hc-title">Payments & Billing</div>
+      <div class="hc-count">5 articles</div>
+    </div>
+    <div class="help-cat" onclick="scrollTo('delivery')">
+      <div class="hc-icon">📱</div>
+      <div class="hc-title">WhatsApp Delivery</div>
+      <div class="hc-count">4 articles</div>
+    </div>
+    <div class="help-cat" onclick="scrollTo('refunds')">
+      <div class="hc-icon">🔄</div>
+      <div class="hc-title">Refunds & Changes</div>
+      <div class="hc-count">5 articles</div>
+    </div>
+  </div>
+
+  <div class="help-layout">
+    <!-- SIDEBAR -->
+    <div class="help-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-title">Popular Articles</div>
+        <div class="sidebar-link active"><span class="sidebar-link-icon">⭐</span> How to redeem a voucher</div>
+        <div class="sidebar-link"><span class="sidebar-link-icon">📱</span> Voucher not received on WhatsApp</div>
+        <div class="sidebar-link"><span class="sidebar-link-icon">💳</span> Accepted payment methods</div>
+        <div class="sidebar-link"><span class="sidebar-link-icon">🔄</span> How to get a refund</div>
+        <div class="sidebar-link"><span class="sidebar-link-icon">🏢</span> Corporate bulk orders</div>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-title">For Partners</div>
+        <div class="sidebar-link"><span class="sidebar-link-icon">🆕</span> Creating your first voucher</div>
+        <div class="sidebar-link"><span class="sidebar-link-icon">💰</span> How payouts work</div>
+        <div class="sidebar-link"><span class="sidebar-link-icon">📊</span> Using the admin dashboard</div>
+        <div class="sidebar-link"><span class="sidebar-link-icon">✅</span> Validating a customer voucher</div>
+      </div>
+      <div style="background:var(--forest);border-radius:14px;padding:20px;text-align:center">
+        <div style="font-size:1.4rem;margin-bottom:8px">💬</div>
+        <div style="font-family:var(--serif);font-size:1rem;color:var(--cream);margin-bottom:4px">Still stuck?</div>
+        <div style="font-size:.75rem;color:rgba(245,240,232,.5);margin-bottom:12px">Our team replies in under 30 minutes</div>
+        <a href="contact.html" style="display:block;background:var(--terra);color:white;padding:10px;border-radius:8px;font-size:.82rem;font-weight:600;text-align:center">Contact Support →</a>
+      </div>
+    </div>
+
+    <!-- ARTICLES -->
+    <div class="help-articles" id="articleContainer">
+
+      <div class="article-section" id="buying">
+        <div class="section-header"><span class="section-header-icon">🛍️</span><h2>Buying Vouchers</h2></div>
+        <div class="article-list">
+          <div class="article-item" onclick="toggleArticle(this)">
+            <span class="ai-icon">❓</span>
+            <div class="ai-content">
+              <div class="ai-q">How do I buy a gift voucher on GiftSA?</div>
+              <div class="ai-a">Browse experiences on our store, click on any voucher you like, then click "Buy This Voucher." Fill in the recipient's name and WhatsApp number, add a personal message, and complete payment through PayFast. The voucher is sent instantly to the recipient's WhatsApp.</div>
+            </div>
+            <span class="ai-arrow">▼</span>
+          </div>
+          <div class="article-item" onclick="toggleArticle(this)">
+            <span class="ai-icon">❓</span>
+            <div class="ai-content">
+              <div class="ai-q">Can I buy a voucher for myself?</div>
+              <div class="ai-a">Absolutely! Just enter your own name and WhatsApp number as the recipient. You can also buy a voucher and keep it to redeem later — the code remains valid for the full validity period shown on the voucher.</div>
+            </div>
+            <span class="ai-arrow">▼</span>
+          </div>
+          <div class="article-item" onclick="toggleArticle(this)">
+            <span class="ai-icon">❓</span>
+            <div class="ai-content">
+              <div class="ai-q">How long are vouchers valid for?</div>
+              <div class="ai-a">Validity varies per experience — it's clearly shown on each voucher card (e.g. "Valid 12 months"). The expiry date is also included in the WhatsApp message the recipient receives. You can always contact the partner business to discuss extending validity in exceptional circumstances.</div>
+            </div>
+            <span class="ai-arrow">▼</span>
+          </div>
+          <div class="article-item" onclick="toggleArticle(this)">
+            <span class="ai-icon">❓</span>
+            <div class="ai-content">
+              <div class="ai-q">Can I add a personal message to the voucher?</div>
+              <div class="ai-a">Yes! During checkout you'll see a "Personal Note" field. Whatever you write there will be included in the WhatsApp message to the recipient. Keep it heartfelt — it makes the gift so much more special.</div>
+            </div>
+            <span class="ai-arrow">▼</span>
+          </div>
+          <div class="article-item" onclick="toggleArticle(this)">
+            <span class="ai-icon">❓</span>
+            <div class="ai-content">
+              <div class="ai-q">Is there a minimum or maximum purchase amount?</div>
+              <div class="ai-a">There's no minimum beyond the individual voucher price — the cheapest voucher currently listed is R480. There's no maximum. For bulk corporate purchases of 10+ vouchers, contact our corporate team for volume pricing.</div>
+            </div>
+            <span class="ai-arrow">▼</span>
+          </div>
+          <div class="article-item" onclick="toggleArticle(this)">
+            <span class="ai-icon">❓</span>
+            <div class="ai-content">
+              <div class="ai-q">Can I schedule delivery for a specific date?</div>
+              <div class="ai-a">Scheduled delivery is on our roadmap! Currently vouchers are sent immediately on payment. If you want to time a surprise, we suggest purchasing close to the date. Alternatively, contact us and we can manually hold delivery for you.</div>
+            </div>
+            <span class="ai-arrow">▼</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="article-section" id="redeeming">
+        <div class="section-header"><span class="section-header-icon">🎟️</span><h2>Redeeming Vouchers</h2></div>
+        <div class="article-list">
+          <div class="article-item" onclick="toggleArticle(this)">
+            <span class="ai-icon">❓</span>
+            <div class="ai-content">
+              <div class="ai-q">How do I redeem my GiftSA voucher?</div>
+              <div class="ai-a">Contact the partner business directly (their details are in your WhatsApp voucher) to book a date. When you arrive, show the QR code or tell them your voucher code. The partner will scan or enter it in their GiftSA dashboard to mark it as redeemed. Easy as that.</div>
+            </div>
+            <span class="ai-arrow">▼</span>
+          </div>
+          <div class="article-item" onclick="toggleArticle(this)">
+            <span class="ai-icon">❓</span>
+            <div class="ai-content">
+              <div class="ai-q">My voucher code says "already redeemed" — what do I do?</div>
+              <div class="ai-a">Contact us immediately at hello@giftsa.co.za or WhatsApp +27 81 000 0000. We have a full audit trail for every voucher and can investigate instantly. If the code was redeemed in error, we will issue a replacement at no charge.</div>
+            </div>
+            <span class="ai-arrow">▼</span>
+          </div>
+          <div class="article-item" onclick="toggleArticle(this)">
+            <span class="ai-icon">❓</span>
+            <div class="ai-content">
+              <div class="ai-q">Do I need internet access to show my voucher?</div>
+              <div class="ai-a">No — once your voucher is in your WhatsApp, you can screenshot the QR code and show it offline. We recommend screenshotting your voucher as a backup when you receive it.</div>
+            </div>
+            <span class="ai-arrow">▼</span>
+          </div>
+          <div class="article-item" onclick="toggleArticle(this)">
+            <span class="ai-icon">❓</span>
+            <div class="ai-content">
+              <div class="ai-q">Can someone else redeem my voucher on my behalf?</div>
+              <div class="ai-a">Yes. Vouchers are transferable — whoever presents the valid code or QR to the partner business can redeem it. If you received a voucher as a gift but want to transfer it to someone else, just forward the WhatsApp message to them.</div>
+            </div>
+            <span class="ai-arrow">▼</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="article-section" id="delivery">
+        <div class="section-header"><span class="section-header-icon">📱</span><h2>WhatsApp Delivery</h2></div>
+        <div class="article-list">
+          <div class="article-item" onclick="toggleArticle(this)">
+            <span class="ai-icon">❓</span>
+            <div class="ai-content">
+              <div class="ai-q">My voucher hasn't arrived on WhatsApp — what now?</div>
+              <div class="ai-a">First, double-check that you entered the correct WhatsApp number at checkout. The number must be active on WhatsApp — not just a regular phone number. If the number was correct and it's been more than 5 minutes since payment, WhatsApp us at +27 81 000 0000 and we'll resend it immediately.</div>
+            </div>
+            <span class="ai-arrow">▼</span>
+          </div>
+          <div class="article-item" onclick="toggleArticle(this)">
+            <span class="ai-icon">❓</span>
+            <div class="ai-content">
+              <div class="ai-q">The recipient's number wasn't on WhatsApp — can I change it?</div>
+              <div class="ai-a">Yes! Email us at hello@giftsa.co.za with your order reference and the correct WhatsApp number. We can resend to the right number within minutes. This is completely free of charge.</div>
+            </div>
+            <span class="ai-arrow">▼</span>
+          </div>
+          <div class="article-item" onclick="toggleArticle(this)">
+            <span class="ai-icon">❓</span>
+            <div class="ai-content">
+              <div class="ai-q">Can I get the voucher sent by email instead?</div>
+              <div class="ai-a">We are building email delivery — it's coming soon. For now, if WhatsApp isn't an option, contact us and we can generate a PDF voucher and email it to you manually.</div>
+            </div>
+            <span class="ai-arrow">▼</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="article-section" id="payments">
+        <div class="section-header"><span class="section-header-icon">💳</span><h2>Payments & Billing</h2></div>
+        <div class="article-list">
+          <div class="article-item" onclick="toggleArticle(this)">
+            <span class="ai-icon">❓</span>
+            <div class="ai-content">
+              <div class="ai-q">What payment methods do you accept?</div>
+              <div class="ai-a">We accept all major South African payment methods through PayFast: Visa and Mastercard credit/debit cards, Instant EFT (all major banks), SnapScan, Zapper, and Mobicred. We do not currently accept cash or crypto.</div>
+            </div>
+            <span class="ai-arrow">▼</span>
+          </div>
+          <div class="article-item" onclick="toggleArticle(this)">
+            <span class="ai-icon">❓</span>
+            <div class="ai-content">
+              <div class="ai-q">Is my payment information secure?</div>
+              <div class="ai-a">Yes. All payments are processed by PayFast, a PCI DSS Level 1 certified payment gateway. GiftSA never sees or stores your card details. All transactions are encrypted with 256-bit SSL.</div>
+            </div>
+            <span class="ai-arrow">▼</span>
+          </div>
+          <div class="article-item" onclick="toggleArticle(this)">
+            <span class="ai-icon">❓</span>
+            <div class="ai-content">
+              <div class="ai-q">Can I get a tax invoice?</div>
+              <div class="ai-a">Yes — a VAT invoice is automatically emailed to you at the email address you provided during checkout. If you need it re-sent, email hello@giftsa.co.za with your order reference.</div>
+            </div>
+            <span class="ai-arrow">▼</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="article-section" id="refunds">
+        <div class="section-header"><span class="section-header-icon">🔄</span><h2>Refunds & Changes</h2></div>
+        <div class="article-list">
+          <div class="article-item" onclick="toggleArticle(this)">
+            <span class="ai-icon">❓</span>
+            <div class="ai-content">
+              <div class="ai-q">Can I get a refund on my voucher?</div>
+              <div class="ai-a">Unredeemed vouchers can be refunded within 48 hours of purchase. Email hello@giftsa.co.za with your voucher code and the reason for the refund. Refunds are processed within 3–5 business days back to your original payment method. Redeemed vouchers cannot be refunded.</div>
+            </div>
+            <span class="ai-arrow">▼</span>
+          </div>
+          <div class="article-item" onclick="toggleArticle(this)">
+            <span class="ai-icon">❓</span>
+            <div class="ai-content">
+              <div class="ai-q">What if the partner business is closed or won't honour the voucher?</div>
+              <div class="ai-a">This is extremely rare as all our partners are vetted. If this happens, contact us immediately. We take partner accountability seriously and will either arrange the experience with an alternative partner or issue a full refund. We have never left a customer without a resolution.</div>
+            </div>
+            <span class="ai-arrow">▼</span>
+          </div>
+          <div class="article-item" onclick="toggleArticle(this)">
+            <span class="ai-icon">❓</span>
+            <div class="ai-content">
+              <div class="ai-q">Can I extend a voucher that's about to expire?</div>
+              <div class="ai-a">Voucher extensions are at the discretion of the partner business. Contact them directly to discuss — most partners are happy to extend expiry by up to 3 months in genuine circumstances. GiftSA cannot extend vouchers directly, but we can facilitate the conversation with the partner.</div>
+            </div>
+            <span class="ai-arrow">▼</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="article-section" id="partners">
+        <div class="section-header"><span class="section-header-icon">🤝</span><h2>Partner Accounts</h2></div>
+        <div class="article-list">
+          <div class="article-item" onclick="toggleArticle(this)">
+            <span class="ai-icon">❓</span>
+            <div class="ai-content">
+              <div class="ai-q">How do I register as a GiftSA partner?</div>
+              <div class="ai-a">Visit our <a href="partners.html" style="color:var(--leaf);font-weight:600">Partner Programme page</a> and submit an application. We review all applications within 24 hours. Once approved, you'll receive login credentials and can start creating vouchers immediately. The first 10 vouchers are pre-loaded for you.</div>
+            </div>
+            <span class="ai-arrow">▼</span>
+          </div>
+          <div class="article-item" onclick="toggleArticle(this)">
+            <span class="ai-icon">❓</span>
+            <div class="ai-content">
+              <div class="ai-q">How and when do partners get paid?</div>
+              <div class="ai-a">Partner payouts are processed every Friday via EFT. You'll receive 80%+ of each sale (the exact split depends on your agreement). Payouts include a breakdown of each voucher sold and redeemed during the week. Funds typically arrive in your account by Monday.</div>
+            </div>
+            <span class="ai-arrow">▼</span>
+          </div>
+          <div class="article-item" onclick="toggleArticle(this)">
+            <span class="ai-icon">❓</span>
+            <div class="ai-content">
+              <div class="ai-q">How do I add a new voucher to the store?</div>
+              <div class="ai-a">Log in to your Admin dashboard and click "Add New Voucher." Fill in the voucher name, category, price, description, what's included, and optionally upload a photo. Click "Create & Save Voucher" and it will appear on the store immediately. You can create as many vouchers as you like.</div>
+            </div>
+            <span class="ai-arrow">▼</span>
+          </div>
+          <div class="article-item" onclick="toggleArticle(this)">
+            <span class="ai-icon">❓</span>
+            <div class="ai-content">
+              <div class="ai-q">How do I validate a customer's voucher at my business?</div>
+              <div class="ai-a">Log in to your GiftSA partner account, go to the Redeem page, and enter the customer's voucher code (or scan their QR with your phone camera). The system will confirm if the voucher is valid and mark it as redeemed. This works on any smartphone or computer with internet access.</div>
+            </div>
+            <span class="ai-arrow">▼</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- STILL NEED HELP -->
+  <div class="still-help">
+    <div class="still-help-inner">
+      <h2>Still need help?</h2>
+      <p>Our support team is available Monday–Friday 8am–6pm and Saturday 9am–2pm. We typically respond within 30 minutes.</p>
+      <div class="sh-btns">
+        <button class="sh-btn sh-btn-wa" onclick="window.open('https://wa.me/27810000000','_blank')">💬 WhatsApp Us</button>
+        <button class="sh-btn sh-btn-email" onclick="window.location.href='contact.html'">✉️ Send a Message</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+  <footer>
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            <div class="footer-brand">Gift<span>SA</span></div>
+            <p class="footer-tagline">
+              South Africa's leading digital gift experience marketplace.
+              Connecting people with unforgettable moments since 2024.
+            </p>
+            <div class="footer-socials">
+              <a class="social-btn" href="#">𝕏</a>
+              <a class="social-btn" href="#">in</a>
+              <a class="social-btn" href="#">f</a>
+              <a class="social-btn" href="#">📸</a>
+            </div>
+          </div>
+          <div>
+            <h4>Experiences</h4>
+            <div class="footer-links">
+              <a class="footer-link">Wellness & Spa</a>
+              <a class="footer-link">Adventure</a>
+              <a class="footer-link">Dining & Wine</a>
+              <a class="footer-link">Stays & Getaways</a>
+              <a class="footer-link">Skills & Courses</a>
+            </div>
+          </div>
+          <div>
+            <h4>Company</h4>
+            <div class="footer-links">
+              <a href="/about-us.html" class="footer-link">About Us</a>
+              <a class="footer-link">Partner Programme</a>
+              <a href="/corporate.html" class="footer-link">Corporate Gifting</a>
+              <a class="footer-link">Blog</a>
+              <a class="footer-link">Careers</a>
+            </div>
+          </div>
+          <div>
+            <h4>Support</h4>
+            <div class="footer-links">
+              <a class="footer-link">Redeem Voucher</a>
+              <a href="/help.html" class="footer-link">Help Centre</a>
+              <a href="/contact.html" class="footer-link">Contact Us</a>
+              <a href="/privacy.html" class="footer-link">Privacy Policy</a>
+              <a href="/terms.html" class="footer-link">Terms of Service</a>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p class="footer-legal">
+            © 2025 GiftSA (Pty) Ltd · All rights reserved · Registered in South
+            Africa
+          </p>
+          <div class="footer-payments">
+            <span
+              style="
+                font-size: 0.72rem;
+                color: rgba(245, 240, 232, 0.3);
+                margin-right: 4px;
+              "
+              >Payments by</span
+            >
+            <span class="pay-badge">PayFast</span>
+            <span class="pay-badge">Visa</span>
+            <span class="pay-badge">MasterCard</span>
+            <span class="pay-badge">SnapScan</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+<script>
+function toggleArticle(el){const isOpen=el.classList.contains('open');document.querySelectorAll('.article-item').forEach(i=>i.classList.remove('open'));if(!isOpen)el.classList.add('open')}
+function filterArticles(q){const items=document.querySelectorAll('.article-item');if(!q.trim()){items.forEach(i=>i.style.display='');document.querySelectorAll('.article-section').forEach(s=>s.style.display='');return}const lq=q.toLowerCase();document.querySelectorAll('.article-section').forEach(sec=>{let vis=0;sec.querySelectorAll('.article-item').forEach(item=>{const text=item.textContent.toLowerCase();if(text.includes(lq)){item.style.display='';vis++}else{item.style.display='none'}});sec.style.display=vis>0?'':'none'})}
+function scrollTo(id){document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'})}
+</script>
+</body>
+</html>
