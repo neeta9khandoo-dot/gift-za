@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
 import Home from "./Home";
 import { initializeApp } from "firebase/app";
