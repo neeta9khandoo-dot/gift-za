@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Home from "./Home";
 import { initializeApp } from "firebase/app";
 import {
   getFirestore,
@@ -843,107 +844,15 @@ export default function App() {
 
         {/* ═══ STORE — listing ═══ */}
         {page === "store" && !selected && (
-          <>
-            <div className="hero">
-              <span className="hero-kicker">
-                🇿🇦 South Africa's Gift Experience Store
-              </span>
-              <h1>
-                Give the gift of an
-                <br />
-                <span>unforgettable experience.</span>
-              </h1>
-              <p>
-                Spa days, safaris, wine tastings, braai classes & more — from
-                the best SA businesses. Buy a voucher in minutes, sent instantly
-                to any WhatsApp number.
-              </p>
-              <div className="hero-stats">
-                <div>
-                  <div className="hstat-val">{CATALOGUE.length}</div>
-                  <div className="hstat-lbl">Experiences available</div>
-                </div>
-                <div>
-                  <div className="hstat-val">{PARTNERS.length}</div>
-                  <div className="hstat-lbl">Trusted SA partners</div>
-                </div>
-                <div>
-                  <div className="hstat-val">Instant</div>
-                  <div className="hstat-lbl">WhatsApp delivery</div>
-                </div>
-                <div>
-                  <div className="hstat-val">R0</div>
-                  <div className="hstat-lbl">Delivery fee</div>
-                </div>
-              </div>
-            </div>
-
-            <div className="cat-row">
-              <span className="cat-label">Browse:</span>
-              {CATEGORIES.map((c) => (
-                <button
-                  key={c}
-                  className={`cat-btn ${category === c ? "on" : ""}`}
-                  onClick={() => setCategory(c)}
-                >
-                  {c}
-                </button>
-              ))}
-            </div>
-
-            <div className="grid">
-              {filtered.map((p) => {
-                const pr = PARTNERS.find((x) => x.id === p.partnerId);
-                return (
-                  <div
-                    key={p.id}
-                    className="pcard"
-                    style={{ "--ca": p.accent }}
-                    onClick={() => setSelected(p)}
-                  >
-                    <div className="pcard-top">
-                      <span className="pcard-icon">{p.icon}</span>
-                      <div className="pcard-badges">
-                        {p.tags.map((t) => (
-                          <span key={t} className={`tag ${tagCls(t)}`}>
-                            {t === "uniquely SA" ? "🇿🇦 SA" : t}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="pcard-name">{p.name}</div>
-                    <div className="pcard-partner">
-                      📍 {pr?.name} · {p.city}
-                    </div>
-                    <div className="pcard-desc">{p.desc}</div>
-                    <div className="pcard-footer">
-                      <div className="pcard-price" style={{ color: p.accent }}>
-                        <small>R</small>
-                        {p.price.toLocaleString()}
-                      </div>
-                      <div className="pcard-right">
-                        <div
-                          style={{ color: "var(--sub)", fontSize: ".72rem" }}
-                        >
-                          Valid {p.expiry}
-                        </div>
-                        <div
-                          style={{
-                            color: "var(--muted)",
-                            fontSize: ".68rem",
-                            marginTop: 2,
-                          }}
-                        >
-                          📱 WhatsApp delivery
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </>
-        )}
+  <Home
+    CATALOGUE={CATALOGUE}
+    PARTNERS={PARTNERS}
+    category={category}
+    setCategory={setCategory}
+    setSelected={setSelected}
+    tagCls={tagCls}
+  />
+)}
 
         {/* ═══ STORE — checkout ═══ */}
         {page === "store" && selected && (
