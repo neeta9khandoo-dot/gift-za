@@ -1,12 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  Link,
-  useNavigate,
-} from "react-router-dom";
+import { BrowserRouter, Routes, Route, Link, useNavigate } from "react-router-dom";
 import Home from "./Home";
 import { initializeApp } from "firebase/app";
 import {
@@ -22,10 +16,14 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 
-// Firebase config (keep yours here)
 const firebaseConfig = {
-  /* your config */
-};
+        apiKey: "AIzaSyBx01_b7Dkm6QCnZiGnSrRK0dZGf9p5IaY",
+        authDomain: "gift-za.firebaseapp.com",
+        projectId: "gift-za",
+        storageBucket: "gift-za.firebasestorage.app",
+        messagingSenderId: "732762883935",
+        appId: "1:732762883935:web:1fc9b21f71c9ffaa43d8ea",
+      };
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
@@ -53,15 +51,11 @@ export default function App() {
     <BrowserRouter>
       <Nav />
       <Routes>
+
         {/* React-managed pages */}
         <Route path="/" element={<Home db={db} />} />
 
-        {/*
-          Static HTML pages (about-us.html, contact.html, etc.) are NOT
-          routed through React — they are served directly by your web server.
-          Users navigating to /about-us.html bypass React entirely.
-          No <Route> needed for them here.
-        */}
+    
       </Routes>
     </BrowserRouter>
   );
