@@ -1,9 +1,4 @@
-/**
- * VoucherHub ZA — Cloudflare Worker
- * See bottom of file for wrangler.toml setup and secrets list
- */
-
-const IMAGE_BACKEND = "r2"; // "r2" or "cf_images"
+const IMAGE_BACKEND = "r2"; 
 
 // ── CORS headers ──────────────────────────────────────────────────────────────
 const CORS = {

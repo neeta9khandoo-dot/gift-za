@@ -1,8 +1,16 @@
 import { useState, useEffect } from "react";
 import { initializeApp } from "firebase/app";
 import {
-  getFirestore, collection, addDoc, getDocs,
-  doc, updateDoc, query, where, orderBy, serverTimestamp
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  doc,
+  updateDoc,
+  query,
+  where,
+  orderBy,
+  serverTimestamp,
 } from "firebase/firestore";
 
 // ─────────────────────────────────────────────────────────────
@@ -24,27 +32,103 @@ const db = getFirestore(firebaseApp);
 
 // ── Helpers ──────────────────────────────────────────────────
 const genCode = () =>
-  "VCH-" + [...Array(8)].map(() => "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"[Math.floor(Math.random() * 32)]).join("");
+  "VCH-" +
+  [...Array(8)]
+    .map(
+      () => "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"[Math.floor(Math.random() * 32)],
+    )
+    .join("");
 const QR = (data) =>
   `https://api.qrserver.com/v1/create-qr-code/?size=220x220&color=0d1117&bgcolor=ffffff&data=${encodeURIComponent(data)}&format=png&qzone=2`;
-const fmt = (n) => `R ${Number(n).toLocaleString("en-ZA", { minimumFractionDigits: 2 })}`;
-const pct = (sale, comm) => (sale * comm / 100).toFixed(2);
+const fmt = (n) =>
+  `R ${Number(n).toLocaleString("en-ZA", { minimumFractionDigits: 2 })}`;
+const _pct = (sale, comm) => ((sale * comm) / 100).toFixed(2); // eslint-disable-line no-unused-vars
 
 // ─────────────────────────────────────────────────────────────
 // 🇿🇦 SA MARKETPLACE PARTNERS
 // commission = your % cut on every sale
 // ─────────────────────────────────────────────────────────────
 const PARTNERS = [
-  { id: "relaxzone",  name: "Relax Zone Spa",        city: "Pretoria",      logo: "🧖", category: "Wellness",         commission: 20 },
-  { id: "bushveld",   name: "Bushveld Escapes",       city: "Limpopo",       logo: "🦁", category: "Adventure",        commission: 18 },
-  { id: "vino",       name: "Vino Wine Estate",       city: "Franschhoek",   logo: "🍷", category: "Dining & Wine",    commission: 22 },
-  { id: "airborne",   name: "Airborne Adventures",    city: "Johannesburg",  logo: "🪂", category: "Adventure",        commission: 15 },
-  { id: "chefstable", name: "Chef's Table SA",        city: "Cape Town",     logo: "🍽️", category: "Dining & Wine",    commission: 20 },
-  { id: "getaway",    name: "Getaway Lodges",         city: "Magaliesberg",  logo: "🏡", category: "Stays",            commission: 18 },
-  { id: "glow",       name: "Glow Beauty Studio",     city: "Sandton",       logo: "💅", category: "Beauty",           commission: 25 },
-  { id: "skillup",    name: "SkillUp Academy",        city: "Online",        logo: "📚", category: "Skills & Courses", commission: 30 },
-  { id: "braaiking",  name: "Braai King Classes",     city: "Johannesburg",  logo: "🔥", category: "Dining & Wine",    commission: 25 },
-  { id: "ballon",     name: "Skysail Balloons",       city: "Magaliesberg",  logo: "🎈", category: "Adventure",        commission: 15 },
+  {
+    id: "relaxzone",
+    name: "Relax Zone Spa",
+    city: "Pretoria",
+    logo: "🧖",
+    category: "Wellness",
+    commission: 20,
+  },
+  {
+    id: "bushveld",
+    name: "Bushveld Escapes",
+    city: "Limpopo",
+    logo: "🦁",
+    category: "Adventure",
+    commission: 18,
+  },
+  {
+    id: "vino",
+    name: "Vino Wine Estate",
+    city: "Franschhoek",
+    logo: "🍷",
+    category: "Dining & Wine",
+    commission: 22,
+  },
+  {
+    id: "airborne",
+    name: "Airborne Adventures",
+    city: "Johannesburg",
+    logo: "🪂",
+    category: "Adventure",
+    commission: 15,
+  },
+  {
+    id: "chefstable",
+    name: "Chef's Table SA",
+    city: "Cape Town",
+    logo: "🍽️",
+    category: "Dining & Wine",
+    commission: 20,
+  },
+  {
+    id: "getaway",
+    name: "Getaway Lodges",
+    city: "Magaliesberg",
+    logo: "🏡",
+    category: "Stays",
+    commission: 18,
+  },
+  {
+    id: "glow",
+    name: "Glow Beauty Studio",
+    city: "Sandton",
+    logo: "💅",
+    category: "Beauty",
+    commission: 25,
+  },
+  {
+    id: "skillup",
+    name: "SkillUp Academy",
+    city: "Online",
+    logo: "📚",
+    category: "Skills & Courses",
+    commission: 30,
+  },
+  {
+    id: "braaiking",
+    name: "Braai King Classes",
+    city: "Johannesburg",
+    logo: "🔥",
+    category: "Dining & Wine",
+    commission: 25,
+  },
+  {
+    id: "ballon",
+    name: "Skysail Balloons",
+    city: "Magaliesberg",
+    logo: "🎈",
+    category: "Adventure",
+    commission: 15,
+  },
 ];
 
 // ─────────────────────────────────────────────────────────────
@@ -52,31 +136,304 @@ const PARTNERS = [
 // ─────────────────────────────────────────────────────────────
 const CATALOGUE = [
   // WELLNESS
-  { id:"w1", partnerId:"relaxzone", category:"Wellness",        name:"60-Min Full Body Massage",    desc:"Swedish, deep tissue or aromatherapy — your pick",             icon:"🧖", price:550,  accent:"#C084FC", expiry:"12 months", tags:["bestseller"], includes:["1x Treatment","Robe & slippers","Herbal tea"],                                   city:"Pretoria" },
-  { id:"w2", partnerId:"relaxzone", category:"Wellness",        name:"Couples Spa Day",             desc:"Side-by-side treatments, sparkling wine & 2-course lunch",    icon:"💑", price:1800, accent:"#F472B6", expiry:"12 months", tags:["popular"],    includes:["2x 90-min treatments","Sparkling wine","2-course lunch","Pool access"],       city:"Pretoria" },
-  { id:"w3", partnerId:"relaxzone", category:"Wellness",        name:"Hot Stone Therapy",           desc:"90-min volcanic hot stone full-body massage",                  icon:"🪨", price:750,  accent:"#A78BFA", expiry:"12 months", tags:[],             includes:["90-min hot stone massage","Aromatherapy","Tea ceremony"],                    city:"Pretoria" },
+  {
+    id: "w1",
+    partnerId: "relaxzone",
+    category: "Wellness",
+    name: "60-Min Full Body Massage",
+    desc: "Swedish, deep tissue or aromatherapy — your pick",
+    icon: "🧖",
+    price: 550,
+    accent: "#C084FC",
+    expiry: "12 months",
+    tags: ["bestseller"],
+    includes: ["1x Treatment", "Robe & slippers", "Herbal tea"],
+    city: "Pretoria",
+  },
+  {
+    id: "w2",
+    partnerId: "relaxzone",
+    category: "Wellness",
+    name: "Couples Spa Day",
+    desc: "Side-by-side treatments, sparkling wine & 2-course lunch",
+    icon: "💑",
+    price: 1800,
+    accent: "#F472B6",
+    expiry: "12 months",
+    tags: ["popular"],
+    includes: [
+      "2x 90-min treatments",
+      "Sparkling wine",
+      "2-course lunch",
+      "Pool access",
+    ],
+    city: "Pretoria",
+  },
+  {
+    id: "w3",
+    partnerId: "relaxzone",
+    category: "Wellness",
+    name: "Hot Stone Therapy",
+    desc: "90-min volcanic hot stone full-body massage",
+    icon: "🪨",
+    price: 750,
+    accent: "#A78BFA",
+    expiry: "12 months",
+    tags: [],
+    includes: ["90-min hot stone massage", "Aromatherapy", "Tea ceremony"],
+    city: "Pretoria",
+  },
   // BEAUTY
-  { id:"b1", partnerId:"glow",      category:"Beauty",          name:"Pamper Package",              desc:"Gel mani, spa pedi & eyebrow shaping",                        icon:"💅", price:480,  accent:"#FB7185", expiry:"6 months",  tags:["popular"],    includes:["Gel manicure","Spa pedicure","Brow shape","Refreshments"],                   city:"Sandton" },
-  { id:"b2", partnerId:"glow",      category:"Beauty",          name:"Bridal Glow Experience",      desc:"Full bridal prep: hair, makeup, nails & skin",                icon:"👰", price:1950, accent:"#F9A8D4", expiry:"12 months", tags:["premium"],    includes:["Hair styling","Professional makeup","Full nails","Skin prep","Champagne"],  city:"Sandton" },
+  {
+    id: "b1",
+    partnerId: "glow",
+    category: "Beauty",
+    name: "Pamper Package",
+    desc: "Gel mani, spa pedi & eyebrow shaping",
+    icon: "💅",
+    price: 480,
+    accent: "#FB7185",
+    expiry: "6 months",
+    tags: ["popular"],
+    includes: ["Gel manicure", "Spa pedicure", "Brow shape", "Refreshments"],
+    city: "Sandton",
+  },
+  {
+    id: "b2",
+    partnerId: "glow",
+    category: "Beauty",
+    name: "Bridal Glow Experience",
+    desc: "Full bridal prep: hair, makeup, nails & skin",
+    icon: "👰",
+    price: 1950,
+    accent: "#F9A8D4",
+    expiry: "12 months",
+    tags: ["premium"],
+    includes: [
+      "Hair styling",
+      "Professional makeup",
+      "Full nails",
+      "Skin prep",
+      "Champagne",
+    ],
+    city: "Sandton",
+  },
   // ADVENTURE
-  { id:"a1", partnerId:"airborne",  category:"Adventure",       name:"Tandem Skydive",              desc:"15,000ft freefall over Gauteng with certified instructor",     icon:"🪂", price:2950, accent:"#34D399", expiry:"24 months", tags:["adrenaline","popular"], includes:["Tandem jump","Instructor","Certificate","Video & photos"],          city:"Johannesburg" },
-  { id:"a2", partnerId:"ballon",    category:"Adventure",       name:"Hot Air Balloon Sunrise",     desc:"Drift over Magaliesberg at dawn, champagne breakfast incl.",  icon:"🎈", price:2400, accent:"#FCD34D", expiry:"18 months", tags:["romantic","popular"],   includes:["1hr flight","Champagne breakfast","Certificate","Transfers"],       city:"Magaliesberg" },
-  { id:"a3", partnerId:"bushveld",  category:"Adventure",       name:"Big 5 Game Drive Day",        desc:"Full-day guided safari in the Limpopo bushveld",              icon:"🦁", price:1650, accent:"#F97316", expiry:"24 months", tags:["uniquely SA"],          includes:["Full-day drive","Bush lunch","Guide & vehicle","Sundowners"],       city:"Limpopo" },
-  { id:"a4", partnerId:"bushveld",  category:"Adventure",       name:"Bushveld Overnight Safari",   desc:"2-day/1-night bush stay in a luxury tented camp",             icon:"⛺", price:4200, accent:"#84CC16", expiry:"24 months", tags:["premium","uniquely SA"],includes:["1 night tented stay","2x game drives","All meals","Bush walk"],    city:"Limpopo" },
+  {
+    id: "a1",
+    partnerId: "airborne",
+    category: "Adventure",
+    name: "Tandem Skydive",
+    desc: "15,000ft freefall over Gauteng with certified instructor",
+    icon: "🪂",
+    price: 2950,
+    accent: "#34D399",
+    expiry: "24 months",
+    tags: ["adrenaline", "popular"],
+    includes: ["Tandem jump", "Instructor", "Certificate", "Video & photos"],
+    city: "Johannesburg",
+  },
+  {
+    id: "a2",
+    partnerId: "ballon",
+    category: "Adventure",
+    name: "Hot Air Balloon Sunrise",
+    desc: "Drift over Magaliesberg at dawn, champagne breakfast incl.",
+    icon: "🎈",
+    price: 2400,
+    accent: "#FCD34D",
+    expiry: "18 months",
+    tags: ["romantic", "popular"],
+    includes: ["1hr flight", "Champagne breakfast", "Certificate", "Transfers"],
+    city: "Magaliesberg",
+  },
+  {
+    id: "a3",
+    partnerId: "bushveld",
+    category: "Adventure",
+    name: "Big 5 Game Drive Day",
+    desc: "Full-day guided safari in the Limpopo bushveld",
+    icon: "🦁",
+    price: 1650,
+    accent: "#F97316",
+    expiry: "24 months",
+    tags: ["uniquely SA"],
+    includes: ["Full-day drive", "Bush lunch", "Guide & vehicle", "Sundowners"],
+    city: "Limpopo",
+  },
+  {
+    id: "a4",
+    partnerId: "bushveld",
+    category: "Adventure",
+    name: "Bushveld Overnight Safari",
+    desc: "2-day/1-night bush stay in a luxury tented camp",
+    icon: "⛺",
+    price: 4200,
+    accent: "#84CC16",
+    expiry: "24 months",
+    tags: ["premium", "uniquely SA"],
+    includes: [
+      "1 night tented stay",
+      "2x game drives",
+      "All meals",
+      "Bush walk",
+    ],
+    city: "Limpopo",
+  },
   // DINING & WINE
-  { id:"d1", partnerId:"vino",      category:"Dining & Wine",   name:"Wine Tasting for Two",        desc:"6-wine flight with artisan cheese board on a historic estate",icon:"🍷", price:620,  accent:"#E879F9", expiry:"12 months", tags:["romantic"],   includes:["6 wine tastings","Cheese board","Estate tour","Souvenir glass"],            city:"Franschhoek" },
-  { id:"d2", partnerId:"chefstable",category:"Dining & Wine",   name:"Fine Dining for Two",         desc:"5-course tasting menu with wine pairing",                     icon:"🍽️", price:1800, accent:"#FB923C", expiry:"6 months",  tags:["premium","popular"], includes:["5-course menu","Wine pairing","Amuse-bouche","Petit fours"],      city:"Cape Town" },
-  { id:"d3", partnerId:"braaiking", category:"Dining & Wine",   name:"Braai Masterclass",           desc:"Learn to braai like a pro — fire, meat & all the stories",   icon:"🔥", price:695,  accent:"#EF4444", expiry:"12 months", tags:["uniquely SA","fun"], includes:["3hr class","All ingredients","Recipe booklet","Drinks incl."],   city:"Johannesburg" },
-  { id:"d4", partnerId:"chefstable",category:"Dining & Wine",   name:"High Tea for Two",            desc:"Finger sandwiches, scones, pastries & premium teas",          icon:"🫖", price:560,  accent:"#F472B6", expiry:"6 months",  tags:["popular"],    includes:["2-tier stand","Unlimited tea","Savoury & sweet","Prosecco option"],        city:"Cape Town" },
+  {
+    id: "d1",
+    partnerId: "vino",
+    category: "Dining & Wine",
+    name: "Wine Tasting for Two",
+    desc: "6-wine flight with artisan cheese board on a historic estate",
+    icon: "🍷",
+    price: 620,
+    accent: "#E879F9",
+    expiry: "12 months",
+    tags: ["romantic"],
+    includes: [
+      "6 wine tastings",
+      "Cheese board",
+      "Estate tour",
+      "Souvenir glass",
+    ],
+    city: "Franschhoek",
+  },
+  {
+    id: "d2",
+    partnerId: "chefstable",
+    category: "Dining & Wine",
+    name: "Fine Dining for Two",
+    desc: "5-course tasting menu with wine pairing",
+    icon: "🍽️",
+    price: 1800,
+    accent: "#FB923C",
+    expiry: "6 months",
+    tags: ["premium", "popular"],
+    includes: ["5-course menu", "Wine pairing", "Amuse-bouche", "Petit fours"],
+    city: "Cape Town",
+  },
+  {
+    id: "d3",
+    partnerId: "braaiking",
+    category: "Dining & Wine",
+    name: "Braai Masterclass",
+    desc: "Learn to braai like a pro — fire, meat & all the stories",
+    icon: "🔥",
+    price: 695,
+    accent: "#EF4444",
+    expiry: "12 months",
+    tags: ["uniquely SA", "fun"],
+    includes: [
+      "3hr class",
+      "All ingredients",
+      "Recipe booklet",
+      "Drinks incl.",
+    ],
+    city: "Johannesburg",
+  },
+  {
+    id: "d4",
+    partnerId: "chefstable",
+    category: "Dining & Wine",
+    name: "High Tea for Two",
+    desc: "Finger sandwiches, scones, pastries & premium teas",
+    icon: "🫖",
+    price: 560,
+    accent: "#F472B6",
+    expiry: "6 months",
+    tags: ["popular"],
+    includes: [
+      "2-tier stand",
+      "Unlimited tea",
+      "Savoury & sweet",
+      "Prosecco option",
+    ],
+    city: "Cape Town",
+  },
   // STAYS
-  { id:"s1", partnerId:"getaway",   category:"Stays",           name:"Magaliesberg Couples Retreat",desc:"2-night private chalet with breakfast & sundowner cruise",    icon:"🏡", price:3600, accent:"#60A5FA", expiry:"18 months", tags:["romantic","popular"], includes:["2 nights chalet","Daily breakfast","Sundowner cruise","Pool & spa"],  city:"Magaliesberg" },
-  { id:"s2", partnerId:"getaway",   category:"Stays",           name:"Bush Lodge Weekend",          desc:"Friday–Sunday bush break, all meals included",                icon:"🌿", price:5200, accent:"#4ADE80", expiry:"18 months", tags:["premium"],    includes:["2 nights lodge","All meals","Game drive","Bush walk","Wi-Fi"],              city:"Magaliesberg" },
+  {
+    id: "s1",
+    partnerId: "getaway",
+    category: "Stays",
+    name: "Magaliesberg Couples Retreat",
+    desc: "2-night private chalet with breakfast & sundowner cruise",
+    icon: "🏡",
+    price: 3600,
+    accent: "#60A5FA",
+    expiry: "18 months",
+    tags: ["romantic", "popular"],
+    includes: [
+      "2 nights chalet",
+      "Daily breakfast",
+      "Sundowner cruise",
+      "Pool & spa",
+    ],
+    city: "Magaliesberg",
+  },
+  {
+    id: "s2",
+    partnerId: "getaway",
+    category: "Stays",
+    name: "Bush Lodge Weekend",
+    desc: "Friday–Sunday bush break, all meals included",
+    icon: "🌿",
+    price: 5200,
+    accent: "#4ADE80",
+    expiry: "18 months",
+    tags: ["premium"],
+    includes: [
+      "2 nights lodge",
+      "All meals",
+      "Game drive",
+      "Bush walk",
+      "Wi-Fi",
+    ],
+    city: "Magaliesberg",
+  },
   // SKILLS
-  { id:"sk1",partnerId:"skillup",   category:"Skills & Courses",name:"Digital Marketing Bootcamp",  desc:"3-day live online course: SEO, social media & paid ads",      icon:"📱", price:1200, accent:"#38BDF8", expiry:"24 months", tags:["career"],     includes:["3 days live training","Course materials","Certificate","6-month replay"],  city:"Online" },
-  { id:"sk2",partnerId:"skillup",   category:"Skills & Courses",name:"Photography Workshop",        desc:"Full-day hands-on photography masterclass",                   icon:"📷", price:890,  accent:"#A3E635", expiry:"12 months", tags:["creative"],   includes:["Full-day workshop","Camera provided","Edited portfolio","Printed book"],   city:"Online" },
+  {
+    id: "sk1",
+    partnerId: "skillup",
+    category: "Skills & Courses",
+    name: "Digital Marketing Bootcamp",
+    desc: "3-day live online course: SEO, social media & paid ads",
+    icon: "📱",
+    price: 1200,
+    accent: "#38BDF8",
+    expiry: "24 months",
+    tags: ["career"],
+    includes: [
+      "3 days live training",
+      "Course materials",
+      "Certificate",
+      "6-month replay",
+    ],
+    city: "Online",
+  },
+  {
+    id: "sk2",
+    partnerId: "skillup",
+    category: "Skills & Courses",
+    name: "Photography Workshop",
+    desc: "Full-day hands-on photography masterclass",
+    icon: "📷",
+    price: 890,
+    accent: "#A3E635",
+    expiry: "12 months",
+    tags: ["creative"],
+    includes: [
+      "Full-day workshop",
+      "Camera provided",
+      "Edited portfolio",
+      "Printed book",
+    ],
+    city: "Online",
+  },
 ];
 
-const CATEGORIES = ["All", ...new Set(CATALOGUE.map(p => p.category))];
+const CATEGORIES = ["All", ...new Set(CATALOGUE.map((p) => p.category))];
 
 // ─────────────────────────────────────────────────────────────
 // STYLES
@@ -274,36 +631,49 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 // MAIN APP
 // ─────────────────────────────────────────────────────────────
 export default function App() {
-  const [page, setPage]               = useState("store");
-  const [category, setCategory]       = useState("All");
-  const [selected, setSelected]       = useState(null);
-  const [buyerName, setBuyerName]     = useState("");
-  const [buyerEmail, setBuyerEmail]   = useState("");
-  const [recpName, setRecpName]       = useState("");
-  const [recpPhone, setRecpPhone]     = useState("");
-  const [note, setNote]               = useState("");
-  const [paying, setPaying]           = useState(false);
-  const [success, setSuccess]         = useState(null);
-  const [vouchers, setVouchers]       = useState([]);
-  const [loadingV, setLoadingV]       = useState(false);
-  const [redeemCode, setRedeemCode]   = useState("");
+  const [page, setPage] = useState("store");
+  const [category, setCategory] = useState("All");
+  const [selected, setSelected] = useState(null);
+  const [buyerName, setBuyerName] = useState("");
+  const [buyerEmail, setBuyerEmail] = useState("");
+  const [recpName, setRecpName] = useState("");
+  const [recpPhone, setRecpPhone] = useState("");
+  const [note, setNote] = useState("");
+  const [paying, setPaying] = useState(false);
+  const [success, setSuccess] = useState(null);
+  const [vouchers, setVouchers] = useState([]);
+  const [loadingV, setLoadingV] = useState(false);
+  const [redeemCode, setRedeemCode] = useState("");
   const [redeemResult, setRedeemResult] = useState(null);
 
-  const partner    = selected ? PARTNERS.find(p => p.id === selected.partnerId) : null;
-  const myEarnings = selected ? +(selected.price * (partner?.commission || 20) / 100).toFixed(2) : 0;
-  const payout     = selected ? +(selected.price - myEarnings).toFixed(2) : 0;
+  const partner = selected
+    ? PARTNERS.find((p) => p.id === selected.partnerId)
+    : null;
+  const myEarnings = selected
+    ? +((selected.price * (partner?.commission || 20)) / 100).toFixed(2)
+    : 0;
+  const _payout = selected ? +(selected.price - myEarnings).toFixed(2) : 0; // eslint-disable-line no-unused-vars
 
-  const filtered = category === "All" ? CATALOGUE : CATALOGUE.filter(p => p.category === category);
+  const filtered =
+    category === "All"
+      ? CATALOGUE
+      : CATALOGUE.filter((p) => p.category === category);
 
   const loadVouchers = async () => {
     setLoadingV(true);
     try {
-      const snap = await getDocs(query(collection(db, "vouchers"), orderBy("createdAt", "desc")));
-      setVouchers(snap.docs.map(d => ({ id: d.id, ...d.data() })));
-    } catch (e) { console.error(e); }
+      const snap = await getDocs(
+        query(collection(db, "vouchers"), orderBy("createdAt", "desc")),
+      );
+      setVouchers(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
+    } catch (e) {
+      console.error(e);
+    }
     setLoadingV(false);
   };
-  useEffect(() => { if (page === "admin") loadVouchers(); }, [page]);
+  useEffect(() => {
+    if (page === "admin") loadVouchers();
+  }, [page]);
 
   const handlePurchase = async () => {
     if (!selected || !buyerName || !buyerEmail || !recpPhone) return;
@@ -311,203 +681,444 @@ export default function App() {
     try {
       const code = genCode();
       const commission = partner?.commission || 20;
-      const earnings = +(selected.price * commission / 100).toFixed(2);
+      const earnings = +((selected.price * commission) / 100).toFixed(2);
 
       const docRef = await addDoc(collection(db, "vouchers"), {
-        code, productId: selected.id, productName: selected.name,
-        category: selected.category, partnerId: selected.partnerId,
-        partnerName: partner?.name || "", amount: selected.price,
-        commissionPct: commission, myEarnings: earnings,
+        code,
+        productId: selected.id,
+        productName: selected.name,
+        category: selected.category,
+        partnerId: selected.partnerId,
+        partnerName: partner?.name || "",
+        amount: selected.price,
+        commissionPct: commission,
+        myEarnings: earnings,
         partnerPayout: +(selected.price - earnings).toFixed(2),
-        buyerName, buyerEmail,
-        recipientName: recpName || buyerName, recipientPhone: recpPhone,
-        note, status: "active", createdAt: serverTimestamp(),
-        usedAt: null, payRef: null,
+        buyerName,
+        buyerEmail,
+        recipientName: recpName || buyerName,
+        recipientPhone: recpPhone,
+        note,
+        status: "active",
+        createdAt: serverTimestamp(),
+        usedAt: null,
+        payRef: null,
       });
 
       await fetch(`${WORKER_URL}/create-voucher`, {
-        method: "POST", headers: { "Content-Type": "application/json" },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          voucherId: docRef.id, code, amount: selected.price,
-          productName: selected.name, partnerName: partner?.name,
-          buyerName, buyerEmail, recipientName: recpName || buyerName,
-          recipientPhone: recpPhone, note,
+          voucherId: docRef.id,
+          code,
+          amount: selected.price,
+          productName: selected.name,
+          partnerName: partner?.name,
+          buyerName,
+          buyerEmail,
+          recipientName: recpName || buyerName,
+          recipientPhone: recpPhone,
+          note,
         }),
       }).catch(() => {});
 
-      const qr = QR(JSON.stringify({ code, product: selected.name, amount: selected.price }));
-      setSuccess({ code, amount: selected.price, qr, phone: recpPhone, product: selected.name, earnings });
-    } catch (e) { alert("Error: " + e.message); }
-    finally { setPaying(false); }
+      const qr = QR(
+        JSON.stringify({
+          code,
+          product: selected.name,
+          amount: selected.price,
+        }),
+      );
+      setSuccess({
+        code,
+        amount: selected.price,
+        qr,
+        phone: recpPhone,
+        product: selected.name,
+        earnings,
+      });
+    } catch (e) {
+      alert("Error: " + e.message);
+    } finally {
+      setPaying(false);
+    }
   };
 
   const handleRedeem = async () => {
     setRedeemResult(null);
     const code = redeemCode.trim().toUpperCase();
     try {
-      const snap = await getDocs(query(collection(db, "vouchers"), where("code", "==", code)));
-      if (snap.empty) { setRedeemResult({ ok: false, msg: "Voucher not found." }); return; }
-      const vDoc = snap.docs[0]; const v = vDoc.data();
-      if (v.status === "used") { setRedeemResult({ ok: false, msg: "Already redeemed." }); return; }
-      await updateDoc(doc(db, "vouchers", vDoc.id), { status: "used", usedAt: serverTimestamp() });
+      const snap = await getDocs(
+        query(collection(db, "vouchers"), where("code", "==", code)),
+      );
+      if (snap.empty) {
+        setRedeemResult({ ok: false, msg: "Voucher not found." });
+        return;
+      }
+      const vDoc = snap.docs[0];
+      const v = vDoc.data();
+      if (v.status === "used") {
+        setRedeemResult({ ok: false, msg: "Already redeemed." });
+        return;
+      }
+      await updateDoc(doc(db, "vouchers", vDoc.id), {
+        status: "used",
+        usedAt: serverTimestamp(),
+      });
       setRedeemResult({ ok: true, v });
-    } catch (e) { setRedeemResult({ ok: false, msg: e.message }); }
+    } catch (e) {
+      setRedeemResult({ ok: false, msg: e.message });
+    }
   };
 
-  const reset = () => { setSelected(null); setBuyerName(""); setBuyerEmail(""); setRecpName(""); setRecpPhone(""); setNote(""); setSuccess(null); };
+  const reset = () => {
+    setSelected(null);
+    setBuyerName("");
+    setBuyerEmail("");
+    setRecpName("");
+    setRecpPhone("");
+    setNote("");
+    setSuccess(null);
+  };
 
-  const totalRevenue  = vouchers.reduce((s,v) => s+(v.amount||0), 0);
-  const totalEarnings = vouchers.reduce((s,v) => s+(v.myEarnings||0), 0);
-  const totalPayout   = vouchers.reduce((s,v) => s+(v.partnerPayout||0), 0);
+  const totalRevenue = vouchers.reduce((s, v) => s + (v.amount || 0), 0);
+  const totalEarnings = vouchers.reduce((s, v) => s + (v.myEarnings || 0), 0);
+  const totalPayout = vouchers.reduce((s, v) => s + (v.partnerPayout || 0), 0);
 
-  const partnerStats = PARTNERS.map(p => {
-    const pvs = vouchers.filter(v => v.partnerId === p.id);
-    return { ...p, sales: pvs.length, revenue: pvs.reduce((s,v)=>s+(v.amount||0),0), earned: pvs.reduce((s,v)=>s+(v.myEarnings||0),0) };
-  }).filter(p => p.sales > 0);
+  const partnerStats = PARTNERS.map((p) => {
+    const pvs = vouchers.filter((v) => v.partnerId === p.id);
+    return {
+      ...p,
+      sales: pvs.length,
+      revenue: pvs.reduce((s, v) => s + (v.amount || 0), 0),
+      earned: pvs.reduce((s, v) => s + (v.myEarnings || 0), 0),
+    };
+  }).filter((p) => p.sales > 0);
 
-  const tagCls = t => ({ bestseller:"tag-bestseller",popular:"tag-popular",premium:"tag-premium",adrenaline:"tag-adrenaline",romantic:"tag-romantic","uniquely SA":"tag-sa",fun:"tag-fun",career:"tag-career",creative:"tag-creative" })[t]||"";
+  const tagCls = (t) =>
+    ({
+      bestseller: "tag-bestseller",
+      popular: "tag-popular",
+      premium: "tag-premium",
+      adrenaline: "tag-adrenaline",
+      romantic: "tag-romantic",
+      "uniquely SA": "tag-sa",
+      fun: "tag-fun",
+      career: "tag-career",
+      creative: "tag-creative",
+    })[t] || "";
 
   return (
     <>
       <style>{CSS}</style>
       <div className="app">
-
         {/* NAV */}
         <nav className="nav">
           <div className="brand">
-            <span className="brand-name">Voucher<em>Hub</em></span>
+            <span className="brand-name">
+              Voucher<em>Hub</em>
+            </span>
             <span className="brand-tag">ZA</span>
           </div>
           <div className="nav-tabs">
-            {[["store","🛍 Store"],["partners","🤝 Partners"],["redeem","✅ Redeem"],["admin","📊 Admin"]].map(([id,lbl])=>(
-              <button key={id} className={`tab ${page===id?"on":""}`} onClick={()=>{ setPage(id); reset(); }}>{lbl}</button>
+            {[
+              ["store", "🛍 Store"],
+              ["partners", "🤝 Partners"],
+              ["redeem", "✅ Redeem"],
+              ["admin", "📊 Admin"],
+            ].map(([id, lbl]) => (
+              <button
+                key={id}
+                className={`tab ${page === id ? "on" : ""}`}
+                onClick={() => {
+                  setPage(id);
+                  reset();
+                }}
+              >
+                {lbl}
+              </button>
             ))}
           </div>
         </nav>
 
         {/* ═══ STORE — listing ═══ */}
-        {page==="store" && !selected && (<>
-          <div className="hero">
-            <span className="hero-kicker">🇿🇦 South Africa's Gift Experience Store</span>
-            <h1>Give the gift of an<br/><span>unforgettable experience.</span></h1>
-            <p>Spa days, safaris, wine tastings, braai classes & more — from the best SA businesses. Buy a voucher in minutes, sent instantly to any WhatsApp number.</p>
-            <div className="hero-stats">
-              <div><div className="hstat-val">{CATALOGUE.length}</div><div className="hstat-lbl">Experiences available</div></div>
-              <div><div className="hstat-val">{PARTNERS.length}</div><div className="hstat-lbl">Trusted SA partners</div></div>
-              <div><div className="hstat-val">Instant</div><div className="hstat-lbl">WhatsApp delivery</div></div>
-              <div><div className="hstat-val">R0</div><div className="hstat-lbl">Delivery fee</div></div>
-            </div>
-          </div>
-
-          <div className="cat-row">
-            <span className="cat-label">Browse:</span>
-            {CATEGORIES.map(c=>(
-              <button key={c} className={`cat-btn ${category===c?"on":""}`} onClick={()=>setCategory(c)}>{c}</button>
-            ))}
-          </div>
-
-          <div className="grid">
-            {filtered.map(p=>{
-              const pr = PARTNERS.find(x=>x.id===p.partnerId);
-              return (
-                <div key={p.id} className="pcard" style={{"--ca":p.accent}} onClick={()=>setSelected(p)}>
-                  <div className="pcard-top">
-                    <span className="pcard-icon">{p.icon}</span>
-                    <div className="pcard-badges">
-                      {p.tags.map(t=><span key={t} className={`tag ${tagCls(t)}`}>{t==="uniquely SA"?"🇿🇦 SA":t}</span>)}
-                    </div>
-                  </div>
-                  <div className="pcard-name">{p.name}</div>
-                  <div className="pcard-partner">📍 {pr?.name} · {p.city}</div>
-                  <div className="pcard-desc">{p.desc}</div>
-                  <div className="pcard-footer">
-                    <div className="pcard-price" style={{color:p.accent}}><small>R</small>{p.price.toLocaleString()}</div>
-                    <div className="pcard-right">
-                      <div style={{color:"var(--sub)",fontSize:".72rem"}}>Valid {p.expiry}</div>
-                      <div style={{color:"var(--muted)",fontSize:".68rem",marginTop:2}}>📱 WhatsApp delivery</div>
-                    </div>
-                  </div>
+        {page === "store" && !selected && (
+          <>
+            <div className="hero">
+              <span className="hero-kicker">
+                🇿🇦 South Africa's Gift Experience Store
+              </span>
+              <h1>
+                Give the gift of an
+                <br />
+                <span>unforgettable experience.</span>
+              </h1>
+              <p>
+                Spa days, safaris, wine tastings, braai classes & more — from
+                the best SA businesses. Buy a voucher in minutes, sent instantly
+                to any WhatsApp number.
+              </p>
+              <div className="hero-stats">
+                <div>
+                  <div className="hstat-val">{CATALOGUE.length}</div>
+                  <div className="hstat-lbl">Experiences available</div>
                 </div>
-              );
-            })}
-          </div>
-        </>)}
+                <div>
+                  <div className="hstat-val">{PARTNERS.length}</div>
+                  <div className="hstat-lbl">Trusted SA partners</div>
+                </div>
+                <div>
+                  <div className="hstat-val">Instant</div>
+                  <div className="hstat-lbl">WhatsApp delivery</div>
+                </div>
+                <div>
+                  <div className="hstat-val">R0</div>
+                  <div className="hstat-lbl">Delivery fee</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="cat-row">
+              <span className="cat-label">Browse:</span>
+              {CATEGORIES.map((c) => (
+                <button
+                  key={c}
+                  className={`cat-btn ${category === c ? "on" : ""}`}
+                  onClick={() => setCategory(c)}
+                >
+                  {c}
+                </button>
+              ))}
+            </div>
+
+            <div className="grid">
+              {filtered.map((p) => {
+                const pr = PARTNERS.find((x) => x.id === p.partnerId);
+                return (
+                  <div
+                    key={p.id}
+                    className="pcard"
+                    style={{ "--ca": p.accent }}
+                    onClick={() => setSelected(p)}
+                  >
+                    <div className="pcard-top">
+                      <span className="pcard-icon">{p.icon}</span>
+                      <div className="pcard-badges">
+                        {p.tags.map((t) => (
+                          <span key={t} className={`tag ${tagCls(t)}`}>
+                            {t === "uniquely SA" ? "🇿🇦 SA" : t}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="pcard-name">{p.name}</div>
+                    <div className="pcard-partner">
+                      📍 {pr?.name} · {p.city}
+                    </div>
+                    <div className="pcard-desc">{p.desc}</div>
+                    <div className="pcard-footer">
+                      <div className="pcard-price" style={{ color: p.accent }}>
+                        <small>R</small>
+                        {p.price.toLocaleString()}
+                      </div>
+                      <div className="pcard-right">
+                        <div
+                          style={{ color: "var(--sub)", fontSize: ".72rem" }}
+                        >
+                          Valid {p.expiry}
+                        </div>
+                        <div
+                          style={{
+                            color: "var(--muted)",
+                            fontSize: ".68rem",
+                            marginTop: 2,
+                          }}
+                        >
+                          📱 WhatsApp delivery
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        )}
 
         {/* ═══ STORE — checkout ═══ */}
-        {page==="store" && selected && (
+        {page === "store" && selected && (
           <div className="checkout-wrap">
-            <button className="back-btn" onClick={()=>setSelected(null)}>← Back to vouchers</button>
+            <button className="back-btn" onClick={() => setSelected(null)}>
+              ← Back to vouchers
+            </button>
             <div className="checkout">
               <div className="co-header">
                 <div className="co-icon">{selected.icon}</div>
                 <div className="co-meta">
                   <h2>{selected.name}</h2>
                   <p>{selected.desc}</p>
-                  <div className="co-partner">by {partner?.name} · {selected.city}</div>
+                  <div className="co-partner">
+                    by {partner?.name} · {selected.city}
+                  </div>
                 </div>
               </div>
 
               {selected.includes && (
                 <div className="includes-box">
                   <div className="inc-title">What's included</div>
-                  <div className="inc-items">{selected.includes.map(i=><span key={i} className="inc-tag">✓ {i}</span>)}</div>
+                  <div className="inc-items">
+                    {selected.includes.map((i) => (
+                      <span key={i} className="inc-tag">
+                        ✓ {i}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               )}
 
-              <div className="comm-note">📱 Voucher delivered instantly to WhatsApp · Valid for {selected.expiry}</div>
+              <div className="comm-note">
+                📱 Voucher delivered instantly to WhatsApp · Valid for{" "}
+                {selected.expiry}
+              </div>
 
               <span className="section-sep">Who is this gift for?</span>
               <div className="field-2">
-                <div className="field"><label>Recipient Name</label><input placeholder="Their name (optional)" value={recpName} onChange={e=>setRecpName(e.target.value)}/></div>
-                <div className="field"><label>Their WhatsApp Number *</label><input placeholder="+27821234567" value={recpPhone} onChange={e=>setRecpPhone(e.target.value)}/></div>
+                <div className="field">
+                  <label>Recipient Name</label>
+                  <input
+                    placeholder="Their name (optional)"
+                    value={recpName}
+                    onChange={(e) => setRecpName(e.target.value)}
+                  />
+                </div>
+                <div className="field">
+                  <label>Their WhatsApp Number *</label>
+                  <input
+                    placeholder="+27821234567"
+                    value={recpPhone}
+                    onChange={(e) => setRecpPhone(e.target.value)}
+                  />
+                </div>
               </div>
 
               <span className="section-sep">Your Details</span>
               <div className="field-2">
-                <div className="field"><label>Your Name *</label><input placeholder="Jane Smith" value={buyerName} onChange={e=>setBuyerName(e.target.value)}/></div>
-                <div className="field"><label>Email *</label><input type="email" placeholder="jane@email.com" value={buyerEmail} onChange={e=>setBuyerEmail(e.target.value)}/></div>
+                <div className="field">
+                  <label>Your Name *</label>
+                  <input
+                    placeholder="Jane Smith"
+                    value={buyerName}
+                    onChange={(e) => setBuyerName(e.target.value)}
+                  />
+                </div>
+                <div className="field">
+                  <label>Email *</label>
+                  <input
+                    type="email"
+                    placeholder="jane@email.com"
+                    value={buyerEmail}
+                    onChange={(e) => setBuyerEmail(e.target.value)}
+                  />
+                </div>
               </div>
-              <div className="field"><label>Personal Message (optional)</label><input placeholder="Happy Birthday! Enjoy your special day 🎂" value={note} onChange={e=>setNote(e.target.value)}/></div>
+              <div className="field">
+                <label>Personal Message (optional)</label>
+                <input
+                  placeholder="Happy Birthday! Enjoy your special day 🎂"
+                  value={note}
+                  onChange={(e) => setNote(e.target.value)}
+                />
+              </div>
 
               <div className="receipt">
-                <div className="rr"><span className="l">Experience</span><span className="v">{selected.name}</span></div>
-                <div className="rr"><span className="l">Provided by</span><span className="v">{partner?.name}</span></div>
-                <div className="rr"><span className="l">Delivery</span><span className="v" style={{color:"#25D366"}}>📱 WhatsApp (instant)</span></div>
-                <div className="rr"><span className="l">Valid for</span><span className="v">{selected.expiry}</span></div>
-                <div className="rr total"><span className="l">Total</span><span className="v">{fmt(selected.price)}</span></div>
+                <div className="rr">
+                  <span className="l">Experience</span>
+                  <span className="v">{selected.name}</span>
+                </div>
+                <div className="rr">
+                  <span className="l">Provided by</span>
+                  <span className="v">{partner?.name}</span>
+                </div>
+                <div className="rr">
+                  <span className="l">Delivery</span>
+                  <span className="v" style={{ color: "#25D366" }}>
+                    📱 WhatsApp (instant)
+                  </span>
+                </div>
+                <div className="rr">
+                  <span className="l">Valid for</span>
+                  <span className="v">{selected.expiry}</span>
+                </div>
+                <div className="rr total">
+                  <span className="l">Total</span>
+                  <span className="v">{fmt(selected.price)}</span>
+                </div>
               </div>
 
-              <div className="info">🔒 <strong>Secure checkout</strong> — your payment is processed safely via PayFast. The voucher code and QR will be sent to the recipient's WhatsApp immediately after payment.</div>
+              <div className="info">
+                🔒 <strong>Secure checkout</strong> — your payment is processed
+                safely via PayFast. The voucher code and QR will be sent to the
+                recipient's WhatsApp immediately after payment.
+              </div>
 
-              <button className="pay-btn" onClick={handlePurchase} disabled={paying||!buyerName||!buyerEmail||!recpPhone}>
-                {paying?<><span className="spin"/>Processing…</>:<>💳 Pay {fmt(selected.price)}</>}
+              <button
+                className="pay-btn"
+                onClick={handlePurchase}
+                disabled={paying || !buyerName || !buyerEmail || !recpPhone}
+              >
+                {paying ? (
+                  <>
+                    <span className="spin" />
+                    Processing…
+                  </>
+                ) : (
+                  <>💳 Pay {fmt(selected.price)}</>
+                )}
               </button>
             </div>
           </div>
         )}
 
         {/* ═══ PARTNERS ═══ */}
-        {page==="partners" && (
+        {page === "partners" && (
           <div>
             <h2 className="page-title">Partner Directory</h2>
-            <p className="page-sub">{PARTNERS.length} SA businesses powering your marketplace. Reach out, sign them up, and add their vouchers to grow revenue.</p>
+            <p className="page-sub">
+              {PARTNERS.length} SA businesses powering your marketplace. Reach
+              out, sign them up, and add their vouchers to grow revenue.
+            </p>
             <div className="partner-grid">
-              {PARTNERS.map(p=>{
-                const products = CATALOGUE.filter(c=>c.partnerId===p.id);
-                const prices   = products.map(c=>c.price);
+              {PARTNERS.map((p) => {
+                const products = CATALOGUE.filter((c) => c.partnerId === p.id);
+                const prices = products.map((c) => c.price);
                 return (
                   <div key={p.id} className="pc">
                     <div className="pc-top">
                       <div className="pc-logo">{p.logo}</div>
                       <div>
                         <div className="pc-name">{p.name}</div>
-                        <div className="pc-meta">{p.category} · 📍 {p.city}</div>
+                        <div className="pc-meta">
+                          {p.category} · 📍 {p.city}
+                        </div>
                       </div>
                     </div>
                     <div className="pc-grid">
-                      <div><div className="pc-sv">{products.length}</div><div className="pc-sl">Products</div></div>
-                      <div><div className="pc-sv"><span className="comm-pill">{p.commission}%</span></div><div className="pc-sl">Your cut</div></div>
-                      <div><div className="pc-sv" style={{fontSize:".82rem"}}>R{Math.min(...prices)}+</div><div className="pc-sl">From</div></div>
+                      <div>
+                        <div className="pc-sv">{products.length}</div>
+                        <div className="pc-sl">Products</div>
+                      </div>
+                      <div>
+                        <div className="pc-sv">
+                          <span className="comm-pill">{p.commission}%</span>
+                        </div>
+                        <div className="pc-sl">Your cut</div>
+                      </div>
+                      <div>
+                        <div className="pc-sv" style={{ fontSize: ".82rem" }}>
+                          R{Math.min(...prices)}+
+                        </div>
+                        <div className="pc-sl">From</div>
+                      </div>
                     </div>
                   </div>
                 );
@@ -517,48 +1128,97 @@ export default function App() {
         )}
 
         {/* ═══ REDEEM ═══ */}
-        {page==="redeem" && (
+        {page === "redeem" && (
           <div className="redeem-wrap">
             <h2 className="page-title">Redeem Voucher</h2>
-            <p className="page-sub">Enter the voucher code from WhatsApp or scan the QR at point of sale to validate and mark as used.</p>
-            <div className="field"><label>Voucher Code</label>
-              <input placeholder="VCH-XXXXXXXX" value={redeemCode} onChange={e=>setRedeemCode(e.target.value.toUpperCase())} style={{fontWeight:800,letterSpacing:"2px",fontSize:"1rem"}}/>
+            <p className="page-sub">
+              Enter the voucher code from WhatsApp or scan the QR at point of
+              sale to validate and mark as used.
+            </p>
+            <div className="field">
+              <label>Voucher Code</label>
+              <input
+                placeholder="VCH-XXXXXXXX"
+                value={redeemCode}
+                onChange={(e) => setRedeemCode(e.target.value.toUpperCase())}
+                style={{
+                  fontWeight: 800,
+                  letterSpacing: "2px",
+                  fontSize: "1rem",
+                }}
+              />
             </div>
-            <button className="pay-btn" onClick={handleRedeem} disabled={!redeemCode}>✅ Validate &amp; Mark Used</button>
+            <button
+              className="pay-btn"
+              onClick={handleRedeem}
+              disabled={!redeemCode}
+            >
+              ✅ Validate &amp; Mark Used
+            </button>
             {redeemResult && (
-              <div className={`rresult ${redeemResult.ok?"ok":"err"}`}>
-                <span className="ri">{redeemResult.ok?"✅":"❌"}</span>
-                <div className="rt">{redeemResult.ok?"Valid Voucher!":"Not Valid"}</div>
-                {redeemResult.ok
-                  ? <div className="rd">
-                      <strong>{redeemResult.v.productName}</strong><br/>
-                      Partner: <strong>{redeemResult.v.partnerName}</strong><br/>
-                      Recipient: <strong>{redeemResult.v.recipientName}</strong><br/>
-                      Value: <strong style={{color:"var(--green)"}}>{fmt(redeemResult.v.amount)}</strong><br/>
-                      <span style={{color:"var(--green)",fontWeight:700,marginTop:8,display:"block"}}>Marked as redeemed ✔</span>
-                    </div>
-                  : <p style={{color:"var(--sub)"}}>{redeemResult.msg}</p>
-                }
+              <div className={`rresult ${redeemResult.ok ? "ok" : "err"}`}>
+                <span className="ri">{redeemResult.ok ? "✅" : "❌"}</span>
+                <div className="rt">
+                  {redeemResult.ok ? "Valid Voucher!" : "Not Valid"}
+                </div>
+                {redeemResult.ok ? (
+                  <div className="rd">
+                    <strong>{redeemResult.v.productName}</strong>
+                    <br />
+                    Partner: <strong>{redeemResult.v.partnerName}</strong>
+                    <br />
+                    Recipient: <strong>{redeemResult.v.recipientName}</strong>
+                    <br />
+                    Value:{" "}
+                    <strong style={{ color: "var(--green)" }}>
+                      {fmt(redeemResult.v.amount)}
+                    </strong>
+                    <br />
+                    <span
+                      style={{
+                        color: "var(--green)",
+                        fontWeight: 700,
+                        marginTop: 8,
+                        display: "block",
+                      }}
+                    >
+                      Marked as redeemed ✔
+                    </span>
+                  </div>
+                ) : (
+                  <p style={{ color: "var(--sub)" }}>{redeemResult.msg}</p>
+                )}
               </div>
             )}
           </div>
         )}
 
         {/* ═══ ADMIN ═══ */}
-        {page==="admin" && (
+        {page === "admin" && (
           <div>
             <h2 className="page-title">Admin Dashboard</h2>
-            <p className="page-sub">Your marketplace earnings, partner commissions & all voucher activity.</p>
+            <p className="page-sub">
+              Your marketplace earnings, partner commissions & all voucher
+              activity.
+            </p>
 
             <div className="stats-grid">
               {[
-                {icon:"🎟️",val:vouchers.length,lbl:"Vouchers Sold"},
-                {icon:"✅",val:vouchers.filter(v=>v.status==="active").length,lbl:"Active"},
-                {icon:"🔖",val:vouchers.filter(v=>v.status==="used").length,lbl:"Redeemed"},
-                {icon:"💵",val:fmt(totalRevenue),lbl:"Total Revenue"},
-                {icon:"💰",val:fmt(totalEarnings),lbl:"Your Earnings"},
-                {icon:"📤",val:fmt(totalPayout),lbl:"Partner Payouts"},
-              ].map(s=>(
+                { icon: "🎟️", val: vouchers.length, lbl: "Vouchers Sold" },
+                {
+                  icon: "✅",
+                  val: vouchers.filter((v) => v.status === "active").length,
+                  lbl: "Active",
+                },
+                {
+                  icon: "🔖",
+                  val: vouchers.filter((v) => v.status === "used").length,
+                  lbl: "Redeemed",
+                },
+                { icon: "💵", val: fmt(totalRevenue), lbl: "Total Revenue" },
+                { icon: "💰", val: fmt(totalEarnings), lbl: "Your Earnings" },
+                { icon: "📤", val: fmt(totalPayout), lbl: "Partner Payouts" },
+              ].map((s) => (
                 <div className="stat" key={s.lbl}>
                   <div className="stat-icon">{s.icon}</div>
                   <div className="stat-val">{s.val}</div>
@@ -571,15 +1231,33 @@ export default function App() {
               <div className="panel">
                 <h3>💼 Commission Breakdown by Partner</h3>
                 <table className="ct">
-                  <thead><tr><th>Partner</th><th>Sales</th><th>Revenue</th><th>Your Earnings</th><th>Payout Owed</th></tr></thead>
+                  <thead>
+                    <tr>
+                      <th>Partner</th>
+                      <th>Sales</th>
+                      <th>Revenue</th>
+                      <th>Your Earnings</th>
+                      <th>Payout Owed</th>
+                    </tr>
+                  </thead>
                   <tbody>
-                    {partnerStats.map(p=>(
+                    {partnerStats.map((p) => (
                       <tr key={p.id}>
-                        <td><strong>{p.name}</strong> <span style={{color:"var(--muted)",fontSize:".72rem"}}>· {p.commission}%</span></td>
+                        <td>
+                          <strong>{p.name}</strong>{" "}
+                          <span
+                            style={{
+                              color: "var(--muted)",
+                              fontSize: ".72rem",
+                            }}
+                          >
+                            · {p.commission}%
+                          </span>
+                        </td>
                         <td>{p.sales}</td>
                         <td>{fmt(p.revenue)}</td>
                         <td className="earn">{fmt(p.earned)}</td>
-                        <td className="payout">{fmt(p.revenue-p.earned)}</td>
+                        <td className="payout">{fmt(p.revenue - p.earned)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -588,52 +1266,143 @@ export default function App() {
             )}
 
             <div className="toolbar">
-              <h3 style={{fontWeight:800}}>All Vouchers</h3>
-              <button className="back-btn" style={{margin:0}} onClick={loadVouchers}>↻ Refresh</button>
+              <h3 style={{ fontWeight: 800 }}>All Vouchers</h3>
+              <button
+                className="back-btn"
+                style={{ margin: 0 }}
+                onClick={loadVouchers}
+              >
+                ↻ Refresh
+              </button>
             </div>
             <div className="vtw">
-              {loadingV
-                ? <div style={{textAlign:"center",padding:"44px",color:"var(--muted)"}}>Loading…</div>
-                : <table className="vt">
-                    <thead><tr><th>Code</th><th>Product</th><th>Partner</th><th>Amount</th><th>Your Cut</th><th>Recipient</th><th>Status</th><th>Date</th></tr></thead>
-                    <tbody>
-                      {vouchers.length===0
-                        ? <tr><td className="empty" colSpan="8">No vouchers yet — make a sale from the store!</td></tr>
-                        : vouchers.map(v=>(
-                          <tr key={v.id}>
-                            <td className="code-c">{v.code}</td>
-                            <td style={{maxWidth:140,fontSize:".78rem"}}>{v.productName}</td>
-                            <td style={{color:"var(--sub)",fontSize:".75rem"}}>{v.partnerName}</td>
-                            <td><strong style={{color:"var(--green)"}}>{fmt(v.amount)}</strong></td>
-                            <td><strong style={{color:"var(--amber)"}}>{fmt(v.myEarnings||0)}</strong></td>
-                            <td style={{fontSize:".75rem"}}>{v.recipientName}<br/><span style={{color:"var(--muted)"}}>{v.recipientPhone}</span></td>
-                            <td><span className={`badge ${v.status==="active"?"b-active":v.status==="used"?"b-used":"b-pending"}`}>{v.status}</span></td>
-                            <td style={{color:"var(--muted)",fontSize:".73rem"}}>{v.createdAt?.toDate?.()?.toLocaleDateString?.()||"—"}</td>
-                          </tr>
-                        ))
-                      }
-                    </tbody>
-                  </table>
-              }
+              {loadingV ? (
+                <div
+                  style={{
+                    textAlign: "center",
+                    padding: "44px",
+                    color: "var(--muted)",
+                  }}
+                >
+                  Loading…
+                </div>
+              ) : (
+                <table className="vt">
+                  <thead>
+                    <tr>
+                      <th>Code</th>
+                      <th>Product</th>
+                      <th>Partner</th>
+                      <th>Amount</th>
+                      <th>Your Cut</th>
+                      <th>Recipient</th>
+                      <th>Status</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {vouchers.length === 0 ? (
+                      <tr>
+                        <td className="empty" colSpan="8">
+                          No vouchers yet — make a sale from the store!
+                        </td>
+                      </tr>
+                    ) : (
+                      vouchers.map((v) => (
+                        <tr key={v.id}>
+                          <td className="code-c">{v.code}</td>
+                          <td style={{ maxWidth: 140, fontSize: ".78rem" }}>
+                            {v.productName}
+                          </td>
+                          <td
+                            style={{ color: "var(--sub)", fontSize: ".75rem" }}
+                          >
+                            {v.partnerName}
+                          </td>
+                          <td>
+                            <strong style={{ color: "var(--green)" }}>
+                              {fmt(v.amount)}
+                            </strong>
+                          </td>
+                          <td>
+                            <strong style={{ color: "var(--amber)" }}>
+                              {fmt(v.myEarnings || 0)}
+                            </strong>
+                          </td>
+                          <td style={{ fontSize: ".75rem" }}>
+                            {v.recipientName}
+                            <br />
+                            <span style={{ color: "var(--muted)" }}>
+                              {v.recipientPhone}
+                            </span>
+                          </td>
+                          <td>
+                            <span
+                              className={`badge ${v.status === "active" ? "b-active" : v.status === "used" ? "b-used" : "b-pending"}`}
+                            >
+                              {v.status}
+                            </span>
+                          </td>
+                          <td
+                            style={{
+                              color: "var(--muted)",
+                              fontSize: ".73rem",
+                            }}
+                          >
+                            {v.createdAt?.toDate?.()?.toLocaleDateString?.() ||
+                              "—"}
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              )}
             </div>
           </div>
         )}
-
       </div>
 
       {/* SUCCESS MODAL */}
       {success && (
-        <div className="overlay" onClick={()=>{setSuccess(null);reset();}}>
-          <div className="modal" onClick={e=>e.stopPropagation()}>
+        <div
+          className="overlay"
+          onClick={() => {
+            setSuccess(null);
+            reset();
+          }}
+        >
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
             <span className="modal-e">🎉</span>
             <h2>Gift Sent!</h2>
             <p>
-              Your <strong>{success.product}</strong> voucher worth <strong>{fmt(success.amount)}</strong> has been sent to <strong>{success.phone}</strong> via WhatsApp. They can use the code below to book their experience.
+              Your <strong>{success.product}</strong> voucher worth{" "}
+              <strong>{fmt(success.amount)}</strong> has been sent to{" "}
+              <strong>{success.phone}</strong> via WhatsApp. They can use the
+              code below to book their experience.
             </p>
-            <div className="vc-box"><code>{success.code}</code></div>
-            <div className="qr-wrap"><img src={success.qr} width="150" height="150" alt="QR" style={{display:"block",borderRadius:4}}/></div>
+            <div className="vc-box">
+              <code>{success.code}</code>
+            </div>
+            <div className="qr-wrap">
+              <img
+                src={success.qr}
+                width="150"
+                height="150"
+                alt="QR"
+                style={{ display: "block", borderRadius: 4 }}
+              />
+            </div>
             <div className="wa-chip">✅ Delivered to WhatsApp instantly</div>
-            <button className="modal-close" onClick={()=>{setSuccess(null);reset();}}>← Back to Store</button>
+            <button
+              className="modal-close"
+              onClick={() => {
+                setSuccess(null);
+                reset();
+              }}
+            >
+              ← Back to Store
+            </button>
           </div>
         </div>
       )}
