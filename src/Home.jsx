@@ -1,6 +1,7 @@
+/* eslint-disable no-unused-vars */
 
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, } from "react";
 import { initializeApp } from "firebase/app";
 import {
   getFirestore,
@@ -430,6 +431,7 @@ function AnnounceBanner() {
   const [banner, setBanner] = useState({ icon: "⏳", text: "Loading holiday promotions…", urgency: "", bg: "#1a2e1f" });
 
   useEffect(() => {
+    // eslint-disable-next-line no-unused-vars
     const SADC = ["ZA","ZW","BW","ZM","MZ","NA","LS","SZ","MW","TZ","MG","MU","SC","AO","CD","KM"];
     const FLAGS = { ZA:"🇿🇦",ZW:"🇿🇼",BW:"🇧🇼",ZM:"🇿🇲",MZ:"🇲🇿",NA:"🇳🇦",LS:"🇱🇸",SZ:"🇸🇿",MW:"🇲🇼",TZ:"🇹🇿",MG:"🇲🇬",MU:"🇲🇺",SC:"🇸🇨",AO:"🇦🇴",CD:"🇨🇩",KM:"🇰🇲" };
     const CAT_MAP = {
