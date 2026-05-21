@@ -1128,7 +1128,7 @@ function AuthPage({ onSuccess }) {
             <div className="auth-error">{loginError}</div>
             <button className="auth-btn" disabled={loginLoading} onClick={handleLogin}>{loginLoading ? "Signing in..." : "Sign In →"}</button>
             <p style={{ textAlign:"center",fontSize:".8rem",color:"var(--sub)",marginTop:14 }}>
-              <a style={{ color:"var(--leaf)",fontWeight:600,cursor:"pointer",textDecoration:"underline" }} onClick={() => setShowReset(true)}>Forgot password?</a>
+              <Link style={{ color:"var(--leaf)",fontWeight:600,cursor:"pointer",textDecoration:"underline" }} onClick={() => setShowReset(true)}>Forgot password?</Link>
             </p>
           </>
         )}
@@ -1152,7 +1152,7 @@ function AuthPage({ onSuccess }) {
             {resetMsg && <div style={{ fontSize:".78rem",color:"var(--leaf)",marginTop:6 }}>{resetMsg}</div>}
             <button className="auth-btn" onClick={handleReset}>Send Reset Email →</button>
             <p style={{ textAlign:"center",fontSize:".8rem",marginTop:14 }}>
-              <a style={{ color:"var(--leaf)",cursor:"pointer",textDecoration:"underline" }} onClick={() => setShowReset(false)}>← Back to Sign In</a>
+              <Link style={{ color:"var(--leaf)",cursor:"pointer",textDecoration:"underline" }} onClick={() => setShowReset(false)}>← Back to Sign In</Link>
             </p>
           </>
         )}
@@ -1582,25 +1582,25 @@ function Footer({ setPage }) {
             <div className="footer-brand">Afri<span>Voucher</span></div>
             <p className="footer-tagline">South Africa's leading digital gift experience marketplace. Connecting people with unforgettable moments since 2024.</p>
             <div className="footer-socials">
-              {["𝕏","in","f","📸"].map(s => <a key={s} className="social-btn" href="#">{s}</a>)}
+              {["𝕏","in","f","📸"].map(s => <Link  href="#" key={s} className="social-btn">{s}</Link>)}
             </div>
           </div>
           <div className="footer-col">
             <h4>Experiences</h4>
             <div className="footer-links">
-              {["Wellness & Spa","Adventure","Dining & Wine","Stays & Getaways","Skills & Courses"].map(l => <a key={l} className="footer-link">{l}</a>)}
+              {["Wellness & Spa","Adventure","Dining & Wine","Stays & Getaways","Skills & Courses"].map(l => <a href key={l} className="footer-link">{l}</a>)}
             </div>
           </div>
           <div className="footer-col">
             <h4>Company</h4>
             <div className="footer-links">
-              {["About Us","Partner Programme","Corporate Gifting","Blog","Careers"].map(l => <a key={l} className="footer-link">{l}</a>)}
+              {["About Us","Partner Programme","Corporate Gifting","Blog","Careers"].map(l => <a href key={l} className="footer-link">{l}</a>)}
             </div>
           </div>
           <div className="footer-col">
             <h4>Support</h4>
             <div className="footer-links">
-              {["Redeem Voucher","Help Centre","Contact Us","Privacy Policy","Terms of Service"].map(l => <a key={l} className="footer-link">{l}</a>)}
+              {["Redeem Voucher","Help Centre","Contact Us","Privacy Policy","Terms of Service"].map(l => <a href key={l} className="footer-link">{l}</a>)}
             </div>
           </div>
         </div>
