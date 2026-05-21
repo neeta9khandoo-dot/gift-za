@@ -34,7 +34,6 @@ function Nav() {
     <nav>
       <Link to="/">Home</Link>
 
-      {/* Static HTML pages — plain anchor tags, not React Router Links */}
       <a href="/about-us.html">About Us</a>
       <a href="/contact.html">Contact</a>
       <a href="/corporate.html">Corporate</a>
@@ -49,7 +48,7 @@ function Nav() {
 export default function App() {
   return (
     <BrowserRouter>
-      <Nav />
+     
       <Routes>
 
         {/* React-managed pages */}
