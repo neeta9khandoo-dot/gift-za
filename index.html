@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>GiftSA — South Africa's Gift Experience Marketplace</title>
+    <title>AfriVoucher — South Africa's Gift Experience Marketplace</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -3596,15 +3596,18 @@
   </head>
   <body>
     <!-- ANNOUNCE -->
-    <div class="announce">
-      🎁 <strong>Mother's Day</strong> is 11 May — order by 8 May for guaranteed
-      delivery &nbsp;·&nbsp; Free WhatsApp delivery on all vouchers
-    </div>
+    <div class="announce" id="announceBar" style="padding:0;cursor:pointer" onclick="document.getElementById('holidayDrawer')?.classList.toggle('open')">
+  <div id="announceBanner" style="padding:10px 20px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap">
+    <span id="ab-icon">⏳</span>
+    <span id="ab-text" style="font-size:0.78rem;font-weight:500;letter-spacing:0.3px">Loading holiday promotions…</span>
+    <span id="ab-urgency" style="background:rgba(255,255,255,0.2);border-radius:4px;padding:1px 7px;font-size:0.7rem;display:none"></span>
+  </div>
+</div>
 
     <!-- NAV -->
     <nav class="nav">
       <div class="nav-inner">
-        <a href="#" class="nav-logo">Gift<span>SA</span></a>
+        <a href="#" class="nav-logo">Afri<span>Voucher</span></a>
 
         <div class="nav-search">
           <svg
@@ -4080,7 +4083,7 @@
             <div class="testi-text">
               "Bought this for my wife's birthday. She got the code on WhatsApp
               within seconds and absolutely loved the spa day. Will definitely
-              use GiftSA again."
+              use AfriVoucher again."
             </div>
             <div class="testi-author">
               <div class="testi-avatar">TN</div>
@@ -4110,7 +4113,7 @@
           <div class="testi">
             <div class="testi-stars">⭐⭐⭐⭐⭐</div>
             <div class="testi-text">
-              "Our team used GiftSA for year-end gifts. 50 vouchers sent in
+              "Our team used AfriVoucher for year-end gifts. 50 vouchers sent in
               under 10 minutes. Partners are excellent and every employee loved
               their experience."
             </div>
@@ -4146,7 +4149,7 @@
           <div class="section-head">
             <div class="section-head-left">
               <p class="section-eyebrow">✦ Simple Process</p>
-              <h2 class="section-title">How GiftSA works</h2>
+              <h2 class="section-title">How AfriVoucher works</h2>
               <p class="section-sub">
                 From purchase to experience in four easy steps
               </p>
@@ -4218,7 +4221,7 @@
     <div id="page-auth" style="display: none">
       <div class="auth-page">
         <div class="auth-card">
-          <div class="auth-logo">Gift<span>SA</span></div>
+          <div class="auth-logo">Afri<span>Voucher</span></div>
           <p class="auth-tagline">Partner Portal — Redeem & Admin access</p>
 
           <div class="auth-badge">🔒 Partner accounts only</div>
@@ -5702,7 +5705,7 @@
       <div class="container">
         <div class="footer-grid">
           <div>
-            <div class="footer-brand">Gift<span>SA</span></div>
+            <div class="footer-brand">Afri<span>Voucher</span></div>
             <p class="footer-tagline">
               South Africa's leading digital gift experience marketplace.
               Connecting people with unforgettable moments since 2024.
@@ -5747,7 +5750,7 @@
         </div>
         <div class="footer-bottom">
           <p class="footer-legal">
-            © 2025 GiftSA (Pty) Ltd · All rights reserved · Registered in South
+            © 2025 AfriVoucher (Pty) Ltd · All rights reserved · Registered in South
             Africa
           </p>
           <div class="footer-payments">
@@ -6400,7 +6403,7 @@ initVouchers();
     <div style="position:relative;max-width:760px;margin:0 auto;text-align:center">
       <p style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1.8px;color:var(--gold2);margin-bottom:14px">✦ Our Story</p>
       <h1 style="font-family:var(--serif);font-size:clamp(2.8rem,5vw,4.5rem);color:var(--cream);line-height:1.05;margin-bottom:20px;font-weight:600">We believe the best gifts <em style="color:var(--gold2)">can't be wrapped.</em></h1>
-      <p style="color:rgba(245,240,232,.65);font-size:1rem;line-height:1.8;max-width:580px;margin:0 auto">GiftSA was born from a simple frustration — finding a meaningful, locally-crafted experience gift in South Africa shouldn't be hard.</p>
+      <p style="color:rgba(245,240,232,.65);font-size:1rem;line-height:1.8;max-width:580px;margin:0 auto">AfriVoucher was born from a simple frustration — finding a meaningful, locally-crafted experience gift in South Africa shouldn't be hard.</p>
     </div>
   </div>
  
@@ -6410,12 +6413,12 @@ initVouchers();
       <div style="text-align:center;padding:28px 20px">
         <div style="font-size:2.4rem;margin-bottom:12px">🌍</div>
         <h3 style="font-family:var(--serif);font-size:1.3rem;color:var(--forest);margin-bottom:8px">Local First</h3>
-        <p style="font-size:.83rem;color:var(--sub);line-height:1.7">Every rand spent on GiftSA stays in South Africa, supporting local businesses and communities.</p>
+        <p style="font-size:.83rem;color:var(--sub);line-height:1.7">Every rand spent on AfriVoucher stays in South Africa, supporting local businesses and communities.</p>
       </div>
       <div style="text-align:center;padding:28px 20px;border-left:1px solid var(--border);border-right:1px solid var(--border)">
         <div style="font-size:2.4rem;margin-bottom:12px">🤝</div>
         <h3 style="font-family:var(--serif);font-size:1.3rem;color:var(--forest);margin-bottom:8px">Partner-Powered</h3>
-        <p style="font-size:.83rem;color:var(--sub);line-height:1.7">Our partners are the heart of GiftSA. We handle the tech so they can focus on delivering magic.</p>
+        <p style="font-size:.83rem;color:var(--sub);line-height:1.7">Our partners are the heart of AfriVoucher. We handle the tech so they can focus on delivering magic.</p>
       </div>
       <div style="text-align:center;padding:28px 20px">
         <div style="font-size:2.4rem;margin-bottom:12px">✨</div>
@@ -6431,7 +6434,7 @@ initVouchers();
       <div>
         <p style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--terra);margin-bottom:10px">✦ How We Started</p>
         <h2 style="font-family:var(--serif);font-size:2.2rem;color:var(--forest);margin-bottom:16px;line-height:1.1">A gift idea that became a marketplace.</h2>
-        <p style="color:var(--sub);font-size:.88rem;line-height:1.8;margin-bottom:14px">It started in 2024 when our founder tried to gift a friend a spa day in Pretoria. Three hours of Googling, two dead phone numbers, and a voucher that never arrived later — the idea for GiftSA was born.</p>
+        <p style="color:var(--sub);font-size:.88rem;line-height:1.8;margin-bottom:14px">It started in 2024 when our founder tried to gift a friend a spa day in Pretoria. Three hours of Googling, two dead phone numbers, and a voucher that never arrived later — the idea for AfriVoucher was born.</p>
         <p style="color:var(--sub);font-size:.88rem;line-height:1.8">We built the platform we wished existed: instant WhatsApp delivery, vetted partners, and a seamless experience from purchase to arrival.</p>
       </div>
       <div style="background:linear-gradient(135deg,var(--forest),var(--forest3));border-radius:20px;padding:36px;color:var(--cream)">
@@ -6557,7 +6560,7 @@ initVouchers();
 <div id="page-blog" style="display:none">
   <div style="background:var(--cream2);border-bottom:1px solid var(--border);padding:72px 32px 56px">
     <div style="max-width:760px;margin:0 auto">
-      <p style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1.8px;color:var(--terra);margin-bottom:12px">✦ The GiftSA Journal</p>
+      <p style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1.8px;color:var(--terra);margin-bottom:12px">✦ The AfriVoucher Journal</p>
       <h1 style="font-family:var(--serif);font-size:clamp(2.4rem,4vw,3.8rem);color:var(--forest);line-height:1.06;margin-bottom:16px;font-weight:600">Stories, ideas & <em>gifting inspiration</em></h1>
       <p style="color:var(--sub);font-size:.95rem;line-height:1.75">Guides, partner spotlights, and experience ideas from across South Africa.</p>
     </div>
@@ -6595,7 +6598,7 @@ initVouchers();
         {cat:'Partner Spotlight',title:'Inside Skysail Balloons: How a Magaliesberg family business became SA\'s most-loved sunrise experience',author:'TS',name:'Tebogo Sithole',date:'24 Apr 2025',read:'5 min'},
         {cat:'Adventure',title:'10 Adrenaline Gift Ideas Under R1,000 in Gauteng',author:'RP',name:'Ruan Pieterse',date:'18 Apr 2025',read:'4 min'},
         {cat:'Wellness',title:'Why a Spa Day Is the Best Gift You Can Give in 2025',author:'NK',name:'Neeta Khandoo',date:'10 Apr 2025',read:'3 min'},
-        {cat:'Corporate',title:'How to Gift 50 Employees in Under 10 Minutes — GiftSA Corporate Guide',author:'TS',name:'Tebogo Sithole',date:'2 Apr 2025',read:'7 min'},
+        {cat:'Corporate',title:'How to Gift 50 Employees in Under 10 Minutes — AfriVoucher Corporate Guide',author:'TS',name:'Tebogo Sithole',date:'2 Apr 2025',read:'7 min'},
         {cat:'Dining & Wine',title:'The Best Wine Tasting Experiences Near Cape Town for Couples',author:'NK',name:'Neeta Khandoo',date:'28 Mar 2025',read:'5 min'},
         {cat:'Gifting Tips',title:'The Science of Why Experiences Make People Happier Than Things',author:'RP',name:'Ruan Pieterse',date:'20 Mar 2025',read:'6 min'}
       ].map(a=>`
@@ -6705,13 +6708,13 @@ initVouchers();
     <h2 style="font-family:var(--serif);font-size:2rem;color:var(--forest);margin-bottom:28px">Frequently Asked Questions</h2>
     <div style="display:flex;flex-direction:column;gap:2px">
       ${[
-        {q:'How are vouchers delivered?',a:'All GiftSA vouchers are delivered instantly via WhatsApp to the recipient\'s phone number. You\'ll also receive a confirmation email with the voucher code and QR code.'},
+        {q:'How are vouchers delivered?',a:'All AfriVoucher vouchers are delivered instantly via WhatsApp to the recipient\'s phone number. You\'ll also receive a confirmation email with the voucher code and QR code.'},
         {q:'Can I send a voucher to someone outside South Africa?',a:'Vouchers can be sent to any WhatsApp number worldwide, but the experiences themselves are based in South Africa and must be redeemed in person at the partner\'s location.'},
         {q:'What if the recipient doesn\'t have WhatsApp?',a:'Contact us at hello@giftsa.co.za and we can send the voucher via SMS or email instead. There\'s no extra charge for this.'},
         {q:'How long are vouchers valid for?',a:'Validity varies by voucher — typically 6, 12, or 24 months. The exact expiry date is clearly shown on every voucher listing and in the delivered WhatsApp message.'},
         {q:'Can I get a refund on a voucher?',a:'Yes. Unused vouchers can be refunded within 30 days of purchase. Once a voucher has been redeemed at a partner, refunds are not possible. Contact us to request a refund.'},
         {q:'How do I redeem my voucher at the partner?',a:'Show the QR code or quote the voucher code when you arrive at the partner\'s location. They\'ll scan or enter it to validate. You can find the Redeem page on our site if you\'re a partner.'},
-        {q:'Can I reschedule my booking?',a:'Yes — contact the partner directly to reschedule. Their contact details are on your WhatsApp voucher message. GiftSA does not charge rescheduling fees.'},
+        {q:'Can I reschedule my booking?',a:'Yes — contact the partner directly to reschedule. Their contact details are on your WhatsApp voucher message. AfriVoucher does not charge rescheduling fees.'},
         {q:'I\'m a partner — how do I validate a customer\'s voucher?',a:'Log in to your partner dashboard, go to the Redeem page, and enter the voucher code. This will validate the voucher and mark it as used in our system.'}
       ].map((f,i)=>`
       <div style="background:var(--white);border:1px solid var(--border);border-radius:${i===0?'14px 14px 4px 4px':i===7?'4px 4px 14px 14px':'4px'}">
@@ -6798,16 +6801,16 @@ initVouchers();
   </div>
   <div style="max-width:760px;margin:0 auto;padding:56px 32px">
     ${[
-      {h:'1. Who we are',b:'GiftSA (Pty) Ltd ("GiftSA", "we", "us", "our") operates the gift experience marketplace at giftsa.co.za. We are registered in South Africa and comply with the Protection of Personal Information Act (POPIA) 4 of 2013.'},
+      {h:'1. Who we are',b:'AfriVoucher (Pty) Ltd ("AfriVoucher ", "we", "us", "our") operates the gift experience marketplace at giftsa.co.za. We are registered in South Africa and comply with the Protection of Personal Information Act (POPIA) 4 of 2013.'},
       {h:'2. Information we collect',b:'We collect information you provide directly when purchasing vouchers (name, email, WhatsApp number), creating a partner account (business name, email, password), or contacting us. We also collect usage data including pages visited, search terms, and device information via standard web analytics.'},
       {h:'3. How we use your information',b:'Your information is used to process voucher purchases and send them via WhatsApp, manage your partner account and voucher listings, send order confirmations and receipts, respond to support enquiries, and improve our platform. We do not sell your personal information to third parties.'},
       {h:'4. WhatsApp delivery',b:'When you provide a recipient\'s WhatsApp number, we use it solely to deliver the purchased voucher. We do not store or contact this number for any marketing purpose. The recipient\'s details are shared only with the relevant partner business to facilitate redemption.'},
-      {h:'5. Partner data',b:'If you register as a partner, your business name and email are visible to GiftSA staff. Voucher redemption records are stored and visible to you in your dashboard. We do not share your business data with other partners or third parties.'},
-      {h:'6. Payment data',b:'All payments are processed by PayFast. GiftSA never sees or stores your full card number. PayFast\'s privacy policy applies to the payment process. We retain transaction amounts and references for accounting and fraud prevention.'},
+      {h:'5. Partner data',b:'If you register as a partner, your business name and email are visible to AfriVoucher staff. Voucher redemption records are stored and visible to you in your dashboard. We do not share your business data with other partners or third parties.'},
+      {h:'6. Payment data',b:'All payments are processed by PayFast. AfriVoucher never sees or stores your full card number. PayFast\'s privacy policy applies to the payment process. We retain transaction amounts and references for accounting and fraud prevention.'},
       {h:'7. Cookies',b:'We use essential cookies to keep you logged in and remember your preferences. We use analytics cookies (anonymised) to understand how people use our site. You can disable cookies in your browser settings; this may affect site functionality.'},
       {h:'8. Data retention',b:'We retain your account and order data for 7 years for legal and accounting purposes. You may request deletion of your account by contacting hello@giftsa.co.za. Deletion removes personal identifiers but we may retain anonymised transaction records.'},
       {h:'9. Your POPIA rights',b:'Under POPIA you have the right to access the personal information we hold about you, request correction of inaccurate information, request deletion of your information (subject to legal retention requirements), and lodge a complaint with the Information Regulator of South Africa.'},
-      {h:'10. Contact',b:'For privacy enquiries, contact our Information Officer at privacy@giftsa.co.za or by post to GiftSA (Pty) Ltd, Pretoria, Gauteng, South Africa.'}
+      {h:'10. Contact',b:'For privacy enquiries, contact our Information Officer at privacy@giftsa.co.za or by post to AfriVoucher (Pty) Ltd, Pretoria, Gauteng, South Africa.'}
     ].map(s=>`
     <div style="margin-bottom:32px">
       <h2 style="font-family:var(--serif);font-size:1.3rem;color:var(--forest);margin-bottom:10px">${s.h}</h2>
@@ -6831,14 +6834,14 @@ initVouchers();
   <div style="max-width:760px;margin:0 auto;padding:56px 32px">
     ${[
       {h:'1. Agreement',b:'By accessing or using giftsa.co.za you agree to be bound by these Terms of Service. If you do not agree, do not use the platform. These terms apply to all users including buyers, gift recipients, and registered partners.'},
-      {h:'2. The GiftSA platform',b:'GiftSA operates as a marketplace connecting buyers of experience vouchers with service providers ("Partners"). GiftSA facilitates transactions and voucher delivery but is not the direct provider of any experience. The contract for the experience is between the buyer and the Partner.'},
+      {h:'2. The AfriVoucher platform',b:'AfriVoucher operates as a marketplace connecting buyers of experience vouchers with service providers ("Partners"). AfriVoucher facilitates transactions and voucher delivery but is not the direct provider of any experience. The contract for the experience is between the buyer and the Partner.'},
       {h:'3. Purchasing vouchers',b:'Voucher purchases are final. Refunds are available within 30 days of purchase provided the voucher has not been redeemed. After 30 days, or after redemption, no refund is available. Vouchers expire on the date stated at time of purchase. Expired vouchers cannot be refunded or extended.'},
-      {h:'4. Voucher delivery',b:'We deliver vouchers via WhatsApp to the number you provide. GiftSA is not responsible for delivery failures caused by an incorrect number being provided, the recipient\'s WhatsApp being inactive, or network issues outside our control. Re-delivery attempts are made free of charge — contact us within 48 hours.'},
-      {h:'5. Partner obligations',b:'Partners are solely responsible for delivering the experience described in their voucher listing to the standard advertised. GiftSA does not guarantee Partner availability, quality, or conduct. Partners must honour valid, non-expired vouchers. Partners who consistently fail to honour vouchers will be removed from the platform.'},
-      {h:'6. Disputes',b:'For disputes between buyers and Partners (e.g., experience not as described, booking refused), contact GiftSA at hello@giftsa.co.za. We will mediate in good faith. GiftSA\'s liability is limited to the value of the voucher purchased. We are not liable for consequential damages including travel costs or loss of earnings.'},
-      {h:'7. Partner accounts',b:'Partners must provide accurate business and contact information. Fraudulent vouchers, false listings, or failure to honour vouchers may result in immediate account termination and recovery of outstanding payouts. Partners are paid weekly via EFT after deducting GiftSA\'s commission as agreed at registration.'},
-      {h:'8. Prohibited use',b:'You may not use GiftSA to sell counterfeit or fraudulent vouchers, scrape or copy our content, attempt to bypass payment systems, or impersonate another business or individual. Violations may result in legal action.'},
-      {h:'9. Intellectual property',b:'All content on giftsa.co.za including design, copy, and code is the property of GiftSA (Pty) Ltd. Partner logos and images remain the property of the respective Partners. You may not reproduce or distribute our content without written permission.'},
+      {h:'4. Voucher delivery',b:'We deliver vouchers via WhatsApp to the number you provide. AfriVoucher is not responsible for delivery failures caused by an incorrect number being provided, the recipient\'s WhatsApp being inactive, or network issues outside our control. Re-delivery attempts are made free of charge — contact us within 48 hours.'},
+      {h:'5. Partner obligations',b:'Partners are solely responsible for delivering the experience described in their voucher listing to the standard advertised. AfriVoucher does not guarantee Partner availability, quality, or conduct. Partners must honour valid, non-expired vouchers. Partners who consistently fail to honour vouchers will be removed from the platform.'},
+      {h:'6. Disputes',b:'For disputes between buyers and Partners (e.g., experience not as described, booking refused), contact AfriVoucher at hello@giftsa.co.za. We will mediate in good faith. AfriVoucher\'s liability is limited to the value of the voucher purchased. We are not liable for consequential damages including travel costs or loss of earnings.'},
+      {h:'7. Partner accounts',b:'Partners must provide accurate business and contact information. Fraudulent vouchers, false listings, or failure to honour vouchers may result in immediate account termination and recovery of outstanding payouts. Partners are paid weekly via EFT after deducting AfriVoucher\'s commission as agreed at registration.'},
+      {h:'8. Prohibited use',b:'You may not use AfriVoucher to sell counterfeit or fraudulent vouchers, scrape or copy our content, attempt to bypass payment systems, or impersonate another business or individual. Violations may result in legal action.'},
+      {h:'9. Intellectual property',b:'All content on giftsa.co.za including design, copy, and code is the property of AfriVoucher (Pty) Ltd. Partner logos and images remain the property of the respective Partners. You may not reproduce or distribute our content without written permission.'},
       {h:'10. Governing law',b:'These terms are governed by the laws of the Republic of South Africa. Any disputes will be resolved in the courts of Gauteng, South Africa. The Consumer Protection Act 68 of 2008 applies to all consumer transactions on this platform.'}
     ].map(s=>`
     <div style="margin-bottom:32px">
@@ -6850,5 +6853,139 @@ initVouchers();
     </div>
   </div>
 </div>
+<script>
+(async function() {
+  const SADC = [
+    {code:'ZA',name:'South Africa',flag:'🇿🇦'},
+    {code:'ZW',name:'Zimbabwe',flag:'🇿🇼'},
+    {code:'BW',name:'Botswana',flag:'🇧🇼'},
+    {code:'ZM',name:'Zambia',flag:'🇿🇲'},
+    {code:'MZ',name:'Mozambique',flag:'🇲🇿'},
+    {code:'NA',name:'Namibia',flag:'🇳🇦'},
+    {code:'LS',name:'Lesotho',flag:'🇱🇸'},
+    {code:'SZ',name:'Eswatini',flag:'🇸🇿'},
+    {code:'MW',name:'Malawi',flag:'🇲🇼'},
+    {code:'TZ',name:'Tanzania',flag:'🇹🇿'},
+    {code:'MG',name:'Madagascar',flag:'🇲🇬'},
+    {code:'MU',name:'Mauritius',flag:'🇲🇺'},
+    {code:'SC',name:'Seychelles',flag:'🇸🇨'},
+    {code:'AO',name:'Angola',flag:'🇦🇴'},
+    {code:'CD',name:'DR Congo',flag:'🇨🇩'},
+    {code:'KM',name:'Comoros',flag:'🇰🇲'},
+  ];
+
+  const CAT_MAP = {
+    'Christmas':      {cat:'Stays & Getaways', bg:'#3B6D11', icon:'🎄', cta:'Gift a getaway'},
+    'New Year':       {cat:'Adventure',        bg:'#534AB7', icon:'🎆', cta:'Start the year right'},
+    'Easter':         {cat:'Stays & Getaways', bg:'#0F6E56', icon:'🐣', cta:'Gift a getaway'},
+    'Good Friday':    {cat:'Wellness & Spa',   bg:'#0F6E56', icon:'🌿', cta:'Gift relaxation'},
+    'Women':          {cat:'Wellness & Spa',   bg:'#993556', icon:'👩', cta:'Gift pampering'},
+    'Youth':          {cat:'Skills & Courses', bg:'#185FA5', icon:'🎓', cta:'Gift a course'},
+    'Heritage':       {cat:'Dining & Wine',    bg:'#854F0B', icon:'🏺', cta:'Celebrate culture'},
+    'Freedom':        {cat:'Adventure',        bg:'#534AB7', icon:'🏅', cta:'Celebrate freedom'},
+    'Workers':        {cat:'Wellness & Spa',   bg:'#0F6E56', icon:'💪', cta:'Reward yourself'},
+    'Labour':         {cat:'Wellness & Spa',   bg:'#0F6E56', icon:'💪', cta:'Reward yourself'},
+    'Reconciliation': {cat:'Dining & Wine',    bg:'#72243E', icon:'🤝', cta:'Share a meal'},
+    'Independence':   {cat:'Stays & Getaways', bg:'#D85A30', icon:'🌍', cta:'Explore the region'},
+    'Heroes':         {cat:'Adventure',        bg:'#3C3489', icon:'🦸', cta:'Be adventurous'},
+    'Unity':          {cat:'Dining & Wine',    bg:'#BA7517', icon:'🤲', cta:'Celebrate together'},
+    'default':        {cat:'Experiences',      bg:'#0F6E56', icon:'🎁', cta:'Browse vouchers'},
+  };
+
+  function getCat(name) {
+    const k = Object.keys(CAT_MAP).find(k => k !== 'default' && name.toLowerCase().includes(k.toLowerCase()));
+    return CAT_MAP[k] || CAT_MAP['default'];
+  }
+
+  function daysUntil(ds) {
+    const t = new Date(); t.setHours(0,0,0,0);
+    const d = new Date(ds); d.setHours(0,0,0,0);
+    return Math.round((d - t) / 86400000);
+  }
+
+  function fmtShort(ds) {
+    return new Date(ds).toLocaleDateString('en-ZA', {day:'numeric', month:'short'});
+  }
+
+  async function fetchCountry(code, year) {
+    try {
+      const r = await fetch(`https://date.nager.at/api/v3/PublicHolidays/${year}/${code}`);
+      if (!r.ok) throw new Error();
+      const data = await r.json();
+      return Array.isArray(data) ? data.map(h => ({...h, country: code})) : [];
+    } catch { return []; }
+  }
+
+  // Fetch just ZA first for speed, then others in background
+  const today = new Date(); today.setHours(0,0,0,0);
+  const year = today.getFullYear();
+
+  const zaHolidays = await fetchCountry('ZA', year);
+  const upcoming = zaHolidays
+    .filter(h => new Date(h.date) >= today)
+    .sort((a,b) => new Date(a.date) - new Date(b.date));
+
+  function updateBanner(h) {
+    const days = daysUntil(h.date);
+    const info = getCat(h.name);
+    const country = SADC.find(c => c.code === h.country);
+    const flag = country ? country.flag : '🌍';
+    const ob = new Date(h.date); ob.setDate(ob.getDate() - 3);
+
+    const bar = document.getElementById('announceBar');
+    const iconEl = document.getElementById('ab-icon');
+    const textEl = document.getElementById('ab-text');
+    const urgEl = document.getElementById('ab-urgency');
+
+    if (bar) bar.style.background = info.bg;
+    if (iconEl) iconEl.textContent = info.icon;
+
+    const urgText = days === 0 ? '🔥 Today!' : days <= 3 ? `🔥 ${days}d left!` : days <= 7 ? `${days} days away` : '';
+    if (urgEl) {
+      urgEl.textContent = urgText;
+      urgEl.style.display = urgText ? 'inline-block' : 'none';
+    }
+
+    const deliveryNote = days <= 21
+      ? `order by ${fmtShort(ob)} for guaranteed delivery`
+      : 'Free WhatsApp delivery on all vouchers';
+
+    if (textEl) textEl.innerHTML = `${flag} <strong>${h.name}</strong> — Gift a ${info.cat} voucher &nbsp;·&nbsp; ${deliveryNote}`;
+  }
+
+  if (upcoming.length) {
+    updateBanner(upcoming[0]);
+
+    // Rotate through upcoming holidays every 5 seconds
+    let idx = 0;
+    setInterval(() => {
+      idx = (idx + 1) % Math.min(upcoming.length, 5);
+      updateBanner(upcoming[idx]);
+    }, 5000);
+  }
+
+  // Load all SADC in background to find the truly next holiday across region
+  const allResults = await Promise.all(SADC.map(c => fetchCountry(c.code, year)));
+  const seen = new Set();
+  const allUpcoming = allResults.flat()
+    .filter(h => {
+      const d = new Date(h.date); d.setHours(0,0,0,0);
+      if (d < today) return false;
+      const key = h.date + h.localName + h.country;
+      if (seen.has(key)) return false;
+      seen.add(key); return true;
+    })
+    .sort((a,b) => new Date(a.date) - new Date(b.date));
+
+  if (allUpcoming.length) {
+    updateBanner(allUpcoming[0]);
+    let i = 0;
+    setInterval(() => {
+      i = (i + 1) % Math.min(allUpcoming.length, 8);
+      updateBanner(allUpcoming[i]);
+    }, 5000);
+  }
+})();
+</script>
 </body>
 </html>

@@ -1,0 +1,260 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+.banner{border-radius:var(--border-radius-md);padding:11px 16px;display:flex;align-items:center;gap:12px;justify-content:space-between;transition:background 0.5s;}
+.banner-left{display:flex;align-items:center;gap:10px;flex:1;min-width:0;}
+.b-icon{font-size:20px;flex-shrink:0;}
+.b-text{font-size:13px;line-height:1.5;color:#fff;}
+.b-text strong{font-size:14px;font-weight:500;}
+.b-sub{font-size:12px;opacity:0.85;margin-top:1px;}
+.b-cta{background:#fff;border:none;border-radius:var(--border-radius-md);padding:6px 14px;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:opacity 0.2s;}
+.b-cta:hover{opacity:0.85;}
+.urgency{display:inline-block;background:rgba(255,255,255,0.2);border-radius:4px;padding:1px 7px;font-size:11px;margin-left:6px;}
+.slabel{font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;}
+.section{margin:20px 0;}
+
+.country-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:6px;margin-bottom:14px;}
+.c-btn{display:flex;align-items:center;gap:5px;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:5px 9px;font-size:12px;cursor:pointer;color:var(--color-text-primary);transition:border-color 0.2s;white-space:nowrap;}
+.c-btn.active{border-color:#1D9E75;color:#0F6E56;font-weight:500;}
+.c-btn .loading-dot{width:6px;height:6px;border-radius:50%;background:#ccc;display:inline-block;margin-left:2px;}
+.c-btn .ok{color:#1D9E75;font-size:10px;}
+.c-btn .fail{color:#993C1D;font-size:10px;}
+
+.holidays-list{display:flex;flex-direction:column;gap:5px;}
+.h-row{display:flex;align-items:center;gap:8px;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:8px 11px;cursor:pointer;transition:border-color 0.2s;}
+.h-row:hover{border-color:var(--color-border-secondary);}
+.h-row.next-up{border-left:3px solid #1D9E75;}
+.h-date{font-size:12px;color:var(--color-text-secondary);min-width:75px;flex-shrink:0;}
+.h-name{font-size:13px;font-weight:500;color:var(--color-text-primary);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.h-flag{font-size:14px;flex-shrink:0;}
+.days-pill{font-size:11px;font-weight:500;padding:2px 8px;border-radius:20px;white-space:nowrap;flex-shrink:0;}
+.pill-soon{background:#FAECE7;color:#993C1D;}
+.pill-coming{background:#FAEEDA;color:#854F0B;}
+.pill-future{background:#E1F5EE;color:#0F6E56;}
+.h-cat{font-size:11px;padding:2px 7px;border-radius:4px;white-space:nowrap;flex-shrink:0;}
+.status{font-size:13px;color:var(--color-text-secondary);padding:16px 0;text-align:center;}
+.progress-bar{height:3px;background:var(--color-border-tertiary);border-radius:2px;overflow:hidden;margin-bottom:10px;}
+.progress-fill{height:100%;background:#1D9E75;border-radius:2px;transition:width 0.3s;}
+.show-more{background:none;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:7px;font-size:12px;color:var(--color-text-secondary);cursor:pointer;width:100%;margin-top:6px;}
+.show-more:hover{border-color:var(--color-border-secondary);}
+</style>
+
+<h2 class="sr-only">Live SADC public holiday banner linked to voucher categories for 16 southern African countries</h2>
+
+<div class="section">
+  <p class="slabel">Live banner preview</p>
+  <div class="banner" id="mainBanner" style="background:#0F6E56;">
+    <div class="banner-left">
+      <span class="b-icon" id="bIcon">⏳</span>
+      <div class="b-text">
+        <div><strong id="bTitle">Fetching SADC holidays...</strong><span class="urgency" id="bUrgency" style="display:none"></span></div>
+        <div class="b-sub" id="bSub">Loading 16 countries · Free WhatsApp delivery on all vouchers</div>
+      </div>
+    </div>
+    <button class="b-cta" id="bCta" style="color:#0F6E56;">Browse vouchers →</button>
+  </div>
+</div>
+
+<div class="section">
+  <p class="slabel">Filter by country</p>
+  <div class="country-grid" id="countryGrid"></div>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+  <div class="holidays-list" id="holidayList"><p class="status">⏳ Loading holidays from all SADC countries...</p></div>
+  <button class="show-more" id="showMoreBtn" style="display:none" onclick="toggleShowAll()">Show all upcoming holidays ↓</button>
+</div>
+
+<script>
+const SADC = [
+  {code:'ZA', name:'South Africa',    flag:'🇿🇦'},
+  {code:'ZW', name:'Zimbabwe',        flag:'🇿🇼'},
+  {code:'BW', name:'Botswana',        flag:'🇧🇼'},
+  {code:'ZM', name:'Zambia',          flag:'🇿🇲'},
+  {code:'MZ', name:'Mozambique',      flag:'🇲🇿'},
+  {code:'NA', name:'Namibia',         flag:'🇳🇦'},
+  {code:'LS', name:'Lesotho',         flag:'🇱🇸'},
+  {code:'SZ', name:'Eswatini',        flag:'🇸🇿'},
+  {code:'MW', name:'Malawi',          flag:'🇲🇼'},
+  {code:'TZ', name:'Tanzania',        flag:'🇹🇿'},
+  {code:'MG', name:'Madagascar',      flag:'🇲🇬'},
+  {code:'MU', name:'Mauritius',       flag:'🇲🇺'},
+  {code:'SC', name:'Seychelles',      flag:'🇸🇨'},
+  {code:'AO', name:'Angola',          flag:'🇦🇴'},
+  {code:'CD', name:'DR Congo',        flag:'🇨🇩'},
+  {code:'KM', name:'Comoros',         flag:'🇰🇲'},
+];
+
+const CAT = {
+  'Christmas':      {cat:'Stays & Getaways', bg:'#3B6D11', color:'#EAF3DE', tc:'#3B6D11', icon:'🎄', cta:'Gift a getaway'},
+  'New Year':       {cat:'Adventure',        bg:'#534AB7', color:'#EEEDFE', tc:'#534AB7', icon:'🎆', cta:'Start the year right'},
+  'Easter':         {cat:'Stays & Getaways', bg:'#0F6E56', color:'#E1F5EE', tc:'#0F6E56', icon:'🐣', cta:'Gift a getaway'},
+  'Good Friday':    {cat:'Wellness & Spa',   bg:'#0F6E56', color:'#E1F5EE', tc:'#0F6E56', icon:'🌿', cta:'Gift relaxation'},
+  'Women':          {cat:'Wellness & Spa',   bg:'#993556', color:'#FBEAF0', tc:'#993556', icon:'👩', cta:'Gift pampering'},
+  'Youth':          {cat:'Skills & Courses', bg:'#185FA5', color:'#E6F1FB', tc:'#185FA5', icon:'🎓', cta:'Gift a course'},
+  'Heritage':       {cat:'Dining & Wine',    bg:'#854F0B', color:'#FAEEDA', tc:'#854F0B', icon:'🏺', cta:'Celebrate culture'},
+  'Freedom':        {cat:'Adventure',        bg:'#534AB7', color:'#EEEDFE', tc:'#534AB7', icon:'🏅', cta:'Celebrate freedom'},
+  'Workers':        {cat:'Wellness & Spa',   bg:'#0F6E56', color:'#E1F5EE', tc:'#0F6E56', icon:'💪', cta:'Reward yourself'},
+  'Labour':         {cat:'Wellness & Spa',   bg:'#0F6E56', color:'#E1F5EE', tc:'#0F6E56', icon:'💪', cta:'Reward yourself'},
+  'Reconciliation': {cat:'Dining & Wine',    bg:'#72243E', color:'#FBEAF0', tc:'#993556', icon:'🤝', cta:'Share a meal'},
+  'Independence':   {cat:'Stays & Getaways', bg:'#D85A30', color:'#FAECE7', tc:'#993C1D', icon:'🌍', cta:'Explore the region'},
+  'Heroes':         {cat:'Adventure',        bg:'#3C3489', color:'#EEEDFE', tc:'#3C3489', icon:'🦸', cta:'Be adventurous'},
+  'Unity':          {cat:'Dining & Wine',    bg:'#BA7517', color:'#FAEEDA', tc:'#854F0B', icon:'🤲', cta:'Celebrate together'},
+  'Republic':       {cat:'Stays & Getaways', bg:'#D85A30', color:'#FAECE7', tc:'#993C1D', icon:'🗺️', cta:'Explore a getaway'},
+  'National':       {cat:'Stays & Getaways', bg:'#D85A30', color:'#FAECE7', tc:'#993C1D', icon:'🌍', cta:'Explore the region'},
+  'Assumption':     {cat:'Wellness & Spa',   bg:'#993556', color:'#FBEAF0', tc:'#993556', icon:'🌸', cta:'Gift wellness'},
+  'default':        {cat:'Experiences',      bg:'#0F6E56', color:'#E1F5EE', tc:'#0F6E56', icon:'🎁', cta:'Buy a voucher'},
+};
+
+function getCat(name){
+  const k = Object.keys(CAT).find(k => k!=='default' && name.toLowerCase().includes(k.toLowerCase()));
+  return CAT[k]||CAT['default'];
+}
+function daysUntil(ds){
+  const t=new Date();t.setHours(0,0,0,0);
+  const d=new Date(ds);d.setHours(0,0,0,0);
+  return Math.round((d-t)/86400000);
+}
+function pillClass(d){return d<=7?'pill-soon':d<=30?'pill-coming':'pill-future';}
+function fmtDate(ds){return new Date(ds).toLocaleDateString('en-ZA',{day:'numeric',month:'short',year:'numeric'});}
+function fmtShort(ds){return new Date(ds).toLocaleDateString('en-ZA',{day:'numeric',month:'short'});}
+
+let allHolidays=[], loadedCount=0, showAll=false, activeFilter='ALL';
+
+function previewBanner(h){
+  const days=daysUntil(h.date);
+  const info=getCat(h.name);
+  const country=SADC.find(c=>c.code===h.country);
+  const flag=country?country.flag:'🌍';
+  const cname=country?country.name:h.country;
+  document.getElementById('bIcon').textContent=info.icon;
+  document.getElementById('bTitle').textContent=`${h.name} — ${cname} · Gift a ${info.cat} voucher`;
+  const urg=days<=3?`🔥 ${days}d left!`:days<=7?`${days} days away`:days<=21?`${days} days to go`:'';
+  const urgEl=document.getElementById('bUrgency');
+  urgEl.textContent=urg;urgEl.style.display=urg?'inline-block':'none';
+  const ob=new Date(h.date);ob.setDate(ob.getDate()-3);
+  document.getElementById('bSub').textContent=days<=21
+    ?`Order by ${fmtShort(ob)} for guaranteed delivery · Free WhatsApp delivery`
+    :`Coming up ${fmtDate(h.date)} · Free WhatsApp delivery on all vouchers`;
+  document.getElementById('bCta').textContent=info.cta+' →';
+  document.getElementById('bCta').style.color=info.bg;
+  document.getElementById('mainBanner').style.background=info.bg;
+}
+
+function renderList(){
+  const list=document.getElementById('holidayList');
+  const filtered=activeFilter==='ALL'?allHolidays:allHolidays.filter(h=>h.country===activeFilter);
+  const display=showAll?filtered:filtered.slice(0,12);
+  if(!filtered.length){list.innerHTML='<p class="status">No upcoming holidays found for this country.</p>';document.getElementById('showMoreBtn').style.display='none';return;}
+  list.innerHTML=display.map((h,i)=>{
+    const days=daysUntil(h.date);
+    const info=getCat(h.name);
+    const country=SADC.find(c=>c.code===h.country);
+    const flag=country?country.flag:'🌍';
+    const isNext=(i===0);
+    return `<div class="h-row${isNext?' next-up':''}" onclick="previewBanner(allHolidays[${allHolidays.indexOf(h)}])">
+      <span class="h-date">${fmtDate(h.date)}</span>
+      <span class="h-name" title="${h.name}">${h.name}</span>
+      <span class="h-flag">${flag}</span>
+      <span class="h-cat" style="background:${info.color};color:${info.tc}">${info.cat}</span>
+      <span class="days-pill ${pillClass(days)}">${days===0?'Today!':days+'d'}</span>
+    </div>`;
+  }).join('');
+  const btn=document.getElementById('showMoreBtn');
+  if(filtered.length>12){btn.style.display='block';btn.textContent=showAll?'Show fewer ↑':`Show all ${filtered.length} upcoming holidays ↓`;}
+  else btn.style.display='none';
+}
+
+function toggleShowAll(){showAll=!showAll;renderList();}
+
+function setFilter(code){
+  activeFilter=code;showAll=false;
+  document.querySelectorAll('.c-btn').forEach(b=>b.classList.toggle('active',b.dataset.code===code));
+  renderList();
+  if(code!=='ALL'){const first=allHolidays.find(h=>h.country===code);if(first)previewBanner(first);}
+  else if(allHolidays.length)previewBanner(allHolidays[0]);
+}
+
+function buildCountryGrid(statuses){
+  const grid=document.getElementById('countryGrid');
+  grid.innerHTML='';
+  const allBtn=document.createElement('button');
+  allBtn.className='c-btn active';allBtn.dataset.code='ALL';
+  allBtn.innerHTML='🌍 All SADC';
+  allBtn.onclick=()=>setFilter('ALL');
+  grid.appendChild(allBtn);
+  SADC.forEach(c=>{
+    const btn=document.createElement('button');
+    btn.className='c-btn';btn.dataset.code=c.code;
+    const st=statuses[c.code];
+    const ind=st==='loading'?'<span class="loading-dot"></span>':st==='ok'?'<span class="ok">✓</span>':'<span class="fail">–</span>';
+    btn.innerHTML=`${c.flag} ${c.name} ${ind}`;
+    btn.onclick=()=>setFilter(c.code);
+    grid.appendChild(btn);
+  });
+}
+
+function updateCountryBtn(code, status){
+  const btn=document.querySelector(`.c-btn[data-code="${code}"]`);
+  if(!btn)return;
+  const country=SADC.find(c=>c.code===code);
+  const ind=status==='ok'?'<span class="ok">✓</span>':'<span class="fail">–</span>';
+  btn.innerHTML=`${country.flag} ${country.name} ${ind}`;
+}
+
+async function fetchCountry(code, year){
+  try{
+    const r=await fetch(`https://date.nager.at/api/v3/PublicHolidays/${year}/${code}`);
+    if(!r.ok)throw new Error();
+    const data=await r.json();
+    return Array.isArray(data)?data.map(h=>({...h,country:code})):[];
+  }catch{return[];}
+}
+
+async function loadAll(){
+  const today=new Date();today.setHours(0,0,0,0);
+  const year=today.getFullYear();
+  const nextYear=year+1;
+  const statuses={};
+  SADC.forEach(c=>{statuses[c.code]='loading';});
+  buildCountryGrid(statuses);
+
+  const total=SADC.length*2;
+  let done=0;
+
+  const results=await Promise.all(SADC.map(async c=>{
+    const [thisY,nextY]=await Promise.all([
+      fetchCountry(c.code,year),
+      fetchCountry(c.code,nextYear)
+    ]);
+    done+=2;
+    document.getElementById('progressFill').style.width=Math.round(done/total*100)+'%';
+    const all=[...thisY,...nextY];
+    statuses[c.code]=all.length?'ok':'fail';
+    updateCountryBtn(c.code,statuses[c.code]);
+    return all;
+  }));
+
+  const seen=new Set();
+  allHolidays=results.flat()
+    .filter(h=>{
+      const d=new Date(h.date);d.setHours(0,0,0,0);
+      if(d<today)return false;
+      const key=h.date+h.name+h.country;
+      if(seen.has(key))return false;
+      seen.add(key);return true;
+    })
+    .sort((a,b)=>new Date(a.date)-new Date(b.date));
+
+  document.getElementById('progressFill').style.width='100%';
+  setTimeout(()=>document.getElementById('progressFill').style.width='0%',800);
+
+  if(allHolidays.length){
+    previewBanner(allHolidays[0]);
+    renderList();
+  } else {
+    document.getElementById('holidayList').innerHTML='<p class="status">No holiday data available.</p>';
+    document.getElementById('bTitle').textContent='Free WhatsApp delivery on all vouchers';
+  }
+}
+
+loadAll();
+</script>
