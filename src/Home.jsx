@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 
 import { Link } from "react-router-dom";
-import React, { useState, useEffect, useCallback, } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { initializeApp } from "firebase/app";
 import {
   getFirestore,
@@ -50,8 +50,7 @@ const genCode = () =>
   "VCH-" +
   [...Array(8)]
     .map(
-      () =>
-        "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"[Math.floor(Math.random() * 32)]
+      () => "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"[Math.floor(Math.random() * 32)],
     )
     .join("");
 
@@ -59,19 +58,185 @@ const QR_URL = (data) =>
   `https://api.qrserver.com/v1/create-qr-code/?size=160x160&color=1A2E1F&bgcolor=F5F0E8&data=${encodeURIComponent(data)}`;
 
 const getCatIcon = (cat) =>
-  ({ Wellness: "🧖", Beauty: "💅", Adventure: "🪂", "Dining & Wine": "🍷", Stays: "🏡", Skills: "📚", Other: "🎁" }[cat] || "🎁");
+  ({
+    Wellness: "🧖",
+    Beauty: "💅",
+    Adventure: "🪂",
+    "Dining & Wine": "🍷",
+    Stays: "🏡",
+    Skills: "📚",
+    Music: "🎵",
+    Events: "🎪",
+    Other: "🎁",
+  })[cat] || "🎁";
 
+// ─── Voucher Templates (seeded on new partner registration) ───────────────
 const VOUCHER_TEMPLATES = [
-  { name: "60-Min Full Body Massage",    category: "Wellness",     price: 550,  validMonths: 12, icon: "massage",     desc: "Swedish, deep tissue or aromatherapy of choice" },
-  { name: "Couples Spa Day",             category: "Wellness",     price: 1800, validMonths: 12, icon: "couples_spa", desc: "Side-by-side treatments, sparkling wine & lunch" },
-  { name: "Hot Stone Therapy",           category: "Wellness",     price: 750,  validMonths: 12, icon: "hot_stone",   desc: "90-min volcanic hot stone full-body treatment" },
-  { name: "Luxury Pamper Package",       category: "Beauty",       price: 480,  validMonths: 6,  icon: "pamper",      desc: "Gel mani, spa pedi & eyebrow shaping" },
-  { name: "Bridal Glow Package",         category: "Beauty",       price: 1950, validMonths: 12, icon: "bridal",      desc: "Full bridal prep: hair, makeup, nails & skin" },
-  { name: "Tandem Skydive",              category: "Adventure",    price: 2950, validMonths: 24, icon: "skydive",     desc: "15,000ft freefall with certified instructor" },
-  { name: "Hot Air Balloon Sunrise",     category: "Adventure",    price: 2400, validMonths: 18, icon: "balloon",     desc: "Champagne breakfast flight over Magaliesberg" },
-  { name: "Wine Tasting for Two",        category: "Dining & Wine",price: 620,  validMonths: 12, icon: "wine",        desc: "6-wine flight with artisan cheese board" },
-  { name: "Braai Masterclass",           category: "Dining & Wine",price: 695,  validMonths: 12, icon: "braai",       desc: "Learn to braai like a pro — fire, meat & stories" },
-  { name: "Photography Masterclass",     category: "Skills",       price: 890,  validMonths: 12, icon: "photography", desc: "Full-day hands-on photography workshop" },
+  // --- Existing categories ---
+  {
+    name: "60-Min Full Body Massage",
+    category: "Wellness",
+    price: 550,
+    validMonths: 12,
+    icon: "massage",
+    desc: "Swedish, deep tissue or aromatherapy of choice",
+  },
+  {
+    name: "Couples Spa Day",
+    category: "Wellness",
+    price: 1800,
+    validMonths: 12,
+    icon: "couples_spa",
+    desc: "Side-by-side treatments, sparkling wine & lunch",
+  },
+  {
+    name: "Hot Stone Therapy",
+    category: "Wellness",
+    price: 750,
+    validMonths: 12,
+    icon: "hot_stone",
+    desc: "90-min volcanic hot stone full-body treatment",
+  },
+  {
+    name: "Luxury Pamper Package",
+    category: "Beauty",
+    price: 480,
+    validMonths: 6,
+    icon: "pamper",
+    desc: "Gel mani, spa pedi & eyebrow shaping",
+  },
+  {
+    name: "Bridal Glow Package",
+    category: "Beauty",
+    price: 1950,
+    validMonths: 12,
+    icon: "bridal",
+    desc: "Full bridal prep: hair, makeup, nails & skin",
+  },
+  {
+    name: "Tandem Skydive",
+    category: "Adventure",
+    price: 2950,
+    validMonths: 24,
+    icon: "skydive",
+    desc: "15,000ft freefall with certified instructor",
+  },
+  {
+    name: "Hot Air Balloon Sunrise",
+    category: "Adventure",
+    price: 2400,
+    validMonths: 18,
+    icon: "balloon",
+    desc: "Champagne breakfast flight over Magaliesberg",
+  },
+  {
+    name: "Wine Tasting for Two",
+    category: "Dining & Wine",
+    price: 620,
+    validMonths: 12,
+    icon: "wine",
+    desc: "6-wine flight with artisan cheese board",
+  },
+  {
+    name: "Braai Masterclass",
+    category: "Dining & Wine",
+    price: 695,
+    validMonths: 12,
+    icon: "braai",
+    desc: "Learn to braai like a pro — fire, meat & stories",
+  },
+  {
+    name: "Photography Masterclass",
+    category: "Skills",
+    price: 890,
+    validMonths: 12,
+    icon: "photography",
+    desc: "Full-day hands-on photography workshop",
+  },
+
+  // --- NEW: Music category ---
+  {
+    name: "Live Jazz Evening for Two",
+    category: "Music",
+    price: 780,
+    validMonths: 12,
+    icon: "jazz",
+    desc: "Two tickets to an intimate live jazz performance at a premier South African venue, including welcome cocktails.",
+  },
+  {
+    name: "Private Guitar Lesson Bundle",
+    category: "Music",
+    price: 650,
+    validMonths: 12,
+    icon: "guitar",
+    desc: "4 x 45-minute private guitar lessons (acoustic or electric) with a professional musician. All levels welcome.",
+  },
+  {
+    name: "Studio Recording Session",
+    category: "Music",
+    price: 1200,
+    validMonths: 12,
+    icon: "studio",
+    desc: "3-hour professional studio recording session — perfect for soloists, bands or podcasters. Files delivered digitally.",
+  },
+  {
+    name: "Concert Ticket Voucher",
+    category: "Music",
+    price: 450,
+    validMonths: 6,
+    icon: "concert",
+    desc: "Redeemable against any single concert ticket purchased through our partner venues across South Africa.",
+  },
+  {
+    name: "DJ Workshop — Beginner",
+    category: "Music",
+    price: 990,
+    validMonths: 12,
+    icon: "dj",
+    desc: "Full-day intro to DJing: mixing, beatmatching, software and equipment provided. Walk away knowing how to DJ.",
+  },
+
+  // --- NEW: Events category ---
+  {
+    name: "Corporate Function Package",
+    category: "Events",
+    price: 4500,
+    validMonths: 12,
+    icon: "corporate",
+    desc: "Half-day venue hire for up to 30 guests including AV setup, catering allowance and on-site coordinator.",
+  },
+  {
+    name: "Birthday Celebration Bundle",
+    category: "Events",
+    price: 1850,
+    validMonths: 12,
+    icon: "birthday",
+    desc: "Private venue styling, décor package, welcome drinks for up to 20 guests and a personalised cake.",
+  },
+  {
+    name: "Kids Party Experience",
+    category: "Events",
+    price: 1200,
+    validMonths: 6,
+    icon: "kids_party",
+    desc: "2-hour fully-hosted kids party with entertainment, face painting, snacks and party packs for 15 children.",
+  },
+  {
+    name: "Wedding Anniversary Dinner",
+    category: "Events",
+    price: 2200,
+    validMonths: 12,
+    icon: "anniversary",
+    desc: "Private 5-course dinner for two at a top SA restaurant with a dedicated sommelier and personalised menu.",
+  },
+  {
+    name: "Festival General Access Pass",
+    category: "Events",
+    price: 580,
+    validMonths: 6,
+    icon: "festival",
+    desc: "One general-access pass redeemable at any participating South African food, arts or music festival.",
+  },
 ];
 
 async function seedUserVouchers(uid, businessName, email) {
@@ -222,6 +387,9 @@ button{font-family:var(--sans);cursor:pointer}
 .cbadge{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;padding:3px 9px;border-radius:4px;backdrop-filter:blur(8px)}
 .cbadge-pop{background:rgba(196,98,45,.9);color:white}
 .cbadge-sale{background:rgba(61,107,71,.9);color:white}
+/* NEW: category-specific badge tints */
+.cbadge-music{background:rgba(88,57,180,.88);color:white}
+.cbadge-events{background:rgba(180,57,120,.88);color:white}
 .card-body{padding:18px 18px 16px;flex:1;display:flex;flex-direction:column}
 .card-cat{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--terra);margin-bottom:6px}
 .card-name{font-family:var(--serif);font-size:1.2rem;font-weight:600;line-height:1.25;margin-bottom:5px;color:var(--forest)}
@@ -412,7 +580,6 @@ footer{background:var(--forest);color:rgba(245,240,232,.65);padding:64px 0 32px}
 .mobile-menu-divider{height:1px;background:var(--border);margin:8px 0}
 .mobile-menu-cta{margin-top:4px;padding:13px;background:var(--forest);color:var(--cream);border:none;border-radius:10px;font-family:var(--sans);font-size:.9rem;font-weight:700;cursor:pointer;text-align:center;width:100%}
 
-/* Responsive */
 @media(max-width:1024px){
   .featured-grid{grid-template-columns:1fr 1fr}
   .hiw-steps{grid-template-columns:1fr 1fr}
@@ -423,18 +590,13 @@ footer{background:var(--forest);color:rgba(245,240,232,.65);padding:64px 0 32px}
 }
 
 @media(max-width:768px){
-  /* Layout */
   .container{padding:0 16px}
   .section{padding:40px 0}
   .section-head{flex-direction:column;align-items:flex-start;gap:12px}
-
-  /* Nav */
   .nav-inner{padding:0 16px;gap:12px}
   .nav-search,.nav-links,.nav-cta{display:none}
   .nav-hamburger{display:flex}
   .nav{position:relative}
-
-  /* Hero */
   .hero{min-height:auto}
   .hero-content{padding:56px 20px 72px}
   .hero h1{font-size:2.6rem}
@@ -443,48 +605,26 @@ footer{background:var(--forest);color:rgba(245,240,232,.65);padding:64px 0 32px}
   .hero-search-field{border-right:none!important;border-bottom:1px solid var(--border);padding:14px 18px}
   .hero-search-btn{width:100%;justify-content:center;padding:16px;border-radius:0 0 12px 12px}
   .hero-trust{gap:12px}
-
-  /* Category pills */
   .cats-scroll{padding:0 16px}
-
-  /* Cards & grids */
   .featured-grid,.testi-grid,.cat-showcase{grid-template-columns:1fr}
   .cards-grid{grid-template-columns:1fr 1fr}
   .feat-card.large .feat-card-img{height:280px}
   .feat-card.small .feat-card-img{height:180px}
-
-  /* How it works */
   .hiw-steps{grid-template-columns:1fr}
   .hiw{padding:56px 0}
-
-  /* Occasions */
   .occ-grid{grid-template-columns:repeat(3,1fr)}
-
-  /* Trust bar */
   .trust-bar-inner{justify-content:flex-start;gap:20px}
   .trust-item:nth-child(n+4){display:none}
-
-  /* Testimonials */
   .testi-author{flex-wrap:wrap}
   .testi-product{margin-left:0;margin-top:4px}
-
-  /* Partners */
   .footer-grid{grid-template-columns:1fr}
   .footer-bottom{flex-direction:column;align-items:flex-start;gap:14px}
-
-  /* Auth */
   .auth-card{padding:32px 22px;border-radius:16px}
-
-  /* Modal */
   .modal-sheet{border-radius:20px 20px 0 0;max-height:96vh}
   .modal-inner{grid-template-columns:1fr}
   .modal-gallery img{min-height:220px}
   .modal-body{padding:24px}
-
-  /* Checkout drawer */
   .drawer{max-width:100%}
-
-  /* Admin form grid */
   .admin-grid-2{grid-template-columns:1fr!important}
 }
 
@@ -493,34 +633,21 @@ footer{background:var(--forest);color:rgba(245,240,232,.65);padding:64px 0 32px}
   .occ-grid{grid-template-columns:repeat(2,1fr)}
   .cat-showcase{grid-template-columns:1fr}
   .hiw-step{padding:26px 20px}
-
-  /* Nav */
   .nav-avatar{width:32px;height:32px;font-size:.72rem}
-
-  /* Hero */
   .hero h1{font-size:2.1rem}
   .hero-eyebrow{font-size:.65rem}
-
-  /* Trust bar — show only 2 */
   .trust-item:nth-child(n+3){display:none}
-
-  /* Testimonials */
   .testi-grid{grid-template-columns:1fr}
-
-  /* Newsletter */
   .nl-form{flex-direction:column;border-radius:12px}
   .nl-form input{border-radius:10px 10px 0 0;border-right:none}
   .nl-btn{padding:12px;border-radius:0 0 10px 10px;font-size:.85rem}
-
-  /* Footer */
   .footer-socials{gap:6px}
   .footer-payments{flex-wrap:wrap;gap:6px}
-
-  /* Auth */
   .auth-tabs{gap:2px}
   .auth-tab{font-size:.78rem;padding:8px}
 }
-  /* ── Bottom Navigation (mobile PWA) ──────────────────────────────────── */
+
+/* ── Bottom Navigation ──────────────────────────────────────────────────── */
 .bottom-nav{
   display:none;
   position:fixed;bottom:0;left:0;right:0;z-index:300;
@@ -555,7 +682,6 @@ footer{background:var(--forest);color:rgba(245,240,232,.65);padding:64px 0 32px}
   background:var(--terra);border:2px solid var(--cream);
 }
 
-/* Give page content room above bottom nav on mobile */
 @media(max-width:768px){
   .bottom-nav{display:block}
   body{padding-bottom:calc(68px + env(safe-area-inset-bottom))}
@@ -567,70 +693,109 @@ footer{background:var(--forest);color:rgba(245,240,232,.65);padding:64px 0 32px}
 // COMPONENTS
 // ══════════════════════════════════════════════════════════════════════════
 
-// ─── Announce Banner ──────────────────────────────────────────────────────
 function AnnounceBanner() {
-  const [banner, setBanner] = useState({ icon: "⏳", text: "Loading holiday promotions…", urgency: "", bg: "#1a2e1f" });
+  const [banner, setBanner] = useState({
+    icon: "⏳",
+    text: "Loading holiday promotions…",
+    urgency: "",
+    bg: "#1a2e1f",
+  });
 
   useEffect(() => {
-    // eslint-disable-next-line no-unused-vars
-    const SADC = ["ZA","ZW","BW","ZM","MZ","NA","LS","SZ","MW","TZ","MG","MU","SC","AO","CD","KM"];
-    const FLAGS = { ZA:"🇿🇦",ZW:"🇿🇼",BW:"🇧🇼",ZM:"🇿🇲",MZ:"🇲🇿",NA:"🇳🇦",LS:"🇱🇸",SZ:"🇸🇿",MW:"🇲🇼",TZ:"🇹🇿",MG:"🇲🇬",MU:"🇲🇺",SC:"🇸🇨",AO:"🇦🇴",CD:"🇨🇩",KM:"🇰🇲" };
     const CAT_MAP = {
-      Christmas:      { bg:"#3B6D11", icon:"🎄", cat:"Stays & Getaways" },
-      "New Year":     { bg:"#534AB7", icon:"🎆", cat:"Adventure" },
-      Easter:         { bg:"#0F6E56", icon:"🐣", cat:"Stays & Getaways" },
-      Women:          { bg:"#993556", icon:"👩", cat:"Wellness & Spa" },
-      Youth:          { bg:"#185FA5", icon:"🎓", cat:"Skills & Courses" },
-      Heritage:       { bg:"#854F0B", icon:"🏺", cat:"Dining & Wine" },
-      Freedom:        { bg:"#534AB7", icon:"🏅", cat:"Adventure" },
-      Workers:        { bg:"#0F6E56", icon:"💪", cat:"Wellness & Spa" },
-      default:        { bg:"#0F6E56", icon:"🎁", cat:"Experiences" },
+      Christmas: { bg: "#3B6D11", icon: "🎄", cat: "Stays & Getaways" },
+      "New Year": { bg: "#534AB7", icon: "🎆", cat: "Adventure" },
+      Easter: { bg: "#0F6E56", icon: "🐣", cat: "Stays & Getaways" },
+      Women: { bg: "#993556", icon: "👩", cat: "Wellness & Spa" },
+      Youth: { bg: "#185FA5", icon: "🎓", cat: "Skills & Courses" },
+      Heritage: { bg: "#854F0B", icon: "🏺", cat: "Dining & Wine" },
+      Freedom: { bg: "#534AB7", icon: "🏅", cat: "Adventure" },
+      Workers: { bg: "#0F6E56", icon: "💪", cat: "Wellness & Spa" },
+      default: { bg: "#0F6E56", icon: "🎁", cat: "Experiences" },
     };
-
     const getInfo = (name) => {
-      const k = Object.keys(CAT_MAP).find(k => k !== "default" && name.toLowerCase().includes(k.toLowerCase()));
+      const k = Object.keys(CAT_MAP).find(
+        (k) => k !== "default" && name.toLowerCase().includes(k.toLowerCase()),
+      );
       return CAT_MAP[k] || CAT_MAP.default;
     };
     const daysUntil = (ds) => {
-      const t = new Date(); t.setHours(0,0,0,0);
-      const d = new Date(ds); d.setHours(0,0,0,0);
+      const t = new Date();
+      t.setHours(0, 0, 0, 0);
+      const d = new Date(ds);
+      d.setHours(0, 0, 0, 0);
       return Math.round((d - t) / 86400000);
     };
-
     let timer;
     (async () => {
       const year = new Date().getFullYear();
       try {
-        const r = await fetch(`https://date.nager.at/api/v3/PublicHolidays/${year}/ZA`);
+        const r = await fetch(
+          `https://date.nager.at/api/v3/PublicHolidays/${year}/ZA`,
+        );
         const data = await r.json();
-        const today = new Date(); today.setHours(0,0,0,0);
-        const upcoming = data.filter(h => new Date(h.date) >= today).sort((a,b) => new Date(a.date)-new Date(b.date));
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const upcoming = data
+          .filter((h) => new Date(h.date) >= today)
+          .sort((a, b) => new Date(a.date) - new Date(b.date));
         if (!upcoming.length) return;
-
         let idx = 0;
         const update = () => {
           const h = upcoming[idx % upcoming.length];
           const days = daysUntil(h.date);
           const info = getInfo(h.name);
-          const urgency = days === 0 ? "🔥 Today!" : days <= 3 ? `🔥 ${days}d left!` : days <= 7 ? `${days} days away` : "";
-          setBanner({ icon: info.icon, text: `🇿🇦 <strong>${h.name}</strong> — Gift a ${info.cat} voucher`, urgency, bg: info.bg });
+          const urgency =
+            days === 0
+              ? "🔥 Today!"
+              : days <= 3
+                ? `🔥 ${days}d left!`
+                : days <= 7
+                  ? `${days} days away`
+                  : "";
+          setBanner({
+            icon: info.icon,
+            text: `🇿🇦 <strong>${h.name}</strong> — Gift a ${info.cat} voucher`,
+            urgency,
+            bg: info.bg,
+          });
           idx++;
         };
         update();
         timer = setInterval(update, 5000);
       } catch {}
     })();
-
     return () => clearInterval(timer);
   }, []);
 
   return (
     <div className="announce" style={{ background: banner.bg, padding: 0 }}>
-      <div style={{ padding: "10px 20px", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, flexWrap: "wrap" }}>
+      <div
+        style={{
+          padding: "10px 20px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 10,
+          flexWrap: "wrap",
+        }}
+      >
         <span>{banner.icon}</span>
-        <span style={{ fontSize: ".78rem", fontWeight: 500 }} dangerouslySetInnerHTML={{ __html: banner.text }} />
+        <span
+          style={{ fontSize: ".78rem", fontWeight: 500 }}
+          dangerouslySetInnerHTML={{ __html: banner.text }}
+        />
         {banner.urgency && (
-          <span style={{ background: "rgba(255,255,255,.2)", borderRadius: 4, padding: "1px 7px", fontSize: ".7rem" }}>{banner.urgency}</span>
+          <span
+            style={{
+              background: "rgba(255,255,255,.2)",
+              borderRadius: 4,
+              padding: "1px 7px",
+              fontSize: ".7rem",
+            }}
+          >
+            {banner.urgency}
+          </span>
         )}
       </div>
     </div>
@@ -639,13 +804,20 @@ function AnnounceBanner() {
 
 function Nav({ page, setPage, user, onLogout, onSearch }) {
   const [mobileOpen, setMobileOpen] = useState(false);
-
   const initials = user
-    ? (user.displayName || user.email || "P").split(" ").map(w => w[0]).join("").substring(0, 2).toUpperCase()
+    ? (user.displayName || user.email || "P")
+        .split(" ")
+        .map((w) => w[0])
+        .join("")
+        .substring(0, 2)
+        .toUpperCase()
     : "P";
-
-  const navLinks = [["store","Experiences"],["partners","For Partners"],["redeem","Redeem"],["admin","Admin"]];
-
+  const navLinks = [
+    ["store", "Experiences"],
+    ["partners", "For Partners"],
+    ["redeem", "Redeem"],
+    ["admin", "Admin"],
+  ];
   const handleNavClick = (p) => {
     setPage(p);
     setMobileOpen(false);
@@ -657,79 +829,127 @@ function Nav({ page, setPage, user, onLogout, onSearch }) {
         <button className="nav-logo" onClick={() => handleNavClick("store")}>
           Afri<span>Voucher</span>
         </button>
-
-        {/* Desktop search */}
         <div className="nav-search">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color:"var(--muted)",flexShrink:0 }}>
-            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            style={{ color: "var(--muted)", flexShrink: 0 }}
+          >
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.35-4.35" />
           </svg>
-          <input placeholder="Spa day, wine tasting, safari…" onChange={e => onSearch(e.target.value)} />
+          <input
+            placeholder="Spa day, wine tasting, live music, events…"
+            onChange={(e) => onSearch(e.target.value)}
+          />
         </div>
-
-        {/* Desktop links */}
         <div className="nav-links">
           {navLinks.map(([p, label]) => (
-            <button key={p} className={`nav-link${page === p ? " active" : ""}`} onClick={() => handleNavClick(p)}>{label}</button>
+            <button
+              key={p}
+              className={`nav-link${page === p ? " active" : ""}`}
+              onClick={() => handleNavClick(p)}
+            >
+              {label}
+            </button>
           ))}
         </div>
-
-        <button className="nav-cta" onClick={() => handleNavClick("partners")}>List Your Business</button>
-
+        <button className="nav-cta" onClick={() => handleNavClick("partners")}>
+          List Your Business
+        </button>
         {user && (
-          <button className="nav-logout" onClick={onLogout}>Sign Out</button>
+          <button className="nav-logout" onClick={onLogout}>
+            Sign Out
+          </button>
         )}
-
         <div
           className="nav-avatar"
           onClick={() => !user && handleNavClick("auth")}
           title={user?.email || "Partner Login"}
-        >{initials}</div>
-
-        {/* Hamburger — mobile only */}
+        >
+          {initials}
+        </div>
         <button
           className={`nav-hamburger${mobileOpen ? " open" : ""}`}
-          onClick={() => setMobileOpen(o => !o)}
+          onClick={() => setMobileOpen((o) => !o)}
           aria-label="Menu"
         >
-          <span /><span /><span />
+          <span />
+          <span />
+          <span />
         </button>
       </div>
-
-      {/* Mobile dropdown */}
       <div className={`mobile-menu${mobileOpen ? " open" : ""}`}>
-        {/* Search field on mobile */}
-        <div style={{ display:"flex",alignItems:"center",gap:10,background:"var(--white)",border:"1.5px solid var(--border2)",borderRadius:10,padding:"10px 14px",marginBottom:6 }}>
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color:"var(--muted)",flexShrink:0 }}>
-            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            background: "var(--white)",
+            border: "1.5px solid var(--border2)",
+            borderRadius: 10,
+            padding: "10px 14px",
+            marginBottom: 6,
+          }}
+        >
+          <svg
+            width="15"
+            height="15"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            style={{ color: "var(--muted)", flexShrink: 0 }}
+          >
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.35-4.35" />
           </svg>
           <input
-            placeholder="Spa, safari, wine tasting…"
-            onChange={e => onSearch(e.target.value)}
-            style={{ border:"none",outline:"none",background:"transparent",fontFamily:"var(--sans)",fontSize:".88rem",color:"var(--text)",width:"100%" }}
+            placeholder="Spa, safari, music, events…"
+            onChange={(e) => onSearch(e.target.value)}
+            style={{
+              border: "none",
+              outline: "none",
+              background: "transparent",
+              fontFamily: "var(--sans)",
+              fontSize: ".88rem",
+              color: "var(--text)",
+              width: "100%",
+            }}
           />
         </div>
-
         <div className="mobile-menu-divider" />
-
         {navLinks.map(([p, label]) => (
           <button
             key={p}
             className={`mobile-menu-link${page === p ? " active" : ""}`}
             onClick={() => handleNavClick(p)}
-          >{label}</button>
+          >
+            {label}
+          </button>
         ))}
-
         <div className="mobile-menu-divider" />
-        <button className="mobile-menu-cta" onClick={() => handleNavClick("partners")}>
+        <button
+          className="mobile-menu-cta"
+          onClick={() => handleNavClick("partners")}
+        >
           List Your Business
         </button>
-
         {user && (
           <button
             className="mobile-menu-link"
-            onClick={() => { onLogout(); setMobileOpen(false); }}
-            style={{ color:"var(--terra)",marginTop:4 }}
-          >Sign Out</button>
+            onClick={() => {
+              onLogout();
+              setMobileOpen(false);
+            }}
+            style={{ color: "var(--terra)", marginTop: 4 }}
+          >
+            Sign Out
+          </button>
         )}
       </div>
     </nav>
@@ -740,39 +960,88 @@ function Nav({ page, setPage, user, onLogout, onSearch }) {
 function VoucherCard({ voucher, onOpen }) {
   const imgSrc = voucher.imageUrl || voucher.img;
   const descText = (voucher.desc || "").substring(0, 90);
+  // Pick a badge class based on category
+  const catBadgeClass =
+    voucher.cat === "Music"
+      ? "cbadge cbadge-music"
+      : voucher.cat === "Events"
+        ? "cbadge cbadge-events"
+        : "cbadge cbadge-pop";
+
   return (
     <div className="card" onClick={() => onOpen(voucher)}>
       <div className="card-img">
-        {imgSrc
-          ? <img src={imgSrc} alt={voucher.name} loading="lazy" style={{ width:"100%",height:"100%",objectFit:"cover" }} />
-          : <div className="card-img-placeholder">{voucher.icon || "🎁"}</div>
-        }
+        {imgSrc ? (
+          <img
+            src={imgSrc}
+            alt={voucher.name}
+            loading="lazy"
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
+        ) : (
+          <div className="card-img-placeholder">
+            {voucher.icon || getCatIcon(voucher.cat) || "🎁"}
+          </div>
+        )}
         <div className="card-badge-row">
-          {(voucher.tags || []).slice(0, 2).map(t => (
-            <span key={t} className="cbadge cbadge-pop">{t}</span>
+          {(voucher.tags || []).slice(0, 2).map((t) => (
+            <span key={t} className={catBadgeClass}>
+              {t}
+            </span>
           ))}
-          {voucher.source === "firebase" && <span className="cbadge cbadge-sale">Partner</span>}
+          {voucher.source === "firebase" && (
+            <span className="cbadge cbadge-sale">Partner</span>
+          )}
         </div>
       </div>
       <div className="card-body">
         <div className="card-cat">{voucher.cat}</div>
         <div className="card-name">{voucher.name}</div>
-        <div className="card-partner">📍 {voucher.partner} · {voucher.city}</div>
-        <div className="card-desc">{descText}{descText.length >= 90 ? "…" : ""}</div>
+        <div className="card-partner">
+          📍 {voucher.partner} · {voucher.city}
+        </div>
+        <div className="card-desc">
+          {descText}
+          {descText.length >= 90 ? "…" : ""}
+        </div>
         <div className="card-includes">
-          {(voucher.includes || []).slice(0, 3).map(i => <span key={i} className="inc">✓ {i}</span>)}
-          {(voucher.includes || []).length > 3 && <span className="inc">+{voucher.includes.length - 3} more</span>}
+          {(voucher.includes || []).slice(0, 3).map((i) => (
+            <span key={i} className="inc">
+              ✓ {i}
+            </span>
+          ))}
+          {(voucher.includes || []).length > 3 && (
+            <span className="inc">+{voucher.includes.length - 3} more</span>
+          )}
         </div>
         <div className="card-footer">
           <div>
             <span className="card-price-from">from</span>
-            <div className="card-price-val"><small>R</small>{Number(voucher.price).toLocaleString()}</div>
-            <div style={{ fontSize:".68rem",color:"var(--sub)",marginTop:2 }}>Valid {voucher.expiry || "12 months"}</div>
+            <div className="card-price-val">
+              <small>R</small>
+              {Number(voucher.price).toLocaleString()}
+            </div>
+            <div
+              style={{ fontSize: ".68rem", color: "var(--sub)", marginTop: 2 }}
+            >
+              Valid {voucher.expiry || "12 months"}
+            </div>
           </div>
-          {voucher.rating > 0
-            ? <div className="card-rating"><span className="star">★</span> {voucher.rating} <span style={{ color:"var(--muted)",fontWeight:400 }}>({voucher.reviews})</span></div>
-            : <div className="card-rating" style={{ color:"var(--leaf)",fontSize:".72rem" }}>✦ New</div>
-          }
+          {voucher.rating > 0 ? (
+            <div className="card-rating">
+              <span className="star">★</span> {voucher.rating}{" "}
+              <span style={{ color: "var(--muted)", fontWeight: 400 }}>
+                ({voucher.reviews})
+              </span>
+            </div>
+          ) : (
+            <div
+              className="card-rating"
+              style={{ color: "var(--leaf)", fontSize: ".72rem" }}
+            >
+              ✦ New
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -788,16 +1057,41 @@ function StorePage({ vouchers, loading, setPage }) {
   const [drawerVoucher, setDrawerVoucher] = useState(null);
   const [checkoutSuccess, setCheckoutSuccess] = useState(null);
 
-  const allCats = ["All", "Wellness", "Beauty", "Adventure", "Dining & Wine", "Stays", "Skills"];
-  const catIcons = { All:"🌟", Wellness:"🧖", Beauty:"💅", Adventure:"🪂", "Dining & Wine":"🍷", Stays:"🏡", Skills:"📚" };
+  // ── Updated category list now includes Music and Events ─────────────────
+  const allCats = [
+    "All",
+    "Wellness",
+    "Beauty",
+    "Adventure",
+    "Dining & Wine",
+    "Stays",
+    "Skills",
+    "Music",
+    "Events",
+  ];
+  const catIcons = {
+    All: "🌟",
+    Wellness: "🧖",
+    Beauty: "💅",
+    Adventure: "🪂",
+    "Dining & Wine": "🍷",
+    Stays: "🏡",
+    Skills: "📚",
+    Music: "🎵", // ← NEW
+    Events: "🎪", // ← NEW
+  };
 
   const filtered = vouchers
-    .filter(v => currentCat === "All" || v.cat === currentCat)
-    .filter(v => {
+    .filter((v) => currentCat === "All" || v.cat === currentCat)
+    .filter((v) => {
       if (!searchQ.trim()) return true;
       const q = searchQ.toLowerCase();
-      return (v.name||"").toLowerCase().includes(q) || (v.desc||"").toLowerCase().includes(q) ||
-             (v.cat||"").toLowerCase().includes(q) || (v.city||"").toLowerCase().includes(q);
+      return (
+        (v.name || "").toLowerCase().includes(q) ||
+        (v.desc || "").toLowerCase().includes(q) ||
+        (v.cat || "").toLowerCase().includes(q) ||
+        (v.city || "").toLowerCase().includes(q)
+      );
     })
     .sort((a, b) => {
       if (sortVal === "price-asc") return a.price - b.price;
@@ -806,10 +1100,19 @@ function StorePage({ vouchers, loading, setPage }) {
       return 0;
     });
 
-  const catCount = (cat) => cat === "All" ? vouchers.length : vouchers.filter(v => v.cat === cat).length;
+  const catCount = (cat) =>
+    cat === "All"
+      ? vouchers.length
+      : vouchers.filter((v) => v.cat === cat).length;
 
-  const handleCheckout = async ({ buyerName, buyerEmail, recipientPhone, recipientName, note }) => {
-    await new Promise(r => setTimeout(r, 2000));
+  const handleCheckout = async ({
+    buyerName,
+    buyerEmail,
+    recipientPhone,
+    recipientName,
+    note,
+  }) => {
+    await new Promise((r) => setTimeout(r, 2000));
     const code = genCode();
     setCheckoutSuccess({ code, voucher: drawerVoucher, recipientPhone });
   };
@@ -820,24 +1123,53 @@ function StorePage({ vouchers, loading, setPage }) {
       <section className="hero">
         <div className="hero-bg" />
         <div className="hero-content">
-          <div className="hero-eyebrow"><span>🇿🇦</span> South Africa's #1 Gift Experience Marketplace</div>
-          <h1>Give the gift of <em>unforgettable</em> experiences.</h1>
-          <p>From Magaliesberg safaris to Cape Town wine estates — browse 200+ curated South African experiences, delivered instantly via WhatsApp.</p>
+          <div className="hero-eyebrow">
+            <span>🇿🇦</span> South Africa's #1 Gift Experience Marketplace
+          </div>
+          <h1>
+            Give the gift of <em>unforgettable</em> experiences.
+          </h1>
+          <p>
+            From Magaliesberg safaris to Cape Town jazz nights — browse 200+
+            curated South African experiences, delivered instantly via WhatsApp.
+          </p>
           <div className="hero-search">
-            <div className="hero-search-field" style={{ flex:"1.2" }}>
+            <div className="hero-search-field" style={{ flex: "1.2" }}>
               <span>🔍</span>
-              <div><span className="hsf-label">What experience?</span><div className="hsf-val">Spa, safari, wine tasting…</div></div>
+              <div>
+                <span className="hsf-label">What experience?</span>
+                <div className="hsf-val">Spa, safari, live music…</div>
+              </div>
             </div>
-            <div className="hero-search-field" style={{ flex:"0.8" }}>
+            <div className="hero-search-field" style={{ flex: "0.8" }}>
               <span>📍</span>
-              <div><span className="hsf-label">Where?</span><div className="hsf-val">Anywhere in SA</div></div>
+              <div>
+                <span className="hsf-label">Where?</span>
+                <div className="hsf-val">Anywhere in SA</div>
+              </div>
             </div>
-            <div className="hero-search-field" style={{ flex:"0.7", borderRight:"none" }}>
+            <div
+              className="hero-search-field"
+              style={{ flex: "0.7", borderRight: "none" }}
+            >
               <span>💰</span>
-              <div><span className="hsf-label">Budget</span><div className="hsf-val">Any price</div></div>
+              <div>
+                <span className="hsf-label">Budget</span>
+                <div className="hsf-val">Any price</div>
+              </div>
             </div>
             <button className="hero-search-btn">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.35-4.35" />
+              </svg>
               Search
             </button>
           </div>
@@ -849,12 +1181,17 @@ function StorePage({ vouchers, loading, setPage }) {
         </div>
       </section>
 
-      {/* Category pills */}
+      {/* Category pills — scrollable, includes Music + Events */}
       <div className="cats-section">
         <div className="cats-scroll">
-          {allCats.map(cat => (
-            <button key={cat} className={`cat-pill${currentCat === cat ? " active" : ""}`} onClick={() => setCurrentCat(cat)}>
-              <span>{catIcons[cat]}</span> {cat === "All" ? "All Experiences" : cat}
+          {allCats.map((cat) => (
+            <button
+              key={cat}
+              className={`cat-pill${currentCat === cat ? " active" : ""}`}
+              onClick={() => setCurrentCat(cat)}
+            >
+              <span>{catIcons[cat]}</span>{" "}
+              {cat === "All" ? "All Experiences" : cat}
               <span className="cat-pill-count">{catCount(cat)}</span>
             </button>
           ))}
@@ -868,44 +1205,110 @@ function StorePage({ vouchers, loading, setPage }) {
             <div>
               <p className="section-eyebrow">✦ Curated Picks</p>
               <h2 className="section-title">Featured Experiences</h2>
-              <p className="section-sub">Hand-selected from our partner listings</p>
+              <p className="section-sub">
+                Hand-selected from our partner listings
+              </p>
             </div>
             <button className="see-all">View all →</button>
           </div>
           <div className="featured-grid">
             {vouchers[0] && (
-              <div className="feat-card large" onClick={() => setSelectedVoucher(vouchers[0])}>
+              <div
+                className="feat-card large"
+                onClick={() => setSelectedVoucher(vouchers[0])}
+              >
                 <div className="feat-card-img">
-                  {vouchers[0].imageUrl
-                    ? <img src={vouchers[0].imageUrl} alt={vouchers[0].name} style={{ width:"100%",height:"100%",objectFit:"cover" }} />
-                    : <div style={{ width:"100%",height:"100%",background:"var(--cream2)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"3rem" }}>{vouchers[0].icon}</div>
-                  }
+                  {vouchers[0].imageUrl ? (
+                    <img
+                      src={vouchers[0].imageUrl}
+                      alt={vouchers[0].name}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
+                    />
+                  ) : (
+                    <div
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        background: "var(--cream2)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: "3rem",
+                      }}
+                    >
+                      {vouchers[0].icon}
+                    </div>
+                  )}
                   <div className="feat-badge">Featured</div>
                 </div>
                 <div className="feat-card-overlay">
-                  <div className="feat-partner">{vouchers[0].partner} · {vouchers[0].city}</div>
+                  <div className="feat-partner">
+                    {vouchers[0].partner} · {vouchers[0].city}
+                  </div>
                   <div className="feat-name">{vouchers[0].name}</div>
                   <div className="feat-meta">
-                    <div className="feat-price"><small>R</small>{Number(vouchers[0].price).toLocaleString()}</div>
-                    <div className="feat-rating" style={{ color:"var(--gold2)",fontSize:".72rem" }}>✦ New</div>
+                    <div className="feat-price">
+                      <small>R</small>
+                      {Number(vouchers[0].price).toLocaleString()}
+                    </div>
+                    <div
+                      className="feat-rating"
+                      style={{ color: "var(--gold2)", fontSize: ".72rem" }}
+                    >
+                      ✦ New
+                    </div>
                   </div>
                 </div>
               </div>
             )}
-            <div style={{ display:"flex",flexDirection:"column",gap:16 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
               {vouchers.slice(1, 3).map((v, i) => (
-                <div key={i} className="feat-card small" onClick={() => setSelectedVoucher(v)}>
+                <div
+                  key={i}
+                  className="feat-card small"
+                  onClick={() => setSelectedVoucher(v)}
+                >
                   <div className="feat-card-img">
-                    {v.imageUrl
-                      ? <img src={v.imageUrl} alt={v.name} style={{ width:"100%",height:"100%",objectFit:"cover" }} />
-                      : <div style={{ width:"100%",height:"100%",background:"var(--cream2)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"2.5rem" }}>{v.icon}</div>
-                    }
+                    {v.imageUrl ? (
+                      <img
+                        src={v.imageUrl}
+                        alt={v.name}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                        }}
+                      />
+                    ) : (
+                      <div
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          background: "var(--cream2)",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: "2.5rem",
+                        }}
+                      >
+                        {v.icon}
+                      </div>
+                    )}
                   </div>
                   <div className="feat-card-overlay">
-                    <div className="feat-partner">{v.partner} · {v.city}</div>
+                    <div className="feat-partner">
+                      {v.partner} · {v.city}
+                    </div>
                     <div className="feat-name">{v.name}</div>
                     <div className="feat-meta">
-                      <div className="feat-price"><small>R</small>{Number(v.price).toLocaleString()}</div>
+                      <div className="feat-price">
+                        <small>R</small>
+                        {Number(v.price).toLocaleString()}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -918,10 +1321,19 @@ function StorePage({ vouchers, loading, setPage }) {
       {/* Trust bar */}
       <div className="trust-bar">
         <div className="trust-bar-inner">
-          {[["🔒","Secure Payments","PayFast encrypted checkout"],["📱","Instant WhatsApp","Voucher delivered in seconds"],["✅","Verified Partners","All businesses vetted by us"],["🔄","Flexible Bookings","Reschedule anytime"],["🎁","Custom Messages","Personalise every gift"]].map(([icon,title,desc]) => (
+          {[
+            ["🔒", "Secure Payments", "PayFast encrypted checkout"],
+            ["📱", "Instant WhatsApp", "Voucher delivered in seconds"],
+            ["✅", "Verified Partners", "All businesses vetted by us"],
+            ["🔄", "Flexible Bookings", "Reschedule anytime"],
+            ["🎁", "Custom Messages", "Personalise every gift"],
+          ].map(([icon, title, desc]) => (
             <div key={title} className="trust-item">
               <div className="trust-icon">{icon}</div>
-              <div className="trust-text"><h4>{title}</h4><p>{desc}</p></div>
+              <div className="trust-text">
+                <h4>{title}</h4>
+                <p>{desc}</p>
+              </div>
             </div>
           ))}
         </div>
@@ -932,17 +1344,31 @@ function StorePage({ vouchers, loading, setPage }) {
         <div className="section-head">
           <div>
             <p className="section-eyebrow">✦ Browse</p>
-            <h2 className="section-title">{currentCat === "All" ? "All Experiences" : currentCat}</h2>
+            <h2 className="section-title">
+              {currentCat === "All" ? "All Experiences" : currentCat}
+            </h2>
             <p className="section-sub">
-              {loading ? "Loading partner experiences..." :
-                filtered.length === 0 ? "No experiences listed yet" :
-                `Showing ${filtered.length} experience${filtered.length !== 1 ? "s" : ""} from our SA partners`}
+              {loading
+                ? "Loading partner experiences..."
+                : filtered.length === 0
+                  ? "No experiences listed yet"
+                  : `Showing ${filtered.length} experience${filtered.length !== 1 ? "s" : ""} from our SA partners`}
             </p>
           </div>
           <select
             value={sortVal}
-            onChange={e => setSortVal(e.target.value)}
-            style={{ padding:"8px 14px",border:"1.5px solid var(--border2)",borderRadius:8,fontFamily:"var(--sans)",fontSize:".8rem",color:"var(--sub)",background:"var(--white)",outline:"none",cursor:"pointer" }}
+            onChange={(e) => setSortVal(e.target.value)}
+            style={{
+              padding: "8px 14px",
+              border: "1.5px solid var(--border2)",
+              borderRadius: 8,
+              fontFamily: "var(--sans)",
+              fontSize: ".8rem",
+              color: "var(--sub)",
+              background: "var(--white)",
+              outline: "none",
+              cursor: "pointer",
+            }}
           >
             <option value="default">Sort: Featured</option>
             <option value="price-asc">Price: Low to High</option>
@@ -951,75 +1377,190 @@ function StorePage({ vouchers, loading, setPage }) {
           </select>
         </div>
         <div className="cards-grid">
-          {loading
-            ? <div style={{ gridColumn:"1/-1",textAlign:"center",padding:"80px 20px" }}>
-                <div style={{ fontSize:"2rem",marginBottom:12 }}>⏳</div>
-                <p style={{ color:"var(--muted)" }}>Loading experiences from our partners...</p>
-              </div>
-            : filtered.length === 0
-              ? <div style={{ gridColumn:"1/-1",textAlign:"center",padding:"80px 20px" }}>
-                  <div style={{ fontSize:"3rem",marginBottom:16 }}>🎁</div>
-                  <h3 style={{ fontFamily:"var(--serif)",fontSize:"1.4rem",color:"var(--forest)",marginBottom:8 }}>No experiences yet</h3>
-                  <p style={{ color:"var(--muted)",fontSize:".88rem" }}>Partners are setting up their vouchers. Check back soon!</p>
-                </div>
-              : filtered.map(v => <VoucherCard key={v.id} voucher={v} onOpen={setSelectedVoucher} />)
-          }
+          {loading ? (
+            <div
+              style={{
+                gridColumn: "1/-1",
+                textAlign: "center",
+                padding: "80px 20px",
+              }}
+            >
+              <div style={{ fontSize: "2rem", marginBottom: 12 }}>⏳</div>
+              <p style={{ color: "var(--muted)" }}>
+                Loading experiences from our partners...
+              </p>
+            </div>
+          ) : filtered.length === 0 ? (
+            <div
+              style={{
+                gridColumn: "1/-1",
+                textAlign: "center",
+                padding: "80px 20px",
+              }}
+            >
+              <div style={{ fontSize: "3rem", marginBottom: 16 }}>🎁</div>
+              <h3
+                style={{
+                  fontFamily: "var(--serif)",
+                  fontSize: "1.4rem",
+                  color: "var(--forest)",
+                  marginBottom: 8,
+                }}
+              >
+                No experiences yet
+              </h3>
+              <p style={{ color: "var(--muted)", fontSize: ".88rem" }}>
+                Partners are setting up their vouchers. Check back soon!
+              </p>
+            </div>
+          ) : (
+            filtered.map((v) => (
+              <VoucherCard key={v.id} voucher={v} onOpen={setSelectedVoucher} />
+            ))
+          )}
         </div>
       </section>
 
-      {/* Occasions */}
+      {/* Occasions — added Music & Events-relevant occasions */}
       <section className="occasions">
         <div className="container">
           <div className="section-head">
             <div>
               <p className="section-eyebrow">✦ Gift by Occasion</p>
               <h2 className="section-title">What are you celebrating?</h2>
-              <p className="section-sub">Find the perfect voucher for every moment</p>
+              <p className="section-sub">
+                Find the perfect voucher for every moment
+              </p>
             </div>
           </div>
           <div className="occ-grid">
-            {[["💐","Mother's Day"],["🎂","Birthday"],["💍","Anniversary"],["💼","Corporate"],["🎓","Graduation"],["💑","Valentine's"]].map(([icon,name]) => (
-              <div key={name} className="occ"><span className="occ-icon">{icon}</span><div className="occ-name">{name}</div></div>
+            {[
+              ["💐", "Mother's Day"],
+              ["🎂", "Birthday"],
+              ["💍", "Anniversary"],
+              ["🎵", "Concert Night"],
+              ["🎪", "Private Function"],
+              ["🎓", "Graduation"],
+            ].map(([icon, name]) => (
+              <div key={name} className="occ">
+                <span className="occ-icon">{icon}</span>
+                <div className="occ-name">{name}</div>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Category Showcase */}
+      {/* Category Showcase — now includes Music + Events rows */}
       <section className="section container">
-        <div className="section-head"><div><p className="section-eyebrow">✦ Browse by Category</p><h2 className="section-title">Explore experiences</h2></div></div>
+        <div className="section-head">
+          <div>
+            <p className="section-eyebrow">✦ Browse by Category</p>
+            <h2 className="section-title">Explore experiences</h2>
+          </div>
+        </div>
         <div className="cat-showcase">
           {[
-            ["Adventure","🪂","https://images.unsplash.com/photo-1503220317375-aaad61436b1b?w=600&q=80","4 experiences from R850"],
-            ["Wellness","🧖","https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80","3 experiences from R550"],
-            ["Dining & Wine","🍷","https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=80","4 experiences from R560"],
+            [
+              "Adventure",
+              "🪂",
+              "https://images.unsplash.com/photo-1503220317375-aaad61436b1b?w=600&q=80",
+              "4 experiences from R850",
+            ],
+            [
+              "Wellness",
+              "🧖",
+              "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80",
+              "3 experiences from R550",
+            ],
+            [
+              "Dining & Wine",
+              "🍷",
+              "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=80",
+              "4 experiences from R560",
+            ],
+            [
+              "Music",
+              "🎵",
+              "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&q=80",
+              "5 experiences from R450",
+            ],
+            [
+              "Events",
+              "🎪",
+              "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80",
+              "5 experiences from R580",
+            ],
+            [
+              "Skills",
+              "📚",
+              "https://images.unsplash.com/photo-1484417894907-623942c8ee29?w=600&q=80",
+              "2 experiences from R650",
+            ],
           ].map(([cat, icon, img, sub]) => (
-            <div key={cat} className="cat-block" onClick={() => setCurrentCat(cat)}>
-              <div className="cat-block-img"><img src={img} alt={cat} style={{ width:"100%",height:"100%",objectFit:"cover" }} /></div>
+            <div
+              key={cat}
+              className="cat-block"
+              onClick={() => setCurrentCat(cat)}
+            >
+              <div className="cat-block-img">
+                <img
+                  src={img}
+                  alt={cat}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              </div>
               <div className="cat-block-overlay">
                 <span className="cat-block-icon">{icon}</span>
-                <h3>{cat}</h3><p>{sub}</p>
+                <h3>{cat}</h3>
+                <p>{sub}</p>
               </div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Testimonials */}
+      {/* Testimonials — added music/events reviews */}
       <section className="section container">
-        <div className="section-head"><div><p className="section-eyebrow">✦ Reviews</p><h2 className="section-title">What people are saying</h2></div></div>
+        <div className="section-head">
+          <div>
+            <p className="section-eyebrow">✦ Reviews</p>
+            <h2 className="section-title">What people are saying</h2>
+          </div>
+        </div>
         <div className="testi-grid">
           {[
-            { init:"TN", name:"Thabo N.", loc:"Johannesburg", prod:"Couples Spa Day", text:"Bought this for my wife's birthday. She got the code on WhatsApp within seconds and absolutely loved the spa day." },
-            { init:"SB", name:"Sarah B.",  loc:"Pretoria",     prod:"Sunrise Balloon",  text:"The hot air balloon sunrise was absolutely magical. The whole booking process from WhatsApp to showing up took less than a minute." },
-            { init:"MK", name:"Michelle K.", loc:"Cape Town",  prod:"Corporate Gifting", text:"Our team used AfriVoucher for year-end gifts. 50 vouchers sent in under 10 minutes. Every employee loved their experience." },
-          ].map(t => (
+            {
+              init: "TN",
+              name: "Thabo N.",
+              loc: "Johannesburg",
+              prod: "Couples Spa Day",
+              text: "Bought this for my wife's birthday. She got the code on WhatsApp within seconds and absolutely loved the spa day.",
+            },
+            {
+              init: "SB",
+              name: "Sarah B.",
+              loc: "Pretoria",
+              prod: "Live Jazz Evening",
+              text: "We used the jazz evening voucher for our anniversary. The venue was intimate and the welcome cocktails were a lovely touch. Will gift again.",
+            },
+            {
+              init: "MK",
+              name: "Michelle K.",
+              loc: "Cape Town",
+              prod: "Corporate Function",
+              text: "Organised a half-day corporate function for 25 people. The on-site coordinator handled everything — our team was blown away.",
+            },
+          ].map((t) => (
             <div key={t.name} className="testi">
               <div className="testi-stars">⭐⭐⭐⭐⭐</div>
               <div className="testi-text">"{t.text}"</div>
               <div className="testi-author">
                 <div className="testi-avatar">{t.init}</div>
-                <div><div className="testi-name">{t.name}</div><div className="testi-loc">{t.loc}</div></div>
+                <div>
+                  <div className="testi-name">{t.name}</div>
+                  <div className="testi-loc">{t.loc}</div>
+                </div>
                 <div className="testi-product">{t.prod}</div>
               </div>
             </div>
@@ -1031,8 +1572,19 @@ function StorePage({ vouchers, loading, setPage }) {
       <div className="partners-section">
         <p className="partners-label">Trusted South African Partners</p>
         <div className="partners-row">
-          {[["Relax","Zone"],["Skysail","Balloons"],["Vino","Estate"],["Bushveld","Escapes"],["Chef's","Table"],["Getaway","Lodges"],["Glow","Studio"]].map(([a,b]) => (
-            <div key={a+b} className="partner-logo">{a}<span>{b}</span></div>
+          {[
+            ["Relax", "Zone"],
+            ["Skysail", "Balloons"],
+            ["Vino", "Estate"],
+            ["Beat", "Studio"],
+            ["Stage", "Events"],
+            ["Chef's", "Table"],
+            ["Glow", "Studio"],
+          ].map(([a, b]) => (
+            <div key={a + b} className="partner-logo">
+              {a}
+              <span>{b}</span>
+            </div>
           ))}
         </div>
       </div>
@@ -1041,14 +1593,40 @@ function StorePage({ vouchers, loading, setPage }) {
       <section className="hiw">
         <div className="container">
           <div className="section-head">
-            <div><p className="section-eyebrow">✦ Simple Process</p><h2 className="section-title">How AfriVoucher works</h2><p className="section-sub">From purchase to experience in four easy steps</p></div>
+            <div>
+              <p className="section-eyebrow">✦ Simple Process</p>
+              <h2 className="section-title">How AfriVoucher works</h2>
+              <p className="section-sub">
+                From purchase to experience in four easy steps
+              </p>
+            </div>
           </div>
           <div className="hiw-steps">
             {[
-              ["01","🛍️","Browse & Choose","Find the perfect experience from our 200+ curated South African partners."],
-              ["02","💳","Pay Securely","Checkout with PayFast — card, EFT, or SnapScan. Safe and encrypted."],
-              ["03","📱","WhatsApp Delivery","The recipient gets their voucher code and QR instantly on WhatsApp."],
-              ["04","🎉","Enjoy the Experience","Book directly with the partner. Show the QR at arrival and enjoy."],
+              [
+                "01",
+                "🛍️",
+                "Browse & Choose",
+                "Find the perfect experience from our 200+ curated South African partners — from spa days to live music events.",
+              ],
+              [
+                "02",
+                "💳",
+                "Pay Securely",
+                "Checkout with PayFast — card, EFT, or SnapScan. Safe and encrypted.",
+              ],
+              [
+                "03",
+                "📱",
+                "WhatsApp Delivery",
+                "The recipient gets their voucher code and QR instantly on WhatsApp.",
+              ],
+              [
+                "04",
+                "🎉",
+                "Enjoy the Experience",
+                "Book directly with the partner. Show the QR at arrival and enjoy.",
+              ],
             ].map(([num, icon, title, desc]) => (
               <div key={num} className="hiw-step">
                 <div className="hiw-step-num">{num}</div>
@@ -1061,22 +1639,33 @@ function StorePage({ vouchers, loading, setPage }) {
         </div>
       </section>
 
-      {/* Newsletter */}
       <NewsletterSection />
 
-      {/* Product Modal */}
       {selectedVoucher && (
-        <ProductModal voucher={selectedVoucher} onClose={() => setSelectedVoucher(null)} onBuy={() => { setDrawerVoucher(selectedVoucher); setSelectedVoucher(null); }} />
+        <ProductModal
+          voucher={selectedVoucher}
+          onClose={() => setSelectedVoucher(null)}
+          onBuy={() => {
+            setDrawerVoucher(selectedVoucher);
+            setSelectedVoucher(null);
+          }}
+        />
       )}
-
-      {/* Checkout drawer */}
       {drawerVoucher && !checkoutSuccess && (
-        <CheckoutDrawer voucher={drawerVoucher} onClose={() => setDrawerVoucher(null)} onSuccess={handleCheckout} />
+        <CheckoutDrawer
+          voucher={drawerVoucher}
+          onClose={() => setDrawerVoucher(null)}
+          onSuccess={handleCheckout}
+        />
       )}
-
-      {/* Success screen */}
       {checkoutSuccess && (
-        <SuccessDrawer info={checkoutSuccess} onClose={() => { setCheckoutSuccess(null); setDrawerVoucher(null); }} />
+        <SuccessDrawer
+          info={checkoutSuccess}
+          onClose={() => {
+            setCheckoutSuccess(null);
+            setDrawerVoucher(null);
+          }}
+        />
       )}
     </>
   );
@@ -1092,25 +1681,58 @@ function NewsletterSection() {
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return;
     setBtnText("Subscribing...");
     try {
-      const existing = await getDocs(query(collection(db, "subscribers"), where("email", "==", email.toLowerCase())));
-      if (!existing.empty) { setBtnText("Already subscribed ✓"); setBtnStyle({ background:"#F59E0B" }); }
-      else {
-        await addDoc(collection(db, "subscribers"), { email: email.toLowerCase(), subscribedAt: serverTimestamp(), status: "active" });
-        setBtnText("Subscribed! 🎉"); setBtnStyle({ background:"#22C55E" });
+      const existing = await getDocs(
+        query(
+          collection(db, "subscribers"),
+          where("email", "==", email.toLowerCase()),
+        ),
+      );
+      if (!existing.empty) {
+        setBtnText("Already subscribed ✓");
+        setBtnStyle({ background: "#F59E0B" });
+      } else {
+        await addDoc(collection(db, "subscribers"), {
+          email: email.toLowerCase(),
+          subscribedAt: serverTimestamp(),
+          status: "active",
+        });
+        setBtnText("Subscribed! 🎉");
+        setBtnStyle({ background: "#22C55E" });
       }
       setEmail("");
-      setTimeout(() => { setBtnText("Subscribe"); setBtnStyle({}); }, 4000);
-    } catch { setBtnText("Try again"); setBtnStyle({ background:"#EF4444" }); setTimeout(() => { setBtnText("Subscribe"); setBtnStyle({}); }, 3000); }
+      setTimeout(() => {
+        setBtnText("Subscribe");
+        setBtnStyle({});
+      }, 4000);
+    } catch {
+      setBtnText("Try again");
+      setBtnStyle({ background: "#EF4444" });
+      setTimeout(() => {
+        setBtnText("Subscribe");
+        setBtnStyle({});
+      }, 3000);
+    }
   };
 
   return (
     <div className="newsletter">
       <div className="container">
         <h2>Get the best SA experiences first.</h2>
-        <p>New partners, seasonal specials and gifting ideas — straight to your inbox.</p>
+        <p>
+          New partners, live music events, seasonal specials and gifting ideas —
+          straight to your inbox.
+        </p>
         <div className="nl-form">
-          <input type="email" placeholder="your@email.com" value={email} onChange={e => setEmail(e.target.value)} onKeyDown={e => e.key === "Enter" && handleSubscribe()} />
-          <button className="nl-btn" style={btnStyle} onClick={handleSubscribe}>{btnText}</button>
+          <input
+            type="email"
+            placeholder="your@email.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSubscribe()}
+          />
+          <button className="nl-btn" style={btnStyle} onClick={handleSubscribe}>
+            {btnText}
+          </button>
         </div>
       </div>
     </div>
@@ -1119,27 +1741,56 @@ function NewsletterSection() {
 
 // ─── Product Modal ────────────────────────────────────────────────────────
 function ProductModal({ voucher: v, onClose, onBuy }) {
-  useEffect(() => { document.body.style.overflow = "hidden"; return () => { document.body.style.overflow = ""; }; }, []);
-
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, []);
   return (
-    <div className="modal-overlay open" onClick={e => e.target === e.currentTarget && onClose()}>
+    <div
+      className="modal-overlay open"
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+    >
       <div className="modal-sheet">
         <div className="modal-inner">
           <div className="modal-gallery">
-            <img src={v.imageUrl || v.img || ""} alt={v.name} style={{ width:"100%",height:"100%",objectFit:"cover",minHeight:300,background:"var(--cream2)" }} />
-            <div className="modal-gallery-badge">{(v.tags||[])[0] || v.cat}</div>
-            <button className="modal-close" onClick={onClose}>✕</button>
+            <img
+              src={v.imageUrl || v.img || ""}
+              alt={v.name}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                minHeight: 300,
+                background: "var(--cream2)",
+              }}
+            />
+            <div className="modal-gallery-badge">
+              {(v.tags || [])[0] || v.cat}
+            </div>
+            <button className="modal-close" onClick={onClose}>
+              ✕
+            </button>
           </div>
           <div className="modal-body">
             <div className="modal-cat">{v.cat}</div>
             <div className="modal-title">{v.name}</div>
-            <div className="modal-partner">📍 {v.partner} · {v.city} <span className="modal-partner-badge">Verified</span></div>
+            <div className="modal-partner">
+              📍 {v.partner} · {v.city}{" "}
+              <span className="modal-partner-badge">Verified</span>
+            </div>
             <div className="modal-desc">{v.desc}</div>
-            {(v.includes||[]).length > 0 && (
+            {(v.includes || []).length > 0 && (
               <div className="modal-includes">
                 <h4>What's included</h4>
                 <div className="modal-includes-list">
-                  {v.includes.map(i => <div key={i} className="mi-row"><span className="mi-check">✓</span>{i}</div>)}
+                  {v.includes.map((i) => (
+                    <div key={i} className="mi-row">
+                      <span className="mi-check">✓</span>
+                      {i}
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
@@ -1148,11 +1799,31 @@ function ProductModal({ voucher: v, onClose, onBuy }) {
               <span className="modal-price-lbl">Voucher price</span>
               <span className="modal-price-val">{fmt(v.price)}</span>
             </div>
-            <button className="modal-buy-btn" onClick={onBuy}>🎁 Buy This Voucher</button>
-            <button className="modal-secondary-btn" onClick={onClose}>← Back to browse</button>
-            <div style={{ display:"flex",gap:16,marginTop:16,flexWrap:"wrap" }}>
-              {["⏱️ Valid " + (v.expiry||"12 months"), "📱 WhatsApp delivery","🔒 Secure checkout"].map(m => (
-                <div key={m} style={{ fontSize:".75rem",color:"var(--muted)" }}>{m}</div>
+            <button className="modal-buy-btn" onClick={onBuy}>
+              🎁 Buy This Voucher
+            </button>
+            <button className="modal-secondary-btn" onClick={onClose}>
+              ← Back to browse
+            </button>
+            <div
+              style={{
+                display: "flex",
+                gap: 16,
+                marginTop: 16,
+                flexWrap: "wrap",
+              }}
+            >
+              {[
+                "⏱️ Valid " + (v.expiry || "12 months"),
+                "📱 WhatsApp delivery",
+                "🔒 Secure checkout",
+              ].map((m) => (
+                <div
+                  key={m}
+                  style={{ fontSize: ".75rem", color: "var(--muted)" }}
+                >
+                  {m}
+                </div>
               ))}
             </div>
           </div>
@@ -1164,81 +1835,273 @@ function ProductModal({ voucher: v, onClose, onBuy }) {
 
 // ─── Checkout Drawer ──────────────────────────────────────────────────────
 function CheckoutDrawer({ voucher: v, onClose, onSuccess }) {
-  const [form, setForm] = useState({ buyerName:"", buyerEmail:"", recipientPhone:"", recipientName:"", note:"" });
+  const [form, setForm] = useState({
+    buyerName: "",
+    buyerEmail: "",
+    recipientPhone: "",
+    recipientName: "",
+    note: "",
+  });
   const [paying, setPaying] = useState(false);
-
-  useEffect(() => { document.body.style.overflow = "hidden"; return () => { document.body.style.overflow = ""; }; }, []);
-
-  const set = (k) => (e) => setForm(f => ({ ...f, [k]: e.target.value }));
-
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, []);
+  const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
   const handlePay = async () => {
-    if (!form.buyerName || !form.buyerEmail || !form.recipientPhone) { alert("Please fill in all required fields."); return; }
+    if (!form.buyerName || !form.buyerEmail || !form.recipientPhone) {
+      alert("Please fill in all required fields.");
+      return;
+    }
     setPaying(true);
     await onSuccess(form);
   };
 
   return (
-    <div className="drawer-overlay open" onClick={e => e.target === e.currentTarget && onClose()}>
+    <div
+      className="drawer-overlay open"
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+    >
       <div className="drawer">
         <div className="drawer-header">
           <div className="drawer-title">Complete your gift</div>
-          <button className="drawer-close" onClick={onClose}>✕</button>
+          <button className="drawer-close" onClick={onClose}>
+            ✕
+          </button>
         </div>
-        {/* Product card */}
-        <div style={{ margin:"20px 28px",background:"var(--white)",border:"1px solid var(--border)",borderRadius:14,overflow:"hidden",display:"flex" }}>
-          <div style={{ width:100,flexShrink:0,background:"var(--cream2)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"2rem" }}>
-            {v.imageUrl ? <img src={v.imageUrl} alt={v.name} style={{ width:"100%",height:"100%",minHeight:90,objectFit:"cover" }} /> : v.icon}
+        <div
+          style={{
+            margin: "20px 28px",
+            background: "var(--white)",
+            border: "1px solid var(--border)",
+            borderRadius: 14,
+            overflow: "hidden",
+            display: "flex",
+          }}
+        >
+          <div
+            style={{
+              width: 100,
+              flexShrink: 0,
+              background: "var(--cream2)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "2rem",
+            }}
+          >
+            {v.imageUrl ? (
+              <img
+                src={v.imageUrl}
+                alt={v.name}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  minHeight: 90,
+                  objectFit: "cover",
+                }}
+              />
+            ) : (
+              v.icon || getCatIcon(v.cat)
+            )}
           </div>
-          <div style={{ padding:14,flex:1 }}>
-            <div style={{ fontFamily:"var(--serif)",fontSize:".95rem",fontWeight:600,color:"var(--forest)",marginBottom:3 }}>{v.name}</div>
-            <div style={{ fontSize:".72rem",color:"var(--muted)" }}>{v.partner} · {v.city}</div>
-            <div style={{ fontFamily:"var(--serif)",fontSize:"1.2rem",fontWeight:700,color:"var(--forest)",marginTop:6 }}>{fmt(v.price)}</div>
+          <div style={{ padding: 14, flex: 1 }}>
+            <div
+              style={{
+                fontFamily: "var(--serif)",
+                fontSize: ".95rem",
+                fontWeight: 600,
+                color: "var(--forest)",
+                marginBottom: 3,
+              }}
+            >
+              {v.name}
+            </div>
+            <div style={{ fontSize: ".72rem", color: "var(--muted)" }}>
+              {v.partner} · {v.city}
+            </div>
+            <div
+              style={{
+                fontFamily: "var(--serif)",
+                fontSize: "1.2rem",
+                fontWeight: 700,
+                color: "var(--forest)",
+                marginTop: 6,
+              }}
+            >
+              {fmt(v.price)}
+            </div>
           </div>
         </div>
-
-        <div style={{ padding:"0 28px",flex:1 }}>
+        <div style={{ padding: "0 28px", flex: 1 }}>
           {[
-            ["🎁 Recipient", [["recipientName","Their Name","Optional",false],["recipientPhone","WhatsApp Number *","+27821234567",true]]],
-            ["👤 Your Details",[["buyerName","Your Name *","Jane Smith",true],["buyerEmail","Your Email *","jane@email.com",true]]],
+            [
+              "🎁 Recipient",
+              [
+                ["recipientName", "Their Name", "Optional", false],
+                ["recipientPhone", "WhatsApp Number *", "+27821234567", true],
+              ],
+            ],
+            [
+              "👤 Your Details",
+              [
+                ["buyerName", "Your Name *", "Jane Smith", true],
+                ["buyerEmail", "Your Email *", "jane@email.com", true],
+              ],
+            ],
           ].map(([label, fields]) => (
-            <div key={label} style={{ marginBottom:20 }}>
-              <div style={{ fontSize:".68rem",fontWeight:700,textTransform:"uppercase",letterSpacing:1,color:"var(--terra)",marginBottom:12 }}>{label}</div>
-              <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:10 }}>
+            <div key={label} style={{ marginBottom: 20 }}>
+              <div
+                style={{
+                  fontSize: ".68rem",
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: 1,
+                  color: "var(--terra)",
+                  marginBottom: 12,
+                }}
+              >
+                {label}
+              </div>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: 10,
+                }}
+              >
                 {fields.map(([key, lbl, ph]) => (
                   <div key={key} className="df-field">
                     <label>{lbl}</label>
-                    <input value={form[key]} onChange={set(key)} placeholder={ph} type={key === "buyerEmail" ? "email" : "text"} />
+                    <input
+                      value={form[key]}
+                      onChange={set(key)}
+                      placeholder={ph}
+                      type={key === "buyerEmail" ? "email" : "text"}
+                    />
                   </div>
                 ))}
               </div>
             </div>
           ))}
-          <div style={{ marginBottom:20 }}>
-            <div style={{ fontSize:".68rem",fontWeight:700,textTransform:"uppercase",letterSpacing:1,color:"var(--terra)",marginBottom:12 }}>✉️ Personal Note</div>
+          <div style={{ marginBottom: 20 }}>
+            <div
+              style={{
+                fontSize: ".68rem",
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: 1,
+                color: "var(--terra)",
+                marginBottom: 12,
+              }}
+            >
+              ✉️ Personal Note
+            </div>
             <div className="df-field">
-              <textarea value={form.note} onChange={set("note")} placeholder="Happy Birthday! Hope you enjoy this special experience 🎂" />
+              <textarea
+                value={form.note}
+                onChange={set("note")}
+                placeholder="Happy Birthday! Hope you enjoy this special experience 🎂"
+              />
             </div>
           </div>
         </div>
-
-        <div style={{ padding:"20px 28px 28px",borderTop:"1px solid var(--border)",position:"sticky",bottom:0,background:"var(--cream)" }}>
-          <div style={{ background:"var(--white)",border:"1px solid var(--border)",borderRadius:10,padding:14,marginBottom:16 }}>
-            <div style={{ display:"flex",justifyContent:"space-between",padding:"4px 0",fontSize:".82rem" }}>
-              <span style={{ color:"var(--sub)" }}>{v.name}</span><span style={{ fontWeight:600 }}>{fmt(v.price)}</span>
+        <div
+          style={{
+            padding: "20px 28px 28px",
+            borderTop: "1px solid var(--border)",
+            position: "sticky",
+            bottom: 0,
+            background: "var(--cream)",
+          }}
+        >
+          <div
+            style={{
+              background: "var(--white)",
+              border: "1px solid var(--border)",
+              borderRadius: 10,
+              padding: 14,
+              marginBottom: 16,
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                padding: "4px 0",
+                fontSize: ".82rem",
+              }}
+            >
+              <span style={{ color: "var(--sub)" }}>{v.name}</span>
+              <span style={{ fontWeight: 600 }}>{fmt(v.price)}</span>
             </div>
-            <div style={{ display:"flex",justifyContent:"space-between",padding:"4px 0",fontSize:".82rem" }}>
-              <span style={{ color:"var(--sub)" }}>WhatsApp delivery</span><span style={{ fontWeight:600,color:"#1A9E56" }}>Free</span>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                padding: "4px 0",
+                fontSize: ".82rem",
+              }}
+            >
+              <span style={{ color: "var(--sub)" }}>WhatsApp delivery</span>
+              <span style={{ fontWeight: 600, color: "#1A9E56" }}>Free</span>
             </div>
-            <div style={{ borderTop:"1px solid var(--border)",paddingTop:8,marginTop:6,display:"flex",justifyContent:"space-between" }}>
-              <span style={{ fontWeight:700,color:"var(--forest)" }}>Total</span>
-              <span style={{ fontFamily:"var(--serif)",fontSize:"1.2rem",fontWeight:700,color:"var(--forest)" }}>{fmt(v.price)}</span>
+            <div
+              style={{
+                borderTop: "1px solid var(--border)",
+                paddingTop: 8,
+                marginTop: 6,
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              <span style={{ fontWeight: 700, color: "var(--forest)" }}>
+                Total
+              </span>
+              <span
+                style={{
+                  fontFamily: "var(--serif)",
+                  fontSize: "1.2rem",
+                  fontWeight: 700,
+                  color: "var(--forest)",
+                }}
+              >
+                {fmt(v.price)}
+              </span>
             </div>
           </div>
-          <button className="checkout-btn" disabled={paying} onClick={handlePay}>
-            {paying ? <span style={{ width:16,height:16,border:"2px solid rgba(245,240,232,.3)",borderTopColor:"var(--cream)",borderRadius:"50%",display:"inline-block",animation:"spin .7s linear infinite" }} /> : null}
+          <button
+            className="checkout-btn"
+            disabled={paying}
+            onClick={handlePay}
+          >
+            {paying ? (
+              <span
+                style={{
+                  width: 16,
+                  height: 16,
+                  border: "2px solid rgba(245,240,232,.3)",
+                  borderTopColor: "var(--cream)",
+                  borderRadius: "50%",
+                  display: "inline-block",
+                  animation: "spin .7s linear infinite",
+                }}
+              />
+            ) : null}
             {paying ? "Processing…" : `🔒 Pay Securely ${fmt(v.price)}`}
           </button>
-          <div style={{ textAlign:"center",fontSize:".72rem",color:"var(--muted)",marginTop:10 }}>Protected by PayFast · SSL encrypted</div>
+          <div
+            style={{
+              textAlign: "center",
+              fontSize: ".72rem",
+              color: "var(--muted)",
+              marginTop: 10,
+            }}
+          >
+            Protected by PayFast · SSL encrypted
+          </div>
         </div>
       </div>
     </div>
@@ -1247,22 +2110,128 @@ function CheckoutDrawer({ voucher: v, onClose, onSuccess }) {
 
 // ─── Success Drawer ───────────────────────────────────────────────────────
 function SuccessDrawer({ info, onClose }) {
-  useEffect(() => { document.body.style.overflow = "hidden"; return () => { document.body.style.overflow = ""; }; }, []);
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, []);
   return (
-    <div className="drawer-overlay open" onClick={e => e.target === e.currentTarget && onClose()}>
+    <div
+      className="drawer-overlay open"
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+    >
       <div className="drawer">
         <div className="drawer-header">
           <div className="drawer-title">Gift Sent!</div>
-          <button className="drawer-close" onClick={onClose}>✕</button>
+          <button className="drawer-close" onClick={onClose}>
+            ✕
+          </button>
         </div>
-        <div style={{ padding:40,textAlign:"center",display:"flex",flexDirection:"column",alignItems:"center",gap:16,flex:1 }}>
-          <div style={{ width:80,height:80,borderRadius:"50%",background:"linear-gradient(135deg,var(--leaf),var(--leaf2))",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"2rem",animation:"popIn .5s cubic-bezier(.34,1.56,.64,1)" }}>🎉</div>
-          <h2 style={{ fontFamily:"var(--serif)",fontSize:"1.8rem",color:"var(--forest)" }}>Gift Sent!</h2>
-          <p style={{ color:"var(--sub)",fontSize:".88rem",lineHeight:1.7,maxWidth:320 }}>Your voucher is on its way to {info.recipientPhone} via WhatsApp.</p>
-          <div style={{ background:"var(--white)",border:"2px dashed var(--leaf)",borderRadius:12,padding:"14px 28px",fontFamily:"var(--serif)",fontSize:"1.6rem",fontWeight:700,color:"var(--forest)",letterSpacing:3 }}>{info.code}</div>
-          <img src={QR_URL(info.code)} width="150" height="150" alt="QR" style={{ background:"white",padding:10,borderRadius:10,border:"1px solid var(--border)" }} />
-          <div style={{ display:"flex",alignItems:"center",gap:8,background:"rgba(37,211,102,.08)",border:"1px solid rgba(37,211,102,.2)",color:"#1a9e56",borderRadius:8,padding:"10px 16px",fontSize:".8rem",fontWeight:600 }}>✅ Delivered via WhatsApp</div>
-          <button onClick={onClose} style={{ padding:"11px 28px",background:"var(--cream2)",border:"1px solid var(--border)",borderRadius:9,cursor:"pointer",fontFamily:"var(--sans)",fontWeight:600,fontSize:".88rem",color:"var(--sub)" }}>← Back to Store</button>
+        <div
+          style={{
+            padding: 40,
+            textAlign: "center",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 16,
+            flex: 1,
+          }}
+        >
+          <div
+            style={{
+              width: 80,
+              height: 80,
+              borderRadius: "50%",
+              background: "linear-gradient(135deg,var(--leaf),var(--leaf2))",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "2rem",
+              animation: "popIn .5s cubic-bezier(.34,1.56,.64,1)",
+            }}
+          >
+            🎉
+          </div>
+          <h2
+            style={{
+              fontFamily: "var(--serif)",
+              fontSize: "1.8rem",
+              color: "var(--forest)",
+            }}
+          >
+            Gift Sent!
+          </h2>
+          <p
+            style={{
+              color: "var(--sub)",
+              fontSize: ".88rem",
+              lineHeight: 1.7,
+              maxWidth: 320,
+            }}
+          >
+            Your voucher is on its way to {info.recipientPhone} via WhatsApp.
+          </p>
+          <div
+            style={{
+              background: "var(--white)",
+              border: "2px dashed var(--leaf)",
+              borderRadius: 12,
+              padding: "14px 28px",
+              fontFamily: "var(--serif)",
+              fontSize: "1.6rem",
+              fontWeight: 700,
+              color: "var(--forest)",
+              letterSpacing: 3,
+            }}
+          >
+            {info.code}
+          </div>
+          <img
+            src={QR_URL(info.code)}
+            width="150"
+            height="150"
+            alt="QR"
+            style={{
+              background: "white",
+              padding: 10,
+              borderRadius: 10,
+              border: "1px solid var(--border)",
+            }}
+          />
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              background: "rgba(37,211,102,.08)",
+              border: "1px solid rgba(37,211,102,.2)",
+              color: "#1a9e56",
+              borderRadius: 8,
+              padding: "10px 16px",
+              fontSize: ".8rem",
+              fontWeight: 600,
+            }}
+          >
+            ✅ Delivered via WhatsApp
+          </div>
+          <button
+            onClick={onClose}
+            style={{
+              padding: "11px 28px",
+              background: "var(--cream2)",
+              border: "1px solid var(--border)",
+              borderRadius: 9,
+              cursor: "pointer",
+              fontFamily: "var(--sans)",
+              fontWeight: 600,
+              fontSize: ".88rem",
+              color: "var(--sub)",
+            }}
+          >
+            ← Back to Store
+          </button>
         </div>
       </div>
     </div>
@@ -1272,8 +2241,13 @@ function SuccessDrawer({ info, onClose }) {
 // ─── Auth Page ────────────────────────────────────────────────────────────
 function AuthPage({ onSuccess }) {
   const [tab, setTab] = useState("login");
-  const [loginForm, setLoginForm] = useState({ email:"", password:"" });
-  const [regForm, setRegForm] = useState({ business:"", email:"", password:"", confirm:"" });
+  const [loginForm, setLoginForm] = useState({ email: "", password: "" });
+  const [regForm, setRegForm] = useState({
+    business: "",
+    email: "",
+    password: "",
+    confirm: "",
+  });
   const [resetEmail, setResetEmail] = useState("");
   const [loginError, setLoginError] = useState("");
   const [regError, setRegError] = useState("");
@@ -1283,87 +2257,273 @@ function AuthPage({ onSuccess }) {
   const [regLoading, setRegLoading] = useState(false);
   const [showReset, setShowReset] = useState(false);
 
-  const setL = k => e => setLoginForm(f => ({ ...f, [k]: e.target.value }));
-  const setR = k => e => setRegForm(f => ({ ...f, [k]: e.target.value }));
+  const setL = (k) => (e) =>
+    setLoginForm((f) => ({ ...f, [k]: e.target.value }));
+  const setR = (k) => (e) => setRegForm((f) => ({ ...f, [k]: e.target.value }));
 
   const handleLogin = async () => {
-    setLoginError(""); if (!loginForm.email || !loginForm.password) { setLoginError("Please enter your email and password."); return; }
+    setLoginError("");
+    if (!loginForm.email || !loginForm.password) {
+      setLoginError("Please enter your email and password.");
+      return;
+    }
     setLoginLoading(true);
-    try { await signInWithEmailAndPassword(auth, loginForm.email, loginForm.password); onSuccess(); }
-    catch (e) {
-      setLoginError(e.code === "auth/user-not-found" || e.code === "auth/wrong-password" || e.code === "auth/invalid-credential"
-        ? "Incorrect email or password." : e.code === "auth/too-many-requests" ? "Too many attempts. Try again later." : e.message);
-    } finally { setLoginLoading(false); }
+    try {
+      await signInWithEmailAndPassword(
+        auth,
+        loginForm.email,
+        loginForm.password,
+      );
+      onSuccess();
+    } catch (e) {
+      setLoginError(
+        e.code === "auth/user-not-found" ||
+          e.code === "auth/wrong-password" ||
+          e.code === "auth/invalid-credential"
+          ? "Incorrect email or password."
+          : e.code === "auth/too-many-requests"
+            ? "Too many attempts. Try again later."
+            : e.message,
+      );
+    } finally {
+      setLoginLoading(false);
+    }
   };
 
   const handleRegister = async () => {
-    setRegError(""); setRegMsg("");
-    if (!regForm.business || !regForm.email || !regForm.password) { setRegError("All fields are required."); return; }
-    if (regForm.password.length < 6) { setRegError("Password must be at least 6 characters."); return; }
-    if (regForm.password !== regForm.confirm) { setRegError("Passwords do not match."); return; }
+    setRegError("");
+    setRegMsg("");
+    if (!regForm.business || !regForm.email || !regForm.password) {
+      setRegError("All fields are required.");
+      return;
+    }
+    if (regForm.password.length < 6) {
+      setRegError("Password must be at least 6 characters.");
+      return;
+    }
+    if (regForm.password !== regForm.confirm) {
+      setRegError("Passwords do not match.");
+      return;
+    }
     setRegLoading(true);
     try {
-      const cred = await createUserWithEmailAndPassword(auth, regForm.email, regForm.password);
+      const cred = await createUserWithEmailAndPassword(
+        auth,
+        regForm.email,
+        regForm.password,
+      );
       const uid = cred.user.uid;
-      await setDoc(doc(db, "users", uid), { uid, businessName: regForm.business, email: regForm.email, role: "partner", status: "active", voucherCount: 10, createdAt: serverTimestamp(), updatedAt: serverTimestamp() });
+      await setDoc(doc(db, "users", uid), {
+        uid,
+        businessName: regForm.business,
+        email: regForm.email,
+        role: "partner",
+        status: "active",
+        voucherCount: VOUCHER_TEMPLATES.length,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
       await seedUserVouchers(uid, regForm.business, regForm.email);
-      setRegMsg(`Account created! 10 vouchers loaded for ${regForm.business} 🎉`);
+      setRegMsg(
+        `Account created! ${VOUCHER_TEMPLATES.length} vouchers loaded for ${regForm.business} 🎉`,
+      );
       setTimeout(onSuccess, 1800);
     } catch (e) {
-      setRegError(e.code === "auth/email-already-in-use" ? "This email is already registered." : e.message);
-    } finally { setRegLoading(false); }
+      setRegError(
+        e.code === "auth/email-already-in-use"
+          ? "This email is already registered."
+          : e.message,
+      );
+    } finally {
+      setRegLoading(false);
+    }
   };
 
   const handleReset = async () => {
-    if (!resetEmail) { setResetMsg("Please enter your email."); return; }
-    try { await sendPasswordResetEmail(auth, resetEmail); setResetMsg("Reset email sent! Check your inbox."); }
-    catch { setResetMsg("Could not send reset email."); }
+    if (!resetEmail) {
+      setResetMsg("Please enter your email.");
+      return;
+    }
+    try {
+      await sendPasswordResetEmail(auth, resetEmail);
+      setResetMsg("Reset email sent! Check your inbox.");
+    } catch {
+      setResetMsg("Could not send reset email.");
+    }
   };
 
   return (
     <div className="auth-page">
       <div className="auth-card">
-        <div className="auth-logo">Afri<span>Voucher</span></div>
-        <p className="auth-tagline">Partner Portal — Redeem &amp; Admin access</p>
+        <div className="auth-logo">
+          Afri<span>Voucher</span>
+        </div>
+        <p className="auth-tagline">
+          Partner Portal — Redeem &amp; Admin access
+        </p>
         <div className="auth-badge">🔒 Partner accounts only</div>
         <div className="auth-tabs">
-          <button className={`auth-tab${tab==="login"?" active":""}`} onClick={() => { setTab("login"); setShowReset(false); }}>Sign In</button>
-          <button className={`auth-tab${tab==="register"?" active":""}`} onClick={() => { setTab("register"); setShowReset(false); }}>Create Account</button>
+          <button
+            className={`auth-tab${tab === "login" ? " active" : ""}`}
+            onClick={() => {
+              setTab("login");
+              setShowReset(false);
+            }}
+          >
+            Sign In
+          </button>
+          <button
+            className={`auth-tab${tab === "register" ? " active" : ""}`}
+            onClick={() => {
+              setTab("register");
+              setShowReset(false);
+            }}
+          >
+            Create Account
+          </button>
         </div>
-
         {!showReset && tab === "login" && (
           <>
-            {[["email","Email Address","email","hello@yourbusiness.co.za"],["password","Password","password","Your password"]].map(([k,lbl,type,ph]) => (
-              <div key={k} className="auth-field"><label>{lbl}</label><input type={type} value={loginForm[k]} onChange={setL(k)} placeholder={ph} onKeyDown={e => e.key==="Enter" && handleLogin()} /></div>
+            {[
+              ["email", "Email Address", "email", "hello@yourbusiness.co.za"],
+              ["password", "Password", "password", "Your password"],
+            ].map(([k, lbl, type, ph]) => (
+              <div key={k} className="auth-field">
+                <label>{lbl}</label>
+                <input
+                  type={type}
+                  value={loginForm[k]}
+                  onChange={setL(k)}
+                  placeholder={ph}
+                  onKeyDown={(e) => e.key === "Enter" && handleLogin()}
+                />
+              </div>
             ))}
             <div className="auth-error">{loginError}</div>
-            <button className="auth-btn" disabled={loginLoading} onClick={handleLogin}>{loginLoading ? "Signing in..." : "Sign In →"}</button>
-            <p style={{ textAlign:"center",fontSize:".8rem",color:"var(--sub)",marginTop:14 }}>
-              <Link style={{ color:"var(--leaf)",fontWeight:600,cursor:"pointer",textDecoration:"underline" }} onClick={() => setShowReset(true)}>Forgot password?</Link>
+            <button
+              className="auth-btn"
+              disabled={loginLoading}
+              onClick={handleLogin}
+            >
+              {loginLoading ? "Signing in..." : "Sign In →"}
+            </button>
+            <p
+              style={{
+                textAlign: "center",
+                fontSize: ".8rem",
+                color: "var(--sub)",
+                marginTop: 14,
+              }}
+            >
+              <Link
+                style={{
+                  color: "var(--leaf)",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  textDecoration: "underline",
+                }}
+                onClick={() => setShowReset(true)}
+              >
+                Forgot password?
+              </Link>
             </p>
           </>
         )}
-
         {!showReset && tab === "register" && (
           <>
-            {[["business","Business Name","text","Relax Zone Spa"],["email","Email Address","email","hello@yourbusiness.co.za"],["password","Password","password","Minimum 6 characters"],["confirm","Confirm Password","password","Repeat password"]].map(([k,lbl,type,ph]) => (
-              <div key={k} className="auth-field"><label>{lbl}</label><input type={type} value={regForm[k]} onChange={setR(k)} placeholder={ph} onKeyDown={e => e.key==="Enter" && handleRegister()} /></div>
+            {[
+              ["business", "Business Name", "text", "Relax Zone Spa"],
+              ["email", "Email Address", "email", "hello@yourbusiness.co.za"],
+              ["password", "Password", "password", "Minimum 6 characters"],
+              ["confirm", "Confirm Password", "password", "Repeat password"],
+            ].map(([k, lbl, type, ph]) => (
+              <div key={k} className="auth-field">
+                <label>{lbl}</label>
+                <input
+                  type={type}
+                  value={regForm[k]}
+                  onChange={setR(k)}
+                  placeholder={ph}
+                  onKeyDown={(e) => e.key === "Enter" && handleRegister()}
+                />
+              </div>
             ))}
             <div className="auth-error">{regError}</div>
-            {regMsg && <div style={{ fontSize:".78rem",color:"#15803D",marginTop:6 }}>{regMsg}</div>}
-            <button className="auth-btn" disabled={regLoading} onClick={handleRegister}>{regLoading ? "Creating account..." : "Create Account →"}</button>
+            {regMsg && (
+              <div
+                style={{ fontSize: ".78rem", color: "#15803D", marginTop: 6 }}
+              >
+                {regMsg}
+              </div>
+            )}
+            <button
+              className="auth-btn"
+              disabled={regLoading}
+              onClick={handleRegister}
+            >
+              {regLoading ? "Creating account..." : "Create Account →"}
+            </button>
           </>
         )}
-
         {showReset && (
           <>
-            <div style={{ textAlign:"center",fontSize:"2.5rem",marginBottom:14 }}>📧</div>
-            <p style={{ textAlign:"center",color:"var(--sub)",fontSize:".85rem",marginBottom:20,lineHeight:1.6 }}>Enter your email and we'll send a reset link.</p>
-            <div className="auth-field"><label>Email Address</label><input type="email" value={resetEmail} onChange={e => setResetEmail(e.target.value)} placeholder="hello@yourbusiness.co.za" onKeyDown={e => e.key==="Enter" && handleReset()} /></div>
-            {resetMsg && <div style={{ fontSize:".78rem",color:"var(--leaf)",marginTop:6 }}>{resetMsg}</div>}
-            <button className="auth-btn" onClick={handleReset}>Send Reset Email →</button>
-            <p style={{ textAlign:"center",fontSize:".8rem",marginTop:14 }}>
-              <Link style={{ color:"var(--leaf)",cursor:"pointer",textDecoration:"underline" }} onClick={() => setShowReset(false)}>← Back to Sign In</Link>
+            <div
+              style={{
+                textAlign: "center",
+                fontSize: "2.5rem",
+                marginBottom: 14,
+              }}
+            >
+              📧
+            </div>
+            <p
+              style={{
+                textAlign: "center",
+                color: "var(--sub)",
+                fontSize: ".85rem",
+                marginBottom: 20,
+                lineHeight: 1.6,
+              }}
+            >
+              Enter your email and we'll send a reset link.
+            </p>
+            <div className="auth-field">
+              <label>Email Address</label>
+              <input
+                type="email"
+                value={resetEmail}
+                onChange={(e) => setResetEmail(e.target.value)}
+                placeholder="hello@yourbusiness.co.za"
+                onKeyDown={(e) => e.key === "Enter" && handleReset()}
+              />
+            </div>
+            {resetMsg && (
+              <div
+                style={{
+                  fontSize: ".78rem",
+                  color: "var(--leaf)",
+                  marginTop: 6,
+                }}
+              >
+                {resetMsg}
+              </div>
+            )}
+            <button className="auth-btn" onClick={handleReset}>
+              Send Reset Email →
+            </button>
+            <p
+              style={{ textAlign: "center", fontSize: ".8rem", marginTop: 14 }}
+            >
+              <Link
+                style={{
+                  color: "var(--leaf)",
+                  cursor: "pointer",
+                  textDecoration: "underline",
+                }}
+                onClick={() => setShowReset(false)}
+              >
+                ← Back to Sign In
+              </Link>
             </p>
           </>
         )}
@@ -1380,54 +2540,186 @@ function RedeemPage({ user }) {
 
   const handleRedeem = async () => {
     if (!code.trim() || !user) return;
-    setLoading(true); setResult(null);
+    setLoading(true);
+    setResult(null);
     const upperCode = code.trim().toUpperCase();
     try {
       const vouchersRef = collection(db, "users", user.uid, "vouchers");
       const q = query(vouchersRef, where("code", "==", upperCode));
       const snap = await getDocs(q);
-
       if (snap.empty) {
-        setResult({ type: "error", title: "Not Found", msg: `No voucher with code <strong>${upperCode}</strong> found under your account.` });
-        setLoading(false); return;
+        setResult({
+          type: "error",
+          title: "Not Found",
+          msg: `No voucher with code <strong>${upperCode}</strong> found under your account.`,
+        });
+        setLoading(false);
+        return;
       }
-
       const vDoc = snap.docs[0];
       const v = vDoc.data();
-      if (v.status === "used") { setResult({ type: "warn", title: "Already Redeemed", msg: `This voucher was already redeemed.` }); setLoading(false); return; }
-      if (v.status === "expired") { setResult({ type: "warn", title: "Expired", msg: `This voucher has expired.` }); setLoading(false); return; }
-
-      await updateDoc(doc(db, "users", user.uid, "vouchers", vDoc.id), { status: "used", usedAt: serverTimestamp(), redeemedBy: user.email, updatedAt: serverTimestamp() });
-      setResult({ type: "ok", title: "Valid — Redeemed!", msg: `<strong>${v.name}</strong><br/>Category: <strong>${v.category}</strong><br/>Value: <strong>R${Number(v.price).toFixed(2)}</strong>` });
+      if (v.status === "used") {
+        setResult({
+          type: "warn",
+          title: "Already Redeemed",
+          msg: `This voucher was already redeemed.`,
+        });
+        setLoading(false);
+        return;
+      }
+      if (v.status === "expired") {
+        setResult({
+          type: "warn",
+          title: "Expired",
+          msg: `This voucher has expired.`,
+        });
+        setLoading(false);
+        return;
+      }
+      await updateDoc(doc(db, "users", user.uid, "vouchers", vDoc.id), {
+        status: "used",
+        usedAt: serverTimestamp(),
+        redeemedBy: user.email,
+        updatedAt: serverTimestamp(),
+      });
+      setResult({
+        type: "ok",
+        title: "Valid — Redeemed!",
+        msg: `<strong>${v.name}</strong><br/>Category: <strong>${v.category}</strong><br/>Value: <strong>R${Number(v.price).toFixed(2)}</strong>`,
+      });
     } catch (e) {
       setResult({ type: "error", title: "Error", msg: e.message });
-    } finally { setLoading(false); }
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const colors = { ok:"var(--leaf)", warn:"#F59E0B", error:"#EF4444" };
-  const icons  = { ok:"✅", warn:"⚠️", error:"❌" };
+  const colors = { ok: "var(--leaf)", warn: "#F59E0B", error: "#EF4444" };
+  const icons = { ok: "✅", warn: "⚠️", error: "❌" };
 
   return (
-    <div className="container" style={{ maxWidth:520,padding:"80px 32px" }}>
-      <p style={{ fontSize:".72rem",fontWeight:700,textTransform:"uppercase",letterSpacing:1.5,color:"var(--terra)",marginBottom:8 }}>✦ Validate</p>
-      <h2 style={{ fontFamily:"var(--serif)",fontSize:"2.4rem",color:"var(--forest)",marginBottom:8 }}>Redeem a Voucher</h2>
-      <p style={{ color:"var(--sub)",fontSize:".9rem",marginBottom:36,lineHeight:1.7 }}>Enter the code from WhatsApp to validate.</p>
-      <div style={{ background:"var(--white)",border:"1px solid var(--border)",borderRadius:20,padding:36 }}>
-        <label style={{ fontSize:".7rem",fontWeight:700,textTransform:"uppercase",letterSpacing:1,color:"var(--muted)",display:"block",marginBottom:8 }}>Voucher Code</label>
-        <input value={code} onChange={e => setCode(e.target.value.toUpperCase())} placeholder="VCH-XXXXXXXX"
-          style={{ width:"100%",padding:"14px 18px",border:"1.5px solid var(--border2)",borderRadius:10,fontFamily:"var(--serif)",fontSize:"1.4rem",fontWeight:700,color:"var(--forest)",letterSpacing:3,outline:"none",marginBottom:16,background:"var(--cream)" }}
-          onKeyDown={e => e.key==="Enter" && handleRedeem()}
+    <div className="container" style={{ maxWidth: 520, padding: "80px 32px" }}>
+      <p
+        style={{
+          fontSize: ".72rem",
+          fontWeight: 700,
+          textTransform: "uppercase",
+          letterSpacing: 1.5,
+          color: "var(--terra)",
+          marginBottom: 8,
+        }}
+      >
+        ✦ Validate
+      </p>
+      <h2
+        style={{
+          fontFamily: "var(--serif)",
+          fontSize: "2.4rem",
+          color: "var(--forest)",
+          marginBottom: 8,
+        }}
+      >
+        Redeem a Voucher
+      </h2>
+      <p
+        style={{
+          color: "var(--sub)",
+          fontSize: ".9rem",
+          marginBottom: 36,
+          lineHeight: 1.7,
+        }}
+      >
+        Enter the code from WhatsApp to validate.
+      </p>
+      <div
+        style={{
+          background: "var(--white)",
+          border: "1px solid var(--border)",
+          borderRadius: 20,
+          padding: 36,
+        }}
+      >
+        <label
+          style={{
+            fontSize: ".7rem",
+            fontWeight: 700,
+            textTransform: "uppercase",
+            letterSpacing: 1,
+            color: "var(--muted)",
+            display: "block",
+            marginBottom: 8,
+          }}
+        >
+          Voucher Code
+        </label>
+        <input
+          value={code}
+          onChange={(e) => setCode(e.target.value.toUpperCase())}
+          placeholder="VCH-XXXXXXXX"
+          style={{
+            width: "100%",
+            padding: "14px 18px",
+            border: "1.5px solid var(--border2)",
+            borderRadius: 10,
+            fontFamily: "var(--serif)",
+            fontSize: "1.4rem",
+            fontWeight: 700,
+            color: "var(--forest)",
+            letterSpacing: 3,
+            outline: "none",
+            marginBottom: 16,
+            background: "var(--cream)",
+          }}
+          onKeyDown={(e) => e.key === "Enter" && handleRedeem()}
         />
-        <button onClick={handleRedeem} disabled={loading}
-          style={{ width:"100%",padding:15,background:"var(--forest)",color:"var(--cream)",border:"none",borderRadius:10,fontFamily:"var(--serif)",fontSize:"1.05rem",fontWeight:700,cursor:"pointer",transition:"all .2s" }}>
+        <button
+          onClick={handleRedeem}
+          disabled={loading}
+          style={{
+            width: "100%",
+            padding: 15,
+            background: "var(--forest)",
+            color: "var(--cream)",
+            border: "none",
+            borderRadius: 10,
+            fontFamily: "var(--serif)",
+            fontSize: "1.05rem",
+            fontWeight: 700,
+            cursor: "pointer",
+            transition: "all .2s",
+          }}
+        >
           {loading ? "Looking up…" : "Validate & Redeem →"}
         </button>
       </div>
       {result && (
-        <div style={{ background:"var(--white)",border:`2px solid ${colors[result.type]}`,borderRadius:16,padding:28,textAlign:"center",marginTop:16 }}>
-          <div style={{ fontSize:"2.8rem",marginBottom:10 }}>{icons[result.type]}</div>
-          <h3 style={{ fontFamily:"var(--serif)",fontSize:"1.4rem",color:"var(--forest)",marginBottom:10 }}>{result.title}</h3>
-          <p style={{ color:"var(--sub)",fontSize:".86rem",lineHeight:1.9 }} dangerouslySetInnerHTML={{ __html: result.msg }} />
+        <div
+          style={{
+            background: "var(--white)",
+            border: `2px solid ${colors[result.type]}`,
+            borderRadius: 16,
+            padding: 28,
+            textAlign: "center",
+            marginTop: 16,
+          }}
+        >
+          <div style={{ fontSize: "2.8rem", marginBottom: 10 }}>
+            {icons[result.type]}
+          </div>
+          <h3
+            style={{
+              fontFamily: "var(--serif)",
+              fontSize: "1.4rem",
+              color: "var(--forest)",
+              marginBottom: 10,
+            }}
+          >
+            {result.title}
+          </h3>
+          <p
+            style={{ color: "var(--sub)", fontSize: ".86rem", lineHeight: 1.9 }}
+            dangerouslySetInnerHTML={{ __html: result.msg }}
+          />
         </div>
       )}
     </div>
@@ -1437,11 +2729,18 @@ function RedeemPage({ user }) {
 // ─── Admin Page ───────────────────────────────────────────────────────────
 function AdminPage({ user, onLogout }) {
   const [vouchers, setVouchers] = useState([]);
-  const [sold, setSold]         = useState([]);
-  const [bizName, setBizName]   = useState("My Dashboard");
-  const [loading, setLoading]   = useState(true);
+  const [sold, setSold] = useState([]);
+  const [bizName, setBizName] = useState("My Dashboard");
+  const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
-  const [formData, setFormData] = useState({ name:"", category:"Wellness", price:"", validity:"12", desc:"", includes:"" });
+  const [formData, setFormData] = useState({
+    name: "",
+    category: "Wellness",
+    price: "",
+    validity: "12",
+    desc: "",
+    includes: "",
+  });
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
   const [formStatus, setFormStatus] = useState(null);
@@ -1451,197 +2750,682 @@ function AdminPage({ user, onLogout }) {
     if (!user) return;
     setLoading(true);
     try {
-      const vSnap = await getDocs(query(collection(db, "users", user.uid, "vouchers"), orderBy("createdAt", "desc")));
-      setVouchers(vSnap.docs.map(d => ({ id: d.id, ...d.data() })));
+      const vSnap = await getDocs(
+        query(
+          collection(db, "users", user.uid, "vouchers"),
+          orderBy("createdAt", "desc"),
+        ),
+      );
+      setVouchers(vSnap.docs.map((d) => ({ id: d.id, ...d.data() })));
       try {
-        const sSnap = await getDocs(query(collection(db, "sold_vouchers"), where("uid","==",user.uid), orderBy("createdAt","desc")));
-        setSold(sSnap.docs.map(d => ({ id: d.id, ...d.data() })));
+        const sSnap = await getDocs(
+          query(
+            collection(db, "sold_vouchers"),
+            where("uid", "==", user.uid),
+            orderBy("createdAt", "desc"),
+          ),
+        );
+        setSold(sSnap.docs.map((d) => ({ id: d.id, ...d.data() })));
       } catch {}
       try {
-        const uSnap = await getDocs(query(collection(db, "users"), where("uid","==",user.uid)));
-        if (!uSnap.empty) setBizName(uSnap.docs[0].data().businessName + " — Dashboard");
+        const uSnap = await getDocs(
+          query(collection(db, "users"), where("uid", "==", user.uid)),
+        );
+        if (!uSnap.empty)
+          setBizName(uSnap.docs[0].data().businessName + " — Dashboard");
       } catch {}
-    } finally { setLoading(false); }
+    } finally {
+      setLoading(false);
+    }
   }, [user]);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    load();
+  }, [load]);
 
-  const setF = k => e => setFormData(f => ({ ...f, [k]: e.target.value }));
+  const setF = (k) => (e) =>
+    setFormData((f) => ({ ...f, [k]: e.target.value }));
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
     setImageFile(file);
     const reader = new FileReader();
-    reader.onload = ev => setImagePreview(ev.target.result);
+    reader.onload = (ev) => setImagePreview(ev.target.result);
     reader.readAsDataURL(file);
   };
 
   const handleAddVoucher = async () => {
-    if (!formData.name) { setFormStatus({ type:"error", msg:"Please enter a voucher name." }); return; }
-    if (!formData.price || isNaN(+formData.price) || +formData.price < 1) { setFormStatus({ type:"error", msg:"Please enter a valid price." }); return; }
-    if (!formData.desc) { setFormStatus({ type:"error", msg:"Please add a description." }); return; }
-
-    setFormLoading(true); setFormStatus(null);
+    if (!formData.name) {
+      setFormStatus({ type: "error", msg: "Please enter a voucher name." });
+      return;
+    }
+    if (!formData.price || isNaN(+formData.price) || +formData.price < 1) {
+      setFormStatus({ type: "error", msg: "Please enter a valid price." });
+      return;
+    }
+    if (!formData.desc) {
+      setFormStatus({ type: "error", msg: "Please add a description." });
+      return;
+    }
+    setFormLoading(true);
+    setFormStatus(null);
     try {
       let imageUrl = "";
       if (imageFile && WORKER_URL) {
         const fd = new FormData();
-        fd.append("image", imageFile); fd.append("uid", user.uid); fd.append("name", imageFile.name.replace(/\.[^.]+$/,""));
-        const res = await fetch(`${WORKER_URL}/upload-image`, { method:"POST", headers:{ "X-Upload-Secret": UPLOAD_SECRET }, body: fd });
+        fd.append("image", imageFile);
+        fd.append("uid", user.uid);
+        fd.append("name", imageFile.name.replace(/\.[^.]+$/, ""));
+        const res = await fetch(`${WORKER_URL}/upload-image`, {
+          method: "POST",
+          headers: { "X-Upload-Secret": UPLOAD_SECRET },
+          body: fd,
+        });
         const data = await res.json();
         if (data.success) imageUrl = data.url;
       }
-
       const expiryDate = new Date();
       expiryDate.setMonth(expiryDate.getMonth() + parseInt(formData.validity));
       const voucherData = {
-        code: genCode(), name: formData.name, category: formData.category, price: parseFloat(formData.price),
-        desc: formData.desc, includes: formData.includes.split(",").map(s=>s.trim()).filter(Boolean),
-        imageUrl, validMonths: parseInt(formData.validity), expiryDate: expiryDate.toISOString(),
-        status: "active", soldCount: 0, totalRevenue: 0, uid: user.uid,
-        businessEmail: user.email, createdAt: serverTimestamp(), updatedAt: serverTimestamp(), source: "manual",
+        code: genCode(),
+        name: formData.name,
+        category: formData.category,
+        price: parseFloat(formData.price),
+        desc: formData.desc,
+        includes: formData.includes
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean),
+        imageUrl,
+        validMonths: parseInt(formData.validity),
+        expiryDate: expiryDate.toISOString(),
+        status: "active",
+        soldCount: 0,
+        totalRevenue: 0,
+        uid: user.uid,
+        businessEmail: user.email,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+        source: "manual",
       };
-
-      const ref = await addDoc(collection(db, "users", user.uid, "vouchers"), voucherData);
-      await addDoc(collection(db, "all_vouchers"), { ...voucherData, firestoreId: ref.id, partnerUid: user.uid });
-
-      setFormStatus({ type:"ok", msg:`✅ ${formData.name} created! Now live on the Experiences page.` });
-      setFormData({ name:"",category:"Wellness",price:"",validity:"12",desc:"",includes:"" });
-      setImageFile(null); setImagePreview("");
-      setTimeout(() => { load(); setShowForm(false); setFormStatus(null); }, 1800);
+      const ref = await addDoc(
+        collection(db, "users", user.uid, "vouchers"),
+        voucherData,
+      );
+      await addDoc(collection(db, "all_vouchers"), {
+        ...voucherData,
+        firestoreId: ref.id,
+        partnerUid: user.uid,
+      });
+      setFormStatus({
+        type: "ok",
+        msg: `✅ ${formData.name} created! Now live on the Experiences page.`,
+      });
+      setFormData({
+        name: "",
+        category: "Wellness",
+        price: "",
+        validity: "12",
+        desc: "",
+        includes: "",
+      });
+      setImageFile(null);
+      setImagePreview("");
+      setTimeout(() => {
+        load();
+        setShowForm(false);
+        setFormStatus(null);
+      }, 1800);
     } catch (e) {
-      setFormStatus({ type:"error", msg: "Error: " + e.message });
-    } finally { setFormLoading(false); }
+      setFormStatus({ type: "error", msg: "Error: " + e.message });
+    } finally {
+      setFormLoading(false);
+    }
   };
 
-  const active = vouchers.filter(v => v.status === "active").length;
-  const used   = vouchers.filter(v => v.status === "used").length;
-  const soldRev = sold.reduce((s,v) => s + (v.price||0), 0);
-  const catVal  = vouchers.reduce((s,v) => s + (v.price||0), 0);
+  const active = vouchers.filter((v) => v.status === "active").length;
+  const used = vouchers.filter((v) => v.status === "used").length;
+  const soldRev = sold.reduce((s, v) => s + (v.price || 0), 0);
+  const catVal = vouchers.reduce((s, v) => s + (v.price || 0), 0);
   const stats = [
-    { icon:"🎟️", val: vouchers.length, lbl:"My Vouchers" },
-    { icon:"✅", val: active, lbl:"Active" },
-    { icon:"🔖", val: used, lbl:"Redeemed" },
-    { icon:"🛒", val: sold.length, lbl:"Units Sold" },
-    { icon:"💵", val:`R ${soldRev.toLocaleString("en-ZA")}`, lbl:"Sales Revenue" },
-    { icon:"💰", val:`R ${catVal.toLocaleString("en-ZA")}`, lbl:"Catalogue Value" },
+    { icon: "🎟️", val: vouchers.length, lbl: "My Vouchers" },
+    { icon: "✅", val: active, lbl: "Active" },
+    { icon: "🔖", val: used, lbl: "Redeemed" },
+    { icon: "🛒", val: sold.length, lbl: "Units Sold" },
+    {
+      icon: "💵",
+      val: `R ${soldRev.toLocaleString("en-ZA")}`,
+      lbl: "Sales Revenue",
+    },
+    {
+      icon: "💰",
+      val: `R ${catVal.toLocaleString("en-ZA")}`,
+      lbl: "Catalogue Value",
+    },
   ];
 
-  const statusStyle = (s) => s === "active"
-    ? "background:rgba(61,107,71,.1);color:var(--leaf);border:1px solid rgba(61,107,71,.2)"
-    : s === "used" ? "background:#EF444418;color:#EF4444;border:1px solid #EF444428"
-    : "background:#F59E0B18;color:#F59E0B;border:1px solid #F59E0B28";
+  const statusStyle = (s) =>
+    s === "active"
+      ? "background:rgba(61,107,71,.1);color:var(--leaf);border:1px solid rgba(61,107,71,.2)"
+      : s === "used"
+        ? "background:#EF444418;color:#EF4444;border:1px solid #EF444428"
+        : "background:#F59E0B18;color:#F59E0B;border:1px solid #F59E0B28";
+
+  // ── All categories available in the admin form — now includes Music + Events ──
+  const ALL_CATEGORIES = [
+    "Wellness",
+    "Beauty",
+    "Adventure",
+    "Dining & Wine",
+    "Stays",
+    "Skills",
+    "Music",
+    "Events",
+    "Other",
+  ];
 
   return (
-    <div className="container" style={{ padding:"48px 32px" }}>
-      {/* Header */}
-      <div style={{ display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:28,flexWrap:"wrap",gap:12 }}>
+    <div className="container" style={{ padding: "48px 32px" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+          marginBottom: 28,
+          flexWrap: "wrap",
+          gap: 12,
+        }}
+      >
         <div>
-          <p style={{ fontSize:".72rem",fontWeight:700,textTransform:"uppercase",letterSpacing:1.5,color:"var(--terra)",marginBottom:6 }}>✦ Partner Dashboard</p>
-          <h2 style={{ fontFamily:"var(--serif)",fontSize:"2.2rem",color:"var(--forest)" }}>{bizName}</h2>
-          <p style={{ color:"var(--muted)",fontSize:".82rem",marginTop:4 }}>Signed in as: {user?.email} · {vouchers.length} vouchers</p>
+          <p
+            style={{
+              fontSize: ".72rem",
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: 1.5,
+              color: "var(--terra)",
+              marginBottom: 6,
+            }}
+          >
+            ✦ Partner Dashboard
+          </p>
+          <h2
+            style={{
+              fontFamily: "var(--serif)",
+              fontSize: "2.2rem",
+              color: "var(--forest)",
+            }}
+          >
+            {bizName}
+          </h2>
+          <p
+            style={{ color: "var(--muted)", fontSize: ".82rem", marginTop: 4 }}
+          >
+            Signed in as: {user?.email} · {vouchers.length} vouchers
+          </p>
         </div>
-        <div style={{ display:"flex",gap:8,marginTop:8 }}>
-          <button onClick={load} style={{ fontSize:".8rem",color:"var(--leaf)",fontWeight:600,border:"1.5px solid var(--border2)",borderRadius:8,padding:"9px 16px",background:"transparent",cursor:"pointer" }}>↻ Refresh</button>
-          <button onClick={onLogout} style={{ fontSize:".8rem",color:"var(--terra)",fontWeight:600,border:"1.5px solid rgba(196,98,45,.3)",borderRadius:8,padding:"9px 16px",background:"transparent",cursor:"pointer" }}>Sign Out</button>
+        <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+          <button
+            onClick={load}
+            style={{
+              fontSize: ".8rem",
+              color: "var(--leaf)",
+              fontWeight: 600,
+              border: "1.5px solid var(--border2)",
+              borderRadius: 8,
+              padding: "9px 16px",
+              background: "transparent",
+              cursor: "pointer",
+            }}
+          >
+            ↻ Refresh
+          </button>
+          <button
+            onClick={onLogout}
+            style={{
+              fontSize: ".8rem",
+              color: "var(--terra)",
+              fontWeight: 600,
+              border: "1.5px solid rgba(196,98,45,.3)",
+              borderRadius: 8,
+              padding: "9px 16px",
+              background: "transparent",
+              cursor: "pointer",
+            }}
+          >
+            Sign Out
+          </button>
         </div>
       </div>
 
       {/* Stats */}
-      <div style={{ display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(175px,1fr))",gap:14,marginBottom:36 }}>
-        {stats.map(s => (
-          <div key={s.lbl} style={{ background:"var(--white)",border:"1px solid var(--border)",borderRadius:14,padding:20 }}>
-            <div style={{ fontSize:"1.3rem",marginBottom:8 }}>{s.icon}</div>
-            <div style={{ fontFamily:"var(--serif)",fontSize:"1.7rem",fontWeight:700,color:"var(--forest)" }}>{s.val}</div>
-            <div style={{ fontSize:".7rem",textTransform:"uppercase",letterSpacing:".7px",color:"var(--muted)",marginTop:3,fontWeight:600 }}>{s.lbl}</div>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill,minmax(175px,1fr))",
+          gap: 14,
+          marginBottom: 36,
+        }}
+      >
+        {stats.map((s) => (
+          <div
+            key={s.lbl}
+            style={{
+              background: "var(--white)",
+              border: "1px solid var(--border)",
+              borderRadius: 14,
+              padding: 20,
+            }}
+          >
+            <div style={{ fontSize: "1.3rem", marginBottom: 8 }}>{s.icon}</div>
+            <div
+              style={{
+                fontFamily: "var(--serif)",
+                fontSize: "1.7rem",
+                fontWeight: 700,
+                color: "var(--forest)",
+              }}
+            >
+              {s.val}
+            </div>
+            <div
+              style={{
+                fontSize: ".7rem",
+                textTransform: "uppercase",
+                letterSpacing: ".7px",
+                color: "var(--muted)",
+                marginTop: 3,
+                fontWeight: 600,
+              }}
+            >
+              {s.lbl}
+            </div>
           </div>
         ))}
       </div>
 
       {/* Add Voucher */}
-      <div style={{ background:"var(--white)",border:"1px solid var(--border)",borderRadius:20,overflow:"hidden",marginBottom:32 }}>
-        <div onClick={() => setShowForm(f => !f)} style={{ padding:"18px 24px",background:"var(--forest)",display:"flex",justifyContent:"space-between",alignItems:"center",cursor:"pointer",userSelect:"none" }}>
-          <div style={{ display:"flex",alignItems:"center",gap:10 }}>
-            <span style={{ fontSize:"1.2rem" }}>➕</span>
+      <div
+        style={{
+          background: "var(--white)",
+          border: "1px solid var(--border)",
+          borderRadius: 20,
+          overflow: "hidden",
+          marginBottom: 32,
+        }}
+      >
+        <div
+          onClick={() => setShowForm((f) => !f)}
+          style={{
+            padding: "18px 24px",
+            background: "var(--forest)",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            cursor: "pointer",
+            userSelect: "none",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <span style={{ fontSize: "1.2rem" }}>➕</span>
             <div>
-              <h3 style={{ fontFamily:"var(--serif)",fontSize:"1.1rem",color:"var(--cream)",marginBottom:1 }}>Add New Voucher</h3>
-              <p style={{ fontSize:".72rem",color:"rgba(245,240,232,.5)" }}>Create a custom voucher — saved instantly to Firebase</p>
+              <h3
+                style={{
+                  fontFamily: "var(--serif)",
+                  fontSize: "1.1rem",
+                  color: "var(--cream)",
+                  marginBottom: 1,
+                }}
+              >
+                Add New Voucher
+              </h3>
+              <p style={{ fontSize: ".72rem", color: "rgba(245,240,232,.5)" }}>
+                Create a custom voucher — including Music & Events types
+              </p>
             </div>
           </div>
-          <span style={{ color:"rgba(245,240,232,.6)",fontSize:"1rem",transition:"transform .3s",transform: showForm ? "rotate(180deg)" : "" }}>▼</span>
+          <span
+            style={{
+              color: "rgba(245,240,232,.6)",
+              fontSize: "1rem",
+              transition: "transform .3s",
+              transform: showForm ? "rotate(180deg)" : "",
+            }}
+          >
+            ▼
+          </span>
         </div>
 
         {showForm && (
-          <div style={{ padding:"28px 28px 24px" }}>
-           <div className="admin-grid-2" style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:16,marginBottom:16 }}>
+          <div style={{ padding: "28px 28px 24px" }}>
+            <div
+              className="admin-grid-2"
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: 16,
+                marginBottom: 16,
+              }}
+            >
               {[
-                { key:"name", label:"Voucher Name *", type:"input", placeholder:"e.g. 60-Min Swedish Massage" },
-                { key:"price", label:"Price (R) *", type:"number", placeholder:"550" },
-              ].map(f => (
+                {
+                  key: "name",
+                  label: "Voucher Name *",
+                  type: "input",
+                  placeholder: "e.g. Live Jazz Evening for Two",
+                },
+                {
+                  key: "price",
+                  label: "Price (R) *",
+                  type: "number",
+                  placeholder: "780",
+                },
+              ].map((f) => (
                 <div key={f.key}>
-                  <label style={{ fontSize:".68rem",fontWeight:700,textTransform:"uppercase",letterSpacing:1,color:"var(--muted)",display:"block",marginBottom:6 }}>{f.label}</label>
-                  <input className="admin-input" type={f.type || "text"} value={formData[f.key]} onChange={setF(f.key)} placeholder={f.placeholder} />
+                  <label
+                    style={{
+                      fontSize: ".68rem",
+                      fontWeight: 700,
+                      textTransform: "uppercase",
+                      letterSpacing: 1,
+                      color: "var(--muted)",
+                      display: "block",
+                      marginBottom: 6,
+                    }}
+                  >
+                    {f.label}
+                  </label>
+                  <input
+                    className="admin-input"
+                    type={f.type || "text"}
+                    value={formData[f.key]}
+                    onChange={setF(f.key)}
+                    placeholder={f.placeholder}
+                  />
                 </div>
               ))}
               <div>
-                <label style={{ fontSize:".68rem",fontWeight:700,textTransform:"uppercase",letterSpacing:1,color:"var(--muted)",display:"block",marginBottom:6 }}>Category *</label>
-                <select className="admin-input" value={formData.category} onChange={setF("category")}>
-                  {["Wellness","Beauty","Adventure","Dining & Wine","Stays","Skills","Other"].map(c => <option key={c} value={c}>{c}</option>)}
+                <label
+                  style={{
+                    fontSize: ".68rem",
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    letterSpacing: 1,
+                    color: "var(--muted)",
+                    display: "block",
+                    marginBottom: 6,
+                  }}
+                >
+                  Category *
+                </label>
+                <select
+                  className="admin-input"
+                  value={formData.category}
+                  onChange={setF("category")}
+                >
+                  {ALL_CATEGORIES.map((c) => (
+                    <option key={c} value={c}>
+                      {getCatIcon(c)} {c}
+                    </option>
+                  ))}
                 </select>
               </div>
               <div>
-                <label style={{ fontSize:".68rem",fontWeight:700,textTransform:"uppercase",letterSpacing:1,color:"var(--muted)",display:"block",marginBottom:6 }}>Valid For *</label>
-                <select className="admin-input" value={formData.validity} onChange={setF("validity")}>
-                  {["3","6","12","18","24"].map(m => <option key={m} value={m}>{m} months</option>)}
+                <label
+                  style={{
+                    fontSize: ".68rem",
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    letterSpacing: 1,
+                    color: "var(--muted)",
+                    display: "block",
+                    marginBottom: 6,
+                  }}
+                >
+                  Valid For *
+                </label>
+                <select
+                  className="admin-input"
+                  value={formData.validity}
+                  onChange={setF("validity")}
+                >
+                  {["3", "6", "12", "18", "24"].map((m) => (
+                    <option key={m} value={m}>
+                      {m} months
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
 
-            <div style={{ marginBottom:16 }}>
-              <label style={{ fontSize:".68rem",fontWeight:700,textTransform:"uppercase",letterSpacing:1,color:"var(--muted)",display:"block",marginBottom:6 }}>Description *</label>
-              <textarea className="admin-input" value={formData.desc} onChange={setF("desc")} placeholder="Describe what the customer will experience…" style={{ minHeight:80,resize:"vertical",lineHeight:1.6 }} />
+            <div style={{ marginBottom: 16 }}>
+              <label
+                style={{
+                  fontSize: ".68rem",
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: 1,
+                  color: "var(--muted)",
+                  display: "block",
+                  marginBottom: 6,
+                }}
+              >
+                Description *
+              </label>
+              <textarea
+                className="admin-input"
+                value={formData.desc}
+                onChange={setF("desc")}
+                placeholder="Describe what the customer will experience…"
+                style={{ minHeight: 80, resize: "vertical", lineHeight: 1.6 }}
+              />
             </div>
 
-            <div style={{ marginBottom:16 }}>
-              <label style={{ fontSize:".68rem",fontWeight:700,textTransform:"uppercase",letterSpacing:1,color:"var(--muted)",display:"block",marginBottom:6 }}>What's Included (comma separated)</label>
-              <input className="admin-input" value={formData.includes} onChange={setF("includes")} placeholder="e.g. 1x Treatment, Robe & slippers, Herbal tea" />
+            <div style={{ marginBottom: 16 }}>
+              <label
+                style={{
+                  fontSize: ".68rem",
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: 1,
+                  color: "var(--muted)",
+                  display: "block",
+                  marginBottom: 6,
+                }}
+              >
+                What's Included (comma separated)
+              </label>
+              <input
+                className="admin-input"
+                value={formData.includes}
+                onChange={setF("includes")}
+                placeholder="e.g. 2x concert tickets, Welcome cocktails, Programme booklet"
+              />
             </div>
 
-            <div style={{ marginBottom:20 }}>
-              <label style={{ fontSize:".68rem",fontWeight:700,textTransform:"uppercase",letterSpacing:1,color:"var(--muted)",display:"block",marginBottom:8 }}>Voucher Photo <span style={{ fontWeight:400,textTransform:"none",letterSpacing:0 }}>(optional)</span></label>
-              <label style={{ display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:8,padding:"28px 20px",border:"2px dashed var(--border2)",borderRadius:12,cursor:"pointer",background:"var(--cream)",textAlign:"center" }}>
-                <span style={{ fontSize:"2rem" }}>🖼️</span>
+            <div style={{ marginBottom: 20 }}>
+              <label
+                style={{
+                  fontSize: ".68rem",
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: 1,
+                  color: "var(--muted)",
+                  display: "block",
+                  marginBottom: 8,
+                }}
+              >
+                Voucher Photo{" "}
+                <span
+                  style={{
+                    fontWeight: 400,
+                    textTransform: "none",
+                    letterSpacing: 0,
+                  }}
+                >
+                  (optional)
+                </span>
+              </label>
+              <label
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 8,
+                  padding: "28px 20px",
+                  border: "2px dashed var(--border2)",
+                  borderRadius: 12,
+                  cursor: "pointer",
+                  background: "var(--cream)",
+                  textAlign: "center",
+                }}
+              >
+                <span style={{ fontSize: "2rem" }}>🖼️</span>
                 <div>
-                  <p style={{ fontSize:".85rem",fontWeight:600,color:"var(--forest)" }}>Click to upload or drag &amp; drop</p>
-                  <p style={{ fontSize:".75rem",color:"var(--muted)",marginTop:3 }}>{imageFile ? imageFile.name : "JPG, PNG or WebP — max 5MB"}</p>
+                  <p
+                    style={{
+                      fontSize: ".85rem",
+                      fontWeight: 600,
+                      color: "var(--forest)",
+                    }}
+                  >
+                    Click to upload or drag &amp; drop
+                  </p>
+                  <p
+                    style={{
+                      fontSize: ".75rem",
+                      color: "var(--muted)",
+                      marginTop: 3,
+                    }}
+                  >
+                    {imageFile ? imageFile.name : "JPG, PNG or WebP — max 5MB"}
+                  </p>
                 </div>
-                <input type="file" accept="image/*" style={{ display:"none" }} onChange={handleImageChange} />
+                <input
+                  type="file"
+                  accept="image/*"
+                  style={{ display: "none" }}
+                  onChange={handleImageChange}
+                />
               </label>
               {imagePreview && (
-                <div style={{ marginTop:12,borderRadius:10,overflow:"hidden",border:"1px solid var(--border)",position:"relative" }}>
-                  <img src={imagePreview} alt="Preview" style={{ width:"100%",height:200,objectFit:"cover",display:"block" }} />
-                  <button onClick={() => { setImageFile(null); setImagePreview(""); }}
-                    style={{ position:"absolute",top:8,right:8,background:"rgba(0,0,0,.55)",border:"none",borderRadius:"50%",width:28,height:28,color:"white",cursor:"pointer",fontSize:".8rem" }}>✕</button>
+                <div
+                  style={{
+                    marginTop: 12,
+                    borderRadius: 10,
+                    overflow: "hidden",
+                    border: "1px solid var(--border)",
+                    position: "relative",
+                  }}
+                >
+                  <img
+                    src={imagePreview}
+                    alt="Preview"
+                    style={{
+                      width: "100%",
+                      height: 200,
+                      objectFit: "cover",
+                      display: "block",
+                    }}
+                  />
+                  <button
+                    onClick={() => {
+                      setImageFile(null);
+                      setImagePreview("");
+                    }}
+                    style={{
+                      position: "absolute",
+                      top: 8,
+                      right: 8,
+                      background: "rgba(0,0,0,.55)",
+                      border: "none",
+                      borderRadius: "50%",
+                      width: 28,
+                      height: 28,
+                      color: "white",
+                      cursor: "pointer",
+                      fontSize: ".8rem",
+                    }}
+                  >
+                    ✕
+                  </button>
                 </div>
               )}
             </div>
 
             {formStatus && (
-              <div style={{ padding:"11px 14px",borderRadius:9,fontSize:".82rem",marginBottom:14,
-                background: formStatus.type==="ok" ? "#F0FDF4" : "#FEF2F2",
-                border: `1px solid ${formStatus.type==="ok" ? "#22C55E" : "#EF4444"}`,
-                color: formStatus.type==="ok" ? "#15803D" : "#B91C1C" }}
-                dangerouslySetInnerHTML={{ __html: formStatus.msg }} />
+              <div
+                style={{
+                  padding: "11px 14px",
+                  borderRadius: 9,
+                  fontSize: ".82rem",
+                  marginBottom: 14,
+                  background: formStatus.type === "ok" ? "#F0FDF4" : "#FEF2F2",
+                  border: `1px solid ${formStatus.type === "ok" ? "#22C55E" : "#EF4444"}`,
+                  color: formStatus.type === "ok" ? "#15803D" : "#B91C1C",
+                }}
+                dangerouslySetInnerHTML={{ __html: formStatus.msg }}
+              />
             )}
 
-            <div style={{ display:"flex",gap:10,alignItems:"center",flexWrap:"wrap" }}>
-              <button onClick={handleAddVoucher} disabled={formLoading}
-                style={{ padding:"13px 28px",background:"var(--forest)",color:"var(--cream)",border:"none",borderRadius:9,fontFamily:"var(--serif)",fontSize:".95rem",fontWeight:700,cursor:"pointer",transition:"all .2s",display:"flex",alignItems:"center",gap:8,opacity:formLoading?.5:1 }}>
+            <div
+              style={{
+                display: "flex",
+                gap: 10,
+                alignItems: "center",
+                flexWrap: "wrap",
+              }}
+            >
+              <button
+                onClick={handleAddVoucher}
+                disabled={formLoading}
+                style={{
+                  padding: "13px 28px",
+                  background: "var(--forest)",
+                  color: "var(--cream)",
+                  border: "none",
+                  borderRadius: 9,
+                  fontFamily: "var(--serif)",
+                  fontSize: ".95rem",
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  transition: "all .2s",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                  opacity: formLoading ? 0.5 : 1,
+                }}
+              >
                 {formLoading ? "Saving…" : "➕ Create & Save Voucher"}
               </button>
-              <button onClick={() => { setFormData({ name:"",category:"Wellness",price:"",validity:"12",desc:"",includes:"" }); setImageFile(null); setImagePreview(""); setFormStatus(null); }}
-                style={{ padding:"13px 20px",background:"transparent",color:"var(--muted)",border:"1.5px solid var(--border2)",borderRadius:9,fontFamily:"var(--sans)",fontSize:".83rem",fontWeight:600,cursor:"pointer" }}>
+              <button
+                onClick={() => {
+                  setFormData({
+                    name: "",
+                    category: "Wellness",
+                    price: "",
+                    validity: "12",
+                    desc: "",
+                    includes: "",
+                  });
+                  setImageFile(null);
+                  setImagePreview("");
+                  setFormStatus(null);
+                }}
+                style={{
+                  padding: "13px 20px",
+                  background: "transparent",
+                  color: "var(--muted)",
+                  border: "1.5px solid var(--border2)",
+                  borderRadius: 9,
+                  fontFamily: "var(--sans)",
+                  fontSize: ".83rem",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                }}
+              >
                 Clear
               </button>
             </div>
@@ -1650,38 +3434,205 @@ function AdminPage({ user, onLogout }) {
       </div>
 
       {/* Vouchers table */}
-      <div style={{ background:"var(--white)",border:"1px solid var(--border)",borderRadius:16,overflow:"hidden",marginBottom:28 }}>
-        <div style={{ padding:"18px 24px",borderBottom:"1px solid var(--border)",background:"var(--cream2)",display:"flex",justifyContent:"space-between",alignItems:"center" }}>
-          <div>
-            <h3 style={{ fontFamily:"var(--serif)",fontSize:"1.2rem",color:"var(--forest)" }}>My Vouchers</h3>
-            <p style={{ fontSize:".75rem",color:"var(--muted)",marginTop:2 }}>Saved under <code style={{ background:"var(--cream3)",padding:"1px 5px",borderRadius:3,fontSize:".7rem" }}>users/{"{uid}"}/vouchers</code></p>
-          </div>
-          <button onClick={load} style={{ fontSize:".75rem",color:"var(--leaf)",fontWeight:600,border:"1.5px solid rgba(61,107,71,.25)",borderRadius:7,padding:"6px 13px",background:"transparent",cursor:"pointer" }}>↻ Refresh</button>
+      <div
+        style={{
+          background: "var(--white)",
+          border: "1px solid var(--border)",
+          borderRadius: 16,
+          overflow: "hidden",
+          marginBottom: 28,
+        }}
+      >
+        <div
+          style={{
+            padding: "18px 24px",
+            borderBottom: "1px solid var(--border)",
+            background: "var(--cream2)",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <h3
+            style={{
+              fontFamily: "var(--serif)",
+              fontSize: "1.2rem",
+              color: "var(--forest)",
+            }}
+          >
+            My Vouchers
+          </h3>
+          <button
+            onClick={load}
+            style={{
+              fontSize: ".75rem",
+              color: "var(--leaf)",
+              fontWeight: 600,
+              border: "1.5px solid rgba(61,107,71,.25)",
+              borderRadius: 7,
+              padding: "6px 13px",
+              background: "transparent",
+              cursor: "pointer",
+            }}
+          >
+            ↻ Refresh
+          </button>
         </div>
-        <div style={{ overflowX:"auto" }}>
-          <table style={{ width:"100%",borderCollapse:"collapse" }}>
+        <div style={{ overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
-              <tr>{["Voucher Code","Name","Category","Price","Valid Until","Status","Created"].map(h => (
-                <th key={h} style={{ textAlign:"left",padding:"11px 14px",fontSize:".68rem",textTransform:"uppercase",letterSpacing:".7px",color:"var(--muted)",fontWeight:700,background:"var(--cream2)" }}>{h}</th>
-              ))}</tr>
+              <tr>
+                {[
+                  "Voucher Code",
+                  "Name",
+                  "Category",
+                  "Price",
+                  "Valid Until",
+                  "Status",
+                  "Created",
+                ].map((h) => (
+                  <th
+                    key={h}
+                    style={{
+                      textAlign: "left",
+                      padding: "11px 14px",
+                      fontSize: ".68rem",
+                      textTransform: "uppercase",
+                      letterSpacing: ".7px",
+                      color: "var(--muted)",
+                      fontWeight: 700,
+                      background: "var(--cream2)",
+                    }}
+                  >
+                    {h}
+                  </th>
+                ))}
+              </tr>
             </thead>
             <tbody>
-              {loading
-                ? <tr><td colSpan={7} style={{ textAlign:"center",padding:32,color:"var(--muted)" }}>⏳ Loading your vouchers…</td></tr>
-                : vouchers.length === 0
-                  ? <tr><td colSpan={7} style={{ textAlign:"center",padding:48,color:"var(--muted)" }}>No vouchers found.</td></tr>
-                  : vouchers.map(v => (
-                    <tr key={v.id}>
-                      <td style={{ padding:"12px 14px",fontFamily:"var(--serif)",fontWeight:700,letterSpacing:1,color:"var(--forest)",fontSize:".9rem" }}>{v.code||"—"}</td>
-                      <td style={{ padding:"12px 14px",fontSize:".85rem",fontWeight:600,color:"var(--forest)" }}>{v.name||"—"}</td>
-                      <td style={{ padding:"12px 14px",fontSize:".78rem",color:"var(--muted)" }}>{v.category||"—"}</td>
-                      <td style={{ padding:"12px 14px",fontFamily:"var(--serif)",fontWeight:700,color:"var(--forest)" }}>R {Number(v.price||0).toFixed(2)}</td>
-                      <td style={{ padding:"12px 14px",fontSize:".78rem",color:"var(--muted)" }}>{v.expiryDate ? new Date(v.expiryDate).toLocaleDateString("en-ZA") : "—"}</td>
-                      <td style={{ padding:"12px 14px" }}><span style={{ display:"inline-block",padding:"3px 10px",borderRadius:4,fontSize:".7rem",fontWeight:700,...Object.fromEntries(statusStyle(v.status).split(";").filter(Boolean).map(s => { const [k,val] = s.split(":"); return [k.trim().replace(/-([a-z])/g,(_,c)=>c.toUpperCase()), val?.trim()]; })) }}>{v.status}</span></td>
-                      <td style={{ padding:"12px 14px",color:"var(--muted)",fontSize:".75rem" }}>{v.createdAt?.toDate?.()?.toLocaleDateString("en-ZA")||"—"}</td>
-                    </tr>
-                  ))
-              }
+              {loading ? (
+                <tr>
+                  <td
+                    colSpan={7}
+                    style={{
+                      textAlign: "center",
+                      padding: 32,
+                      color: "var(--muted)",
+                    }}
+                  >
+                    ⏳ Loading your vouchers…
+                  </td>
+                </tr>
+              ) : vouchers.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan={7}
+                    style={{
+                      textAlign: "center",
+                      padding: 48,
+                      color: "var(--muted)",
+                    }}
+                  >
+                    No vouchers found.
+                  </td>
+                </tr>
+              ) : (
+                vouchers.map((v) => (
+                  <tr key={v.id}>
+                    <td
+                      style={{
+                        padding: "12px 14px",
+                        fontFamily: "var(--serif)",
+                        fontWeight: 700,
+                        letterSpacing: 1,
+                        color: "var(--forest)",
+                        fontSize: ".9rem",
+                      }}
+                    >
+                      {v.code || "—"}
+                    </td>
+                    <td
+                      style={{
+                        padding: "12px 14px",
+                        fontSize: ".85rem",
+                        fontWeight: 600,
+                        color: "var(--forest)",
+                      }}
+                    >
+                      {v.name || "—"}
+                    </td>
+                    <td
+                      style={{
+                        padding: "12px 14px",
+                        fontSize: ".78rem",
+                        color: "var(--muted)",
+                      }}
+                    >
+                      {getCatIcon(v.category)} {v.category || "—"}
+                    </td>
+                    <td
+                      style={{
+                        padding: "12px 14px",
+                        fontFamily: "var(--serif)",
+                        fontWeight: 700,
+                        color: "var(--forest)",
+                      }}
+                    >
+                      R {Number(v.price || 0).toFixed(2)}
+                    </td>
+                    <td
+                      style={{
+                        padding: "12px 14px",
+                        fontSize: ".78rem",
+                        color: "var(--muted)",
+                      }}
+                    >
+                      {v.expiryDate
+                        ? new Date(v.expiryDate).toLocaleDateString("en-ZA")
+                        : "—"}
+                    </td>
+                    <td style={{ padding: "12px 14px" }}>
+                      <span
+                        style={{
+                          display: "inline-block",
+                          padding: "3px 10px",
+                          borderRadius: 4,
+                          fontSize: ".7rem",
+                          fontWeight: 700,
+                          ...Object.fromEntries(
+                            statusStyle(v.status)
+                              .split(";")
+                              .filter(Boolean)
+                              .map((s) => {
+                                const [k, val] = s.split(":");
+                                return [
+                                  k
+                                    .trim()
+                                    .replace(/-([a-z])/g, (_, c) =>
+                                      c.toUpperCase(),
+                                    ),
+                                  val?.trim(),
+                                ];
+                              }),
+                          ),
+                        }}
+                      >
+                        {v.status}
+                      </span>
+                    </td>
+                    <td
+                      style={{
+                        padding: "12px 14px",
+                        color: "var(--muted)",
+                        fontSize: ".75rem",
+                      }}
+                    >
+                      {v.createdAt?.toDate?.()?.toLocaleDateString("en-ZA") ||
+                        "—"}
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
@@ -1692,89 +3643,367 @@ function AdminPage({ user, onLogout }) {
 
 // ─── Partners Page ────────────────────────────────────────────────────────
 function PartnersPage() {
-  const [form, setForm] = useState({ business:"", category:"Wellness & Spa", contact:"", whatsapp:"", email:"", services:"" });
+  const [form, setForm] = useState({
+    business: "",
+    category: "Wellness & Spa",
+    contact: "",
+    whatsapp: "",
+    email: "",
+    services: "",
+  });
   const [status, setStatus] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const setF = k => e => setForm(f => ({ ...f, [k]: e.target.value }));
+  const setF = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
 
   const handleSubmit = async () => {
     if (!form.business || !form.contact || !form.email || !form.whatsapp) {
-      setStatus({ type:"error", msg:"Please fill in Business Name, Contact Name, Email and WhatsApp number." }); return;
+      setStatus({
+        type: "error",
+        msg: "Please fill in Business Name, Contact Name, Email and WhatsApp number.",
+      });
+      return;
     }
     setLoading(true);
     try {
-      await addDoc(collection(db, "partner_applications"), { ...form, status:"pending", submittedAt: serverTimestamp() });
-      setStatus({ type:"ok", msg:"<strong>Application received!</strong> We will be in touch within 24 hours." });
-      setForm({ business:"",category:"Wellness & Spa",contact:"",whatsapp:"",email:"",services:"" });
-    } catch { setStatus({ type:"error", msg:"Something went wrong. Please try again." }); }
-    finally { setLoading(false); }
+      await addDoc(collection(db, "partner_applications"), {
+        ...form,
+        status: "pending",
+        submittedAt: serverTimestamp(),
+      });
+      setStatus({
+        type: "ok",
+        msg: "<strong>Application received!</strong> We will be in touch within 24 hours.",
+      });
+      setForm({
+        business: "",
+        category: "Wellness & Spa",
+        contact: "",
+        whatsapp: "",
+        email: "",
+        services: "",
+      });
+    } catch {
+      setStatus({
+        type: "error",
+        msg: "Something went wrong. Please try again.",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <>
-      <div style={{ background:"var(--forest)",padding:"80px 32px",textAlign:"center",position:"relative",overflow:"hidden" }}>
-        <div style={{ position:"absolute",inset:0,background:"radial-gradient(ellipse at 50% 0%,rgba(61,107,71,.4),transparent 60%)" }} />
-        <div style={{ position:"relative",maxWidth:640,margin:"0 auto" }}>
-          <p style={{ fontSize:".72rem",fontWeight:700,textTransform:"uppercase",letterSpacing:1.5,color:"var(--gold2)",marginBottom:12 }}>✦ Partner Programme</p>
-          <h1 style={{ fontFamily:"var(--serif)",fontSize:"clamp(2.4rem,5vw,4rem)",color:"var(--cream)",lineHeight:1.05,marginBottom:16,fontWeight:600 }}>
-            List your business.<br /><em style={{ color:"var(--gold2)" }}>Earn on every sale.</em>
-          </h1>
-          <p style={{ color:"rgba(245,240,232,.65)",fontSize:"1rem",lineHeight:1.75,marginBottom:32 }}>
-            We handle payments, WhatsApp delivery and customer support. You just deliver the experience and collect your payout.
+      <div
+        style={{
+          background: "var(--forest)",
+          padding: "80px 32px",
+          textAlign: "center",
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background:
+              "radial-gradient(ellipse at 50% 0%,rgba(61,107,71,.4),transparent 60%)",
+          }}
+        />
+        <div style={{ position: "relative", maxWidth: 640, margin: "0 auto" }}>
+          <p
+            style={{
+              fontSize: ".72rem",
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: 1.5,
+              color: "var(--gold2)",
+              marginBottom: 12,
+            }}
+          >
+            ✦ Partner Programme
           </p>
-          <div style={{ display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap" }}>
-            {[["R0","Setup cost"],["80%+","You keep"],["Weekly","EFT payout"]].map(([val, lbl]) => (
-              <div key={lbl} style={{ background:"rgba(245,240,232,.1)",border:"1px solid rgba(245,240,232,.15)",borderRadius:12,padding:"16px 24px",color:"var(--cream)" }}>
-                <div style={{ fontFamily:"var(--serif)",fontSize:"1.8rem",fontWeight:700 }}>{val}</div>
-                <div style={{ fontSize:".72rem",color:"rgba(245,240,232,.5)",textTransform:"uppercase",letterSpacing:".8px" }}>{lbl}</div>
+          <h1
+            style={{
+              fontFamily: "var(--serif)",
+              fontSize: "clamp(2.4rem,5vw,4rem)",
+              color: "var(--cream)",
+              lineHeight: 1.05,
+              marginBottom: 16,
+              fontWeight: 600,
+            }}
+          >
+            List your business.
+            <br />
+            <em style={{ color: "var(--gold2)" }}>Earn on every sale.</em>
+          </h1>
+          <p
+            style={{
+              color: "rgba(245,240,232,.65)",
+              fontSize: "1rem",
+              lineHeight: 1.75,
+              marginBottom: 32,
+            }}
+          >
+            Whether you run a music venue, plan private events, or offer spa
+            services — we handle payments, WhatsApp delivery and customer
+            support. You just deliver the experience and collect your payout.
+          </p>
+          <div
+            style={{
+              display: "flex",
+              gap: 10,
+              justifyContent: "center",
+              flexWrap: "wrap",
+            }}
+          >
+            {[
+              ["R0", "Setup cost"],
+              ["80%+", "You keep"],
+              ["Weekly", "EFT payout"],
+            ].map(([val, lbl]) => (
+              <div
+                key={lbl}
+                style={{
+                  background: "rgba(245,240,232,.1)",
+                  border: "1px solid rgba(245,240,232,.15)",
+                  borderRadius: 12,
+                  padding: "16px 24px",
+                  color: "var(--cream)",
+                }}
+              >
+                <div
+                  style={{
+                    fontFamily: "var(--serif)",
+                    fontSize: "1.8rem",
+                    fontWeight: 700,
+                  }}
+                >
+                  {val}
+                </div>
+                <div
+                  style={{
+                    fontSize: ".72rem",
+                    color: "rgba(245,240,232,.5)",
+                    textTransform: "uppercase",
+                    letterSpacing: ".8px",
+                  }}
+                >
+                  {lbl}
+                </div>
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      <div className="container" style={{ padding:"60px 32px",maxWidth:680 }}>
-        <h2 style={{ fontFamily:"var(--serif)",fontSize:"2rem",color:"var(--forest)",marginBottom:6 }}>Apply to Partner</h2>
-        <p style={{ color:"var(--sub)",marginBottom:28,fontSize:".9rem" }}>Takes 5 minutes. We'll be in touch within 24 hours.</p>
-        <div style={{ background:"var(--white)",border:"1px solid var(--border)",borderRadius:20,padding:32,display:"flex",flexDirection:"column",gap:14 }}>
-         <div className="admin-grid-2" style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:14 }}>
+      <div
+        className="container"
+        style={{ padding: "60px 32px", maxWidth: 680 }}
+      >
+        <h2
+          style={{
+            fontFamily: "var(--serif)",
+            fontSize: "2rem",
+            color: "var(--forest)",
+            marginBottom: 6,
+          }}
+        >
+          Apply to Partner
+        </h2>
+        <p style={{ color: "var(--sub)", marginBottom: 28, fontSize: ".9rem" }}>
+          Takes 5 minutes. We'll be in touch within 24 hours.
+        </p>
+        <div
+          style={{
+            background: "var(--white)",
+            border: "1px solid var(--border)",
+            borderRadius: 20,
+            padding: 32,
+            display: "flex",
+            flexDirection: "column",
+            gap: 14,
+          }}
+        >
+          <div
+            className="admin-grid-2"
+            style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}
+          >
             <div>
-              <label style={{ fontSize:".7rem",fontWeight:700,textTransform:"uppercase",letterSpacing:1,color:"var(--muted)",display:"block",marginBottom:6 }}>Business Name</label>
-              <input className="admin-input" value={form.business} onChange={setF("business")} placeholder="Relax Zone Spa" />
+              <label
+                style={{
+                  fontSize: ".7rem",
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: 1,
+                  color: "var(--muted)",
+                  display: "block",
+                  marginBottom: 6,
+                }}
+              >
+                Business Name
+              </label>
+              <input
+                className="admin-input"
+                value={form.business}
+                onChange={setF("business")}
+                placeholder="Beat Studio / Stage Events"
+              />
             </div>
             <div>
-              <label style={{ fontSize:".7rem",fontWeight:700,textTransform:"uppercase",letterSpacing:1,color:"var(--muted)",display:"block",marginBottom:6 }}>Category</label>
-              <select className="admin-input" value={form.category} onChange={setF("category")}>
-                {["Wellness & Spa","Beauty","Adventure","Dining & Wine","Stays","Skills & Courses"].map(c => <option key={c}>{c}</option>)}
+              <label
+                style={{
+                  fontSize: ".7rem",
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: 1,
+                  color: "var(--muted)",
+                  display: "block",
+                  marginBottom: 6,
+                }}
+              >
+                Category
+              </label>
+              {/* ── Updated category dropdown includes Music + Events ── */}
+              <select
+                className="admin-input"
+                value={form.category}
+                onChange={setF("category")}
+              >
+                {[
+                  "Wellness & Spa",
+                  "Beauty",
+                  "Adventure",
+                  "Dining & Wine",
+                  "Stays",
+                  "Skills & Courses",
+                  "Music",
+                  "Events",
+                  "Other",
+                ].map((c) => (
+                  <option key={c}>{c}</option>
+                ))}
               </select>
             </div>
             <div>
-              <label style={{ fontSize:".7rem",fontWeight:700,textTransform:"uppercase",letterSpacing:1,color:"var(--muted)",display:"block",marginBottom:6 }}>Contact Name</label>
-              <input className="admin-input" value={form.contact} onChange={setF("contact")} placeholder="Jane Smith" />
+              <label
+                style={{
+                  fontSize: ".7rem",
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: 1,
+                  color: "var(--muted)",
+                  display: "block",
+                  marginBottom: 6,
+                }}
+              >
+                Contact Name
+              </label>
+              <input
+                className="admin-input"
+                value={form.contact}
+                onChange={setF("contact")}
+                placeholder="Jane Smith"
+              />
             </div>
             <div>
-              <label style={{ fontSize:".7rem",fontWeight:700,textTransform:"uppercase",letterSpacing:1,color:"var(--muted)",display:"block",marginBottom:6 }}>WhatsApp Number</label>
-              <input className="admin-input" value={form.whatsapp} onChange={setF("whatsapp")} placeholder="+27821234567" />
+              <label
+                style={{
+                  fontSize: ".7rem",
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: 1,
+                  color: "var(--muted)",
+                  display: "block",
+                  marginBottom: 6,
+                }}
+              >
+                WhatsApp Number
+              </label>
+              <input
+                className="admin-input"
+                value={form.whatsapp}
+                onChange={setF("whatsapp")}
+                placeholder="+27821234567"
+              />
             </div>
           </div>
           <div>
-            <label style={{ fontSize:".7rem",fontWeight:700,textTransform:"uppercase",letterSpacing:1,color:"var(--muted)",display:"block",marginBottom:6 }}>Email</label>
-            <input className="admin-input" type="email" value={form.email} onChange={setF("email")} placeholder="hello@yourbusiness.co.za" />
+            <label
+              style={{
+                fontSize: ".7rem",
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: 1,
+                color: "var(--muted)",
+                display: "block",
+                marginBottom: 6,
+              }}
+            >
+              Email
+            </label>
+            <input
+              className="admin-input"
+              type="email"
+              value={form.email}
+              onChange={setF("email")}
+              placeholder="hello@yourbusiness.co.za"
+            />
           </div>
           <div>
-            <label style={{ fontSize:".7rem",fontWeight:700,textTransform:"uppercase",letterSpacing:1,color:"var(--muted)",display:"block",marginBottom:6 }}>Describe your service(s)</label>
-            <textarea className="admin-input" value={form.services} onChange={setF("services")} placeholder="e.g. 60-min massage R550, couples spa day R1800 including lunch..." style={{ height:90,resize:"none" }} />
+            <label
+              style={{
+                fontSize: ".7rem",
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: 1,
+                color: "var(--muted)",
+                display: "block",
+                marginBottom: 6,
+              }}
+            >
+              Describe your service(s)
+            </label>
+            <textarea
+              className="admin-input"
+              value={form.services}
+              onChange={setF("services")}
+              placeholder="e.g. Live jazz evenings R780, studio recording sessions R1200, or private birthday party packages R1850…"
+              style={{ height: 90, resize: "none" }}
+            />
           </div>
           {status && (
-            <div style={{ padding:"12px 16px",borderRadius:9,fontSize:".85rem",
-              background: status.type==="ok" ? "#F0FDF4" : "#FEF2F2",
-              border: `1px solid ${status.type==="ok" ? "#22C55E" : "#EF4444"}`,
-              color: status.type==="ok" ? "#15803D" : "#B91C1C" }}
-              dangerouslySetInnerHTML={{ __html: status.msg }} />
+            <div
+              style={{
+                padding: "12px 16px",
+                borderRadius: 9,
+                fontSize: ".85rem",
+                background: status.type === "ok" ? "#F0FDF4" : "#FEF2F2",
+                border: `1px solid ${status.type === "ok" ? "#22C55E" : "#EF4444"}`,
+                color: status.type === "ok" ? "#15803D" : "#B91C1C",
+              }}
+              dangerouslySetInnerHTML={{ __html: status.msg }}
+            />
           )}
-          <button onClick={handleSubmit} disabled={loading}
-            style={{ padding:15,background:"var(--forest)",color:"var(--cream)",border:"none",borderRadius:10,fontFamily:"var(--serif)",fontSize:"1rem",fontWeight:700,cursor:"pointer",transition:"all .2s",opacity:loading?.5:1 }}>
+          <button
+            onClick={handleSubmit}
+            disabled={loading}
+            style={{
+              padding: 15,
+              background: "var(--forest)",
+              color: "var(--cream)",
+              border: "none",
+              borderRadius: 10,
+              fontFamily: "var(--serif)",
+              fontSize: "1rem",
+              fontWeight: 700,
+              cursor: "pointer",
+              transition: "all .2s",
+              opacity: loading ? 0.5 : 1,
+            }}
+          >
             {loading ? "Submitting…" : "Submit Application"}
           </button>
         </div>
@@ -1790,52 +4019,117 @@ function Footer({ setPage }) {
       <div className="container">
         <div className="footer-grid">
           <div>
-            <div className="footer-brand">Afri<span>Voucher</span></div>
-            <p className="footer-tagline">South Africa's leading digital gift experience marketplace. Connecting people with unforgettable moments since 2024.</p>
+            <div className="footer-brand">
+              Afri<span>Voucher</span>
+            </div>
+            <p className="footer-tagline">
+              South Africa's leading digital gift experience marketplace.
+              Connecting people with unforgettable moments since 2024.
+            </p>
             <div className="footer-socials">
-              {["𝕏","in","f","📸"].map(s => <Link  href="#" key={s} className="social-btn">{s}</Link>)}
+              {["𝕏", "in", "f", "📸"].map((s) => (
+                <Link href="#" key={s} className="social-btn">
+                  {s}
+                </Link>
+              ))}
             </div>
           </div>
           <div className="footer-col">
             <h4>Experiences</h4>
             <div className="footer-links">
-              {["Wellness & Spa","Adventure","Dining & Wine","Stays & Getaways","Skills & Courses"].map(l => <a href key={l} className="footer-link">{l}</a>)}
+              {[
+                "Wellness & Spa",
+                "Adventure",
+                "Dining & Wine",
+                "Music & Live Events",
+                "Private Functions",
+                "Skills & Courses",
+              ].map((l) => (
+                <a href="#" key={l} className="footer-link">
+                  {l}
+                </a>
+              ))}
             </div>
           </div>
           <div className="footer-col">
             <h4>Company</h4>
             <div className="footer-links">
-              {["About Us","Partner Programme","Corporate Gifting","Blog","Careers"].map(l => <a href key={l} className="footer-link">{l}</a>)}
+              {[
+                "About Us",
+                "Partner Programme",
+                "Corporate Gifting",
+                "Blog",
+                "Careers",
+              ].map((l) => (
+                <a href="#" key={l} className="footer-link">
+                  {l}
+                </a>
+              ))}
             </div>
           </div>
           <div className="footer-col">
             <h4>Support</h4>
             <div className="footer-links">
-              {["Redeem Voucher","Help Centre","Contact Us","Privacy Policy","Terms of Service"].map(l => <a href key={l} className="footer-link">{l}</a>)}
+              {[
+                "Redeem Voucher",
+                "Help Centre",
+                "Contact Us",
+                "Privacy Policy",
+                "Terms of Service",
+              ].map((l) => (
+                <a href="#" key={l} className="footer-link">
+                  {l}
+                </a>
+              ))}
             </div>
           </div>
         </div>
         <div className="footer-bottom">
-          <p className="footer-legal">© 2025 AfriVoucher (Pty) Ltd · All rights reserved · Registered in South Africa</p>
+          <p className="footer-legal">
+            © 2025 AfriVoucher (Pty) Ltd · All rights reserved · Registered in
+            South Africa
+          </p>
           <div className="footer-payments">
-            <span style={{ fontSize:".72rem",color:"rgba(245,240,232,.3)",marginRight:4 }}>Payments by</span>
-            {["PayFast","Visa","MasterCard","SnapScan"].map(p => <span key={p} className="pay-badge">{p}</span>)}
+            <span
+              style={{
+                fontSize: ".72rem",
+                color: "rgba(245,240,232,.3)",
+                marginRight: 4,
+              }}
+            >
+              Payments by
+            </span>
+            {["PayFast", "Visa", "MasterCard", "SnapScan"].map((p) => (
+              <span key={p} className="pay-badge">
+                {p}
+              </span>
+            ))}
           </div>
         </div>
       </div>
     </footer>
   );
 }
+
+// ─── Bottom Nav ───────────────────────────────────────────────────────────
 function BottomNav({ page, setPage, user }) {
   const tabs = [
     {
       id: "store",
       label: "Home",
       icon: (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-          strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-          <polyline points="9 22 9 12 15 12 15 22"/>
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+          <polyline points="9 22 9 12 15 12 15 22" />
         </svg>
       ),
     },
@@ -1843,10 +4137,18 @@ function BottomNav({ page, setPage, user }) {
       id: "redeem",
       label: "Redeem",
       icon: (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-          strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"/>
-          <line x1="9" y1="12" x2="15" y2="12"/>
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z" />
+          <line x1="9" y1="12" x2="15" y2="12" />
         </svg>
       ),
     },
@@ -1854,11 +4156,19 @@ function BottomNav({ page, setPage, user }) {
       id: "partners",
       label: "Partners",
       icon: (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-          strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M3 9h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z"/>
-          <path d="M3 9l2.45-4.9A2 2 0 0 1 7.24 3h9.52a2 2 0 0 1 1.8 1.1L21 9"/>
-          <line x1="12" y1="3" x2="12" y2="9"/>
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M3 9h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z" />
+          <path d="M3 9l2.45-4.9A2 2 0 0 1 7.24 3h9.52a2 2 0 0 1 1.8 1.1L21 9" />
+          <line x1="12" y1="3" x2="12" y2="9" />
         </svg>
       ),
     },
@@ -1867,10 +4177,18 @@ function BottomNav({ page, setPage, user }) {
       label: user ? "Dashboard" : "Sign In",
       badge: !user,
       icon: (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-          strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-          <circle cx="12" cy="7" r="4"/>
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+          <circle cx="12" cy="7" r="4" />
         </svg>
       ),
     },
@@ -1880,7 +4198,8 @@ function BottomNav({ page, setPage, user }) {
     <nav className="bottom-nav" aria-label="Main navigation">
       <div className="bottom-nav-inner">
         {tabs.map((tab) => {
-          const isActive = page === tab.id ||
+          const isActive =
+            page === tab.id ||
             (tab.id === "auth" && page === "auth") ||
             (tab.id === "admin" && page === "admin");
           return (
@@ -1891,7 +4210,9 @@ function BottomNav({ page, setPage, user }) {
               aria-label={tab.label}
               aria-current={isActive ? "page" : undefined}
             >
-              {tab.badge && <span className="bn-badge" aria-label="Action required" />}
+              {tab.badge && (
+                <span className="bn-badge" aria-label="Action required" />
+              )}
               <div className="bn-pill">{tab.icon}</div>
               <span className="bn-label">{tab.label}</span>
             </button>
@@ -1901,6 +4222,7 @@ function BottomNav({ page, setPage, user }) {
     </nav>
   );
 }
+
 // ─── Toast System ─────────────────────────────────────────────────────────
 const ToastContext = React.createContext(null);
 
@@ -1908,38 +4230,74 @@ function ToastProvider({ children }) {
   const [toasts, setToasts] = useState([]);
   const show = useCallback((msg, type = "info", duration = 3500) => {
     const id = Date.now();
-    setToasts(t => [...t, { id, msg, type }]);
-    setTimeout(() => setToasts(t => t.filter(x => x.id !== id)), duration);
+    setToasts((t) => [...t, { id, msg, type }]);
+    setTimeout(() => setToasts((t) => t.filter((x) => x.id !== id)), duration);
   }, []);
-  const icons = { ok:"✅", error:"❌", warn:"⚠️", info:"ℹ️" };
-  const colors = { ok:"#15803D", error:"#B91C1C", warn:"#92400E", info:"var(--forest)" };
+  const icons = { ok: "✅", error: "❌", warn: "⚠️", info: "ℹ️" };
+  const colors = {
+    ok: "#15803D",
+    error: "#B91C1C",
+    warn: "#92400E",
+    info: "var(--forest)",
+  };
   return (
     <ToastContext.Provider value={show}>
       {children}
-      <div style={{ position:"fixed",bottom:"calc(80px + env(safe-area-inset-bottom))",left:"50%",
-        transform:"translateX(-50%)",zIndex:9999,display:"flex",flexDirection:"column",
-        gap:8,alignItems:"center",pointerEvents:"none",width:"calc(100% - 32px)",maxWidth:400 }}>
-        {toasts.map(t => (
-          <div key={t.id} style={{ background:"var(--forest)",color:"var(--cream)",padding:"12px 18px",
-            borderRadius:12,fontSize:".85rem",fontWeight:600,display:"flex",alignItems:"center",
-            gap:10,boxShadow:"0 8px 32px rgba(26,46,31,.3)",animation:"popIn .3s cubic-bezier(.34,1.56,.64,1)",
-            width:"100%",borderLeft:`4px solid ${colors[t.type]}` }}>
-            <span>{icons[t.type]}</span>{t.msg}
+      <div
+        style={{
+          position: "fixed",
+          bottom: "calc(80px + env(safe-area-inset-bottom))",
+          left: "50%",
+          transform: "translateX(-50%)",
+          zIndex: 9999,
+          display: "flex",
+          flexDirection: "column",
+          gap: 8,
+          alignItems: "center",
+          pointerEvents: "none",
+          width: "calc(100% - 32px)",
+          maxWidth: 400,
+        }}
+      >
+        {toasts.map((t) => (
+          <div
+            key={t.id}
+            style={{
+              background: "var(--forest)",
+              color: "var(--cream)",
+              padding: "12px 18px",
+              borderRadius: 12,
+              fontSize: ".85rem",
+              fontWeight: 600,
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              boxShadow: "0 8px 32px rgba(26,46,31,.3)",
+              animation: "popIn .3s cubic-bezier(.34,1.56,.64,1)",
+              width: "100%",
+              borderLeft: `4px solid ${colors[t.type]}`,
+            }}
+          >
+            <span>{icons[t.type]}</span>
+            {t.msg}
           </div>
         ))}
       </div>
     </ToastContext.Provider>
   );
 }
+
+// eslint-disable-next-line no-unused-vars
 const useToast = () => React.useContext(ToastContext);
+
+// ─── App Root ─────────────────────────────────────────────────────────────
 export default function App() {
-  const [page, setPage]       = useState("store");
-  const [user, setUser]       = useState(null);
+  const [page, setPage] = useState("store");
+  const [user, setUser] = useState(null);
   const [vouchers, setVouchers] = useState([]);
   const [loadingV, setLoadingV] = useState(true);
   const [searchQ, setSearchQ] = useState("");
 
-  // Inject CSS
   useEffect(() => {
     const style = document.createElement("style");
     style.textContent = CSS;
@@ -1947,18 +4305,18 @@ export default function App() {
     return () => document.head.removeChild(style);
   }, []);
 
-  // Auth listener
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, u => setUser(u || null));
+    const unsub = onAuthStateChanged(auth, (u) => setUser(u || null));
     return unsub;
   }, []);
 
-  // Load vouchers from Firestore
   useEffect(() => {
     (async () => {
       try {
-        const snap = await getDocs(query(collection(db, "all_vouchers"), orderBy("createdAt", "desc")));
-        const data = snap.docs.map(d => {
+        const snap = await getDocs(
+          query(collection(db, "all_vouchers"), orderBy("createdAt", "desc")),
+        );
+        const data = snap.docs.map((d) => {
           const v = d.data();
           return {
             id: "fb_" + d.id,
@@ -1967,7 +4325,10 @@ export default function App() {
             partner: v.businessEmail?.split("@")[1]?.split(".")[0] || "Partner",
             city: "South Africa",
             price: v.price || 0,
-            comm: 0, rating: 0, reviews: 0, tags: [],
+            comm: 0,
+            rating: 0,
+            reviews: 0,
+            tags: [],
             icon: getCatIcon(v.category),
             img: v.imageUrl || "",
             imageUrl: v.imageUrl || "",
@@ -1990,7 +4351,10 @@ export default function App() {
 
   const guardedSetPage = (p) => {
     const protected_ = ["redeem", "admin"];
-    if (protected_.includes(p) && !user) { setPage("auth"); return; }
+    if (protected_.includes(p) && !user) {
+      setPage("auth");
+      return;
+    }
     setPage(p);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -2000,24 +4364,51 @@ export default function App() {
     setPage("store");
   };
 
-  // Filter vouchers by search when on store page
   const displayedVouchers = searchQ.trim()
-    ? vouchers.filter(v => [v.name, v.desc, v.cat, v.city, v.partner].some(f => (f||"").toLowerCase().includes(searchQ.toLowerCase())))
+    ? vouchers.filter((v) =>
+        [v.name, v.desc, v.cat, v.city, v.partner].some((f) =>
+          (f || "").toLowerCase().includes(searchQ.toLowerCase()),
+        ),
+      )
     : vouchers;
 
   return (
     <>
       <AnnounceBanner />
-      <Nav page={page} setPage={guardedSetPage} user={user} onLogout={handleLogout} onSearch={setSearchQ} />
+      <Nav
+        page={page}
+        setPage={guardedSetPage}
+        user={user}
+        onLogout={handleLogout}
+        onSearch={setSearchQ}
+      />
 
-      {page === "store"    && <StorePage vouchers={displayedVouchers} loading={loadingV} setPage={guardedSetPage} />}
-      {page === "auth"     && <AuthPage onSuccess={() => guardedSetPage("admin")} />}
-      {page === "redeem"   && (user ? <RedeemPage user={user} /> : <AuthPage onSuccess={() => guardedSetPage("redeem")} />)}
-      {page === "admin"    && (user ? <AdminPage user={user} onLogout={handleLogout} /> : <AuthPage onSuccess={() => guardedSetPage("admin")} />)}
+      {page === "store" && (
+        <StorePage
+          vouchers={displayedVouchers}
+          loading={loadingV}
+          setPage={guardedSetPage}
+        />
+      )}
+      {page === "auth" && (
+        <AuthPage onSuccess={() => guardedSetPage("admin")} />
+      )}
+      {page === "redeem" &&
+        (user ? (
+          <RedeemPage user={user} />
+        ) : (
+          <AuthPage onSuccess={() => guardedSetPage("redeem")} />
+        ))}
+      {page === "admin" &&
+        (user ? (
+          <AdminPage user={user} onLogout={handleLogout} />
+        ) : (
+          <AuthPage onSuccess={() => guardedSetPage("admin")} />
+        ))}
       {page === "partners" && <PartnersPage />}
 
       <Footer setPage={guardedSetPage} />
-      <BottomNav page={page} setPage={guardedSetPage} user={user} /> 
+      <BottomNav page={page} setPage={guardedSetPage} user={user} />
     </>
   );
 }
