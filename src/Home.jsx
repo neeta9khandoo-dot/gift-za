@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 
 import { Link } from "react-router-dom";
-import { useState, useEffect, useCallback, } from "react";
+import { React, useState, useEffect, useCallback, } from "react";
 import { initializeApp } from "firebase/app";
 import {
   getFirestore,
@@ -400,6 +400,19 @@ footer{background:var(--forest);color:rgba(245,240,232,.65);padding:64px 0 32px}
 .spin-anim{animation:spin .7s linear infinite}
 
 /* Responsive */
+.nav-hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;background:none;border:none;cursor:pointer;padding:8px;flex-shrink:0;margin-left:auto}
+.nav-hamburger span{display:block;width:22px;height:2px;background:var(--forest);border-radius:2px;transition:transform .25s,opacity .25s}
+.nav-hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.nav-hamburger.open span:nth-child(2){opacity:0}
+.nav-hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.mobile-menu{display:none;position:absolute;top:72px;left:0;right:0;background:var(--cream);border-bottom:1px solid var(--border);padding:10px 16px 16px;flex-direction:column;gap:2px;z-index:99;box-shadow:0 8px 24px rgba(26,46,31,.1)}
+.mobile-menu.open{display:flex}
+.mobile-menu-link{padding:12px 16px;border-radius:9px;font-size:.9rem;font-weight:500;color:var(--sub);cursor:pointer;border:none;background:none;text-align:left;width:100%;transition:background .18s,color .18s}
+.mobile-menu-link:hover,.mobile-menu-link.active{background:var(--cream2);color:var(--forest)}
+.mobile-menu-divider{height:1px;background:var(--border);margin:8px 0}
+.mobile-menu-cta{margin-top:4px;padding:13px;background:var(--forest);color:var(--cream);border:none;border-radius:10px;font-family:var(--sans);font-size:.9rem;font-weight:700;cursor:pointer;text-align:center;width:100%}
+
+/* Responsive */
 @media(max-width:1024px){
   .featured-grid{grid-template-columns:1fr 1fr}
   .hiw-steps{grid-template-columns:1fr 1fr}
@@ -408,18 +421,146 @@ footer{background:var(--forest);color:rgba(245,240,232,.65);padding:64px 0 32px}
   .occ-grid{grid-template-columns:repeat(3,1fr)}
   .cat-showcase{grid-template-columns:1fr 1fr}
 }
+
 @media(max-width:768px){
-  .container{padding:0 20px}
-  .nav-search,.nav-links{display:none}
+  /* Layout */
+  .container{padding:0 16px}
+  .section{padding:40px 0}
+  .section-head{flex-direction:column;align-items:flex-start;gap:12px}
+
+  /* Nav */
+  .nav-inner{padding:0 16px;gap:12px}
+  .nav-search,.nav-links,.nav-cta{display:none}
+  .nav-hamburger{display:flex}
+  .nav{position:relative}
+
+  /* Hero */
+  .hero{min-height:auto}
+  .hero-content{padding:56px 20px 72px}
+  .hero h1{font-size:2.6rem}
+  .hero p{font-size:.95rem}
+  .hero-search{flex-direction:column;max-width:100%;border-radius:14px}
+  .hero-search-field{border-right:none!important;border-bottom:1px solid var(--border);padding:14px 18px}
+  .hero-search-btn{width:100%;justify-content:center;padding:16px;border-radius:0 0 12px 12px}
+  .hero-trust{gap:12px}
+
+  /* Category pills */
+  .cats-scroll{padding:0 16px}
+
+  /* Cards & grids */
   .featured-grid,.testi-grid,.cat-showcase{grid-template-columns:1fr}
   .cards-grid{grid-template-columns:1fr 1fr}
+  .feat-card.large .feat-card-img{height:280px}
+  .feat-card.small .feat-card-img{height:180px}
+
+  /* How it works */
   .hiw-steps{grid-template-columns:1fr}
-  .occ-grid{grid-template-columns:repeat(2,1fr)}
+  .hiw{padding:56px 0}
+
+  /* Occasions */
+  .occ-grid{grid-template-columns:repeat(3,1fr)}
+
+  /* Trust bar */
+  .trust-bar-inner{justify-content:flex-start;gap:20px}
+  .trust-item:nth-child(n+4){display:none}
+
+  /* Testimonials */
+  .testi-author{flex-wrap:wrap}
+  .testi-product{margin-left:0;margin-top:4px}
+
+  /* Partners */
   .footer-grid{grid-template-columns:1fr}
-  .section{padding:40px 0}
-  .feat-card.large .feat-card-img{height:300px}
+  .footer-bottom{flex-direction:column;align-items:flex-start;gap:14px}
+
+  /* Auth */
+  .auth-card{padding:32px 22px;border-radius:16px}
+
+  /* Modal */
+  .modal-sheet{border-radius:20px 20px 0 0;max-height:96vh}
+  .modal-inner{grid-template-columns:1fr}
+  .modal-gallery img{min-height:220px}
+  .modal-body{padding:24px}
+
+  /* Checkout drawer */
+  .drawer{max-width:100%}
+
+  /* Admin form grid */
+  .admin-grid-2{grid-template-columns:1fr!important}
 }
-@media(max-width:480px){.cards-grid{grid-template-columns:1fr}}
+
+@media(max-width:600px){
+  .cards-grid{grid-template-columns:1fr}
+  .occ-grid{grid-template-columns:repeat(2,1fr)}
+  .cat-showcase{grid-template-columns:1fr}
+  .hiw-step{padding:26px 20px}
+
+  /* Nav */
+  .nav-avatar{width:32px;height:32px;font-size:.72rem}
+
+  /* Hero */
+  .hero h1{font-size:2.1rem}
+  .hero-eyebrow{font-size:.65rem}
+
+  /* Trust bar — show only 2 */
+  .trust-item:nth-child(n+3){display:none}
+
+  /* Testimonials */
+  .testi-grid{grid-template-columns:1fr}
+
+  /* Newsletter */
+  .nl-form{flex-direction:column;border-radius:12px}
+  .nl-form input{border-radius:10px 10px 0 0;border-right:none}
+  .nl-btn{padding:12px;border-radius:0 0 10px 10px;font-size:.85rem}
+
+  /* Footer */
+  .footer-socials{gap:6px}
+  .footer-payments{flex-wrap:wrap;gap:6px}
+
+  /* Auth */
+  .auth-tabs{gap:2px}
+  .auth-tab{font-size:.78rem;padding:8px}
+}
+  /* ── Bottom Navigation (mobile PWA) ──────────────────────────────────── */
+.bottom-nav{
+  display:none;
+  position:fixed;bottom:0;left:0;right:0;z-index:300;
+  background:rgba(245,240,232,.97);
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  border-top:1px solid var(--border);
+  padding:10px 0 max(14px, env(safe-area-inset-bottom));
+  box-shadow:0 -4px 24px rgba(26,46,31,.08);
+}
+.bottom-nav-inner{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  max-width:480px;margin:0 auto;padding:0 8px;gap:2px;
+}
+.bn-item{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:6px 4px;border:none;background:none;cursor:pointer;
+  border-radius:12px;color:var(--muted);transition:color .18s;
+  position:relative;-webkit-tap-highlight-color:transparent;
+}
+.bn-item.active{color:var(--forest)}
+.bn-pill{
+  width:44px;height:30px;border-radius:15px;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .2s;
+}
+.bn-item.active .bn-pill{background:var(--forest)}
+.bn-item.active .bn-pill svg{stroke:var(--cream)}
+.bn-label{font-size:.6rem;font-weight:600;letter-spacing:.3px;line-height:1}
+.bn-badge{
+  position:absolute;top:4px;right:calc(50% - 22px);
+  width:8px;height:8px;border-radius:50%;
+  background:var(--terra);border:2px solid var(--cream);
+}
+
+/* Give page content room above bottom nav on mobile */
+@media(max-width:768px){
+  .bottom-nav{display:block}
+  body{padding-bottom:calc(68px + env(safe-area-inset-bottom))}
+  footer{padding-bottom:calc(64px + env(safe-area-inset-bottom))}
+}
 `;
 
 // ══════════════════════════════════════════════════════════════════════════
@@ -496,30 +637,100 @@ function AnnounceBanner() {
   );
 }
 
-// ─── Nav ──────────────────────────────────────────────────────────────────
 function Nav({ page, setPage, user, onLogout, onSearch }) {
+  const [mobileOpen, setMobileOpen] = useState(false);
+
   const initials = user
     ? (user.displayName || user.email || "P").split(" ").map(w => w[0]).join("").substring(0, 2).toUpperCase()
     : "P";
 
+  const navLinks = [["store","Experiences"],["partners","For Partners"],["redeem","Redeem"],["admin","Admin"]];
+
+  const handleNavClick = (p) => {
+    setPage(p);
+    setMobileOpen(false);
+  };
+
   return (
     <nav className="nav">
       <div className="nav-inner">
-        <button className="nav-logo" onClick={() => setPage("store")}>Afri<span>Voucher</span></button>
+        <button className="nav-logo" onClick={() => handleNavClick("store")}>
+          Afri<span>Voucher</span>
+        </button>
+
+        {/* Desktop search */}
         <div className="nav-search">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: "var(--muted)", flexShrink: 0 }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color:"var(--muted)",flexShrink:0 }}>
             <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
           </svg>
           <input placeholder="Spa day, wine tasting, safari…" onChange={e => onSearch(e.target.value)} />
         </div>
+
+        {/* Desktop links */}
         <div className="nav-links">
-          {[["store","Experiences"],["partners","For Partners"],["redeem","Redeem"],["admin","Admin"]].map(([p, label]) => (
-            <button key={p} className={`nav-link${page === p ? " active" : ""}`} onClick={() => setPage(p)}>{label}</button>
+          {navLinks.map(([p, label]) => (
+            <button key={p} className={`nav-link${page === p ? " active" : ""}`} onClick={() => handleNavClick(p)}>{label}</button>
           ))}
         </div>
-        <button className="nav-cta" onClick={() => setPage("partners")}>List Your Business</button>
-        {user && <button className="nav-logout" onClick={onLogout}>Sign Out</button>}
-        <div className="nav-avatar" onClick={() => !user && setPage("auth")} title={user?.email || "Partner Login"}>{initials}</div>
+
+        <button className="nav-cta" onClick={() => handleNavClick("partners")}>List Your Business</button>
+
+        {user && (
+          <button className="nav-logout" onClick={onLogout}>Sign Out</button>
+        )}
+
+        <div
+          className="nav-avatar"
+          onClick={() => !user && handleNavClick("auth")}
+          title={user?.email || "Partner Login"}
+        >{initials}</div>
+
+        {/* Hamburger — mobile only */}
+        <button
+          className={`nav-hamburger${mobileOpen ? " open" : ""}`}
+          onClick={() => setMobileOpen(o => !o)}
+          aria-label="Menu"
+        >
+          <span /><span /><span />
+        </button>
+      </div>
+
+      {/* Mobile dropdown */}
+      <div className={`mobile-menu${mobileOpen ? " open" : ""}`}>
+        {/* Search field on mobile */}
+        <div style={{ display:"flex",alignItems:"center",gap:10,background:"var(--white)",border:"1.5px solid var(--border2)",borderRadius:10,padding:"10px 14px",marginBottom:6 }}>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color:"var(--muted)",flexShrink:0 }}>
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          </svg>
+          <input
+            placeholder="Spa, safari, wine tasting…"
+            onChange={e => onSearch(e.target.value)}
+            style={{ border:"none",outline:"none",background:"transparent",fontFamily:"var(--sans)",fontSize:".88rem",color:"var(--text)",width:"100%" }}
+          />
+        </div>
+
+        <div className="mobile-menu-divider" />
+
+        {navLinks.map(([p, label]) => (
+          <button
+            key={p}
+            className={`mobile-menu-link${page === p ? " active" : ""}`}
+            onClick={() => handleNavClick(p)}
+          >{label}</button>
+        ))}
+
+        <div className="mobile-menu-divider" />
+        <button className="mobile-menu-cta" onClick={() => handleNavClick("partners")}>
+          List Your Business
+        </button>
+
+        {user && (
+          <button
+            className="mobile-menu-link"
+            onClick={() => { onLogout(); setMobileOpen(false); }}
+            style={{ color:"var(--terra)",marginTop:4 }}
+          >Sign Out</button>
+        )}
       </div>
     </nav>
   );
@@ -1363,7 +1574,7 @@ function AdminPage({ user, onLogout }) {
 
         {showForm && (
           <div style={{ padding:"28px 28px 24px" }}>
-            <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:16,marginBottom:16 }}>
+           <div className="admin-grid-2" style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:16,marginBottom:16 }}>
               {[
                 { key:"name", label:"Voucher Name *", type:"input", placeholder:"e.g. 60-Min Swedish Massage" },
                 { key:"price", label:"Price (R) *", type:"number", placeholder:"550" },
@@ -1527,7 +1738,7 @@ function PartnersPage() {
         <h2 style={{ fontFamily:"var(--serif)",fontSize:"2rem",color:"var(--forest)",marginBottom:6 }}>Apply to Partner</h2>
         <p style={{ color:"var(--sub)",marginBottom:28,fontSize:".9rem" }}>Takes 5 minutes. We'll be in touch within 24 hours.</p>
         <div style={{ background:"var(--white)",border:"1px solid var(--border)",borderRadius:20,padding:32,display:"flex",flexDirection:"column",gap:14 }}>
-          <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:14 }}>
+         <div className="admin-grid-2" style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:14 }}>
             <div>
               <label style={{ fontSize:".7rem",fontWeight:700,textTransform:"uppercase",letterSpacing:1,color:"var(--muted)",display:"block",marginBottom:6 }}>Business Name</label>
               <input className="admin-input" value={form.business} onChange={setF("business")} placeholder="Relax Zone Spa" />
@@ -1615,7 +1826,112 @@ function Footer({ setPage }) {
     </footer>
   );
 }
+function BottomNav({ page, setPage, user }) {
+  const tabs = [
+    {
+      id: "store",
+      label: "Home",
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+      ),
+    },
+    {
+      id: "redeem",
+      label: "Redeem",
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"/>
+          <line x1="9" y1="12" x2="15" y2="12"/>
+        </svg>
+      ),
+    },
+    {
+      id: "partners",
+      label: "Partners",
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M3 9h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z"/>
+          <path d="M3 9l2.45-4.9A2 2 0 0 1 7.24 3h9.52a2 2 0 0 1 1.8 1.1L21 9"/>
+          <line x1="12" y1="3" x2="12" y2="9"/>
+        </svg>
+      ),
+    },
+    {
+      id: user ? "admin" : "auth",
+      label: user ? "Dashboard" : "Sign In",
+      badge: !user,
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+      ),
+    },
+  ];
 
+  return (
+    <nav className="bottom-nav" aria-label="Main navigation">
+      <div className="bottom-nav-inner">
+        {tabs.map((tab) => {
+          const isActive = page === tab.id ||
+            (tab.id === "auth" && page === "auth") ||
+            (tab.id === "admin" && page === "admin");
+          return (
+            <button
+              key={tab.id}
+              className={`bn-item${isActive ? " active" : ""}`}
+              onClick={() => setPage(tab.id)}
+              aria-label={tab.label}
+              aria-current={isActive ? "page" : undefined}
+            >
+              {tab.badge && <span className="bn-badge" aria-label="Action required" />}
+              <div className="bn-pill">{tab.icon}</div>
+              <span className="bn-label">{tab.label}</span>
+            </button>
+          );
+        })}
+      </div>
+    </nav>
+  );
+}
+// ─── Toast System ─────────────────────────────────────────────────────────
+const ToastContext = React.createContext(null);
+
+function ToastProvider({ children }) {
+  const [toasts, setToasts] = useState([]);
+  const show = useCallback((msg, type = "info", duration = 3500) => {
+    const id = Date.now();
+    setToasts(t => [...t, { id, msg, type }]);
+    setTimeout(() => setToasts(t => t.filter(x => x.id !== id)), duration);
+  }, []);
+  const icons = { ok:"✅", error:"❌", warn:"⚠️", info:"ℹ️" };
+  const colors = { ok:"#15803D", error:"#B91C1C", warn:"#92400E", info:"var(--forest)" };
+  return (
+    <ToastContext.Provider value={show}>
+      {children}
+      <div style={{ position:"fixed",bottom:"calc(80px + env(safe-area-inset-bottom))",left:"50%",
+        transform:"translateX(-50%)",zIndex:9999,display:"flex",flexDirection:"column",
+        gap:8,alignItems:"center",pointerEvents:"none",width:"calc(100% - 32px)",maxWidth:400 }}>
+        {toasts.map(t => (
+          <div key={t.id} style={{ background:"var(--forest)",color:"var(--cream)",padding:"12px 18px",
+            borderRadius:12,fontSize:".85rem",fontWeight:600,display:"flex",alignItems:"center",
+            gap:10,boxShadow:"0 8px 32px rgba(26,46,31,.3)",animation:"popIn .3s cubic-bezier(.34,1.56,.64,1)",
+            width:"100%",borderLeft:`4px solid ${colors[t.type]}` }}>
+            <span>{icons[t.type]}</span>{t.msg}
+          </div>
+        ))}
+      </div>
+    </ToastContext.Provider>
+  );
+}
+const useToast = () => React.useContext(ToastContext);
 export default function App() {
   const [page, setPage]       = useState("store");
   const [user, setUser]       = useState(null);
@@ -1701,6 +2017,7 @@ export default function App() {
       {page === "partners" && <PartnersPage />}
 
       <Footer setPage={guardedSetPage} />
+      <BottomNav page={page} setPage={guardedSetPage} user={user} /> 
     </>
   );
 }

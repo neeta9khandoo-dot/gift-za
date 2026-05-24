@@ -1,6 +1,13 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+   "name": "AfriVoucher — SA Gift Experiences",
+  "short_name": "AfriVoucher",
+  "description": "South Africa's #1 gift experience marketplace",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f5f0e8",
+  "theme_color": "#1a2e1f",
+  "categories": ["shopping", "lifestyle"],
   "icons": [
     {
       "src": "favicon.ico",
@@ -17,6 +24,9 @@
       "type": "image/png",
       "sizes": "512x512"
     }
+  ],
+  "screenshots": [
+    { "src": "/screenshots/home.png", "sizes": "390x844", "type": "image/png", "form_factor": "narrow" }
   ],
   "start_url": ".",
   "display": "standalone",
