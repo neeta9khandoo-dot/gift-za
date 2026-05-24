@@ -4045,9 +4045,9 @@ function Footer({ setPage }) {
                 "Private Functions",
                 "Skills & Courses",
               ].map((l) => (
-                <a href="#" key={l} className="footer-link">
+                <Link href="#" key={l} className="footer-link">
                   {l}
-                </a>
+                </Link>
               ))}
             </div>
           </div>
@@ -4061,9 +4061,9 @@ function Footer({ setPage }) {
                 "Blog",
                 "Careers",
               ].map((l) => (
-                <a href="#" key={l} className="footer-link">
+                <Link href="#" key={l} className="footer-link">
                   {l}
-                </a>
+                </Link>
               ))}
             </div>
           </div>
@@ -4077,9 +4077,9 @@ function Footer({ setPage }) {
                 "Privacy Policy",
                 "Terms of Service",
               ].map((l) => (
-                <a href="#" key={l} className="footer-link">
+                <Link href="#" key={l} className="footer-link">
                   {l}
-                </a>
+                </Link>
               ))}
             </div>
           </div>
