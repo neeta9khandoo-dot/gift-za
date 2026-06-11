@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Link, useNavigate } from "react-router-dom";
 import Home from "./Home";
+import { RedeemVoucherPage, HelpCentrePage, ContactPage, PrivacyPage, TermsPage } from "./FooterPages";
 import { initializeApp } from "firebase/app";
 import {
   getFirestore,
@@ -46,6 +47,8 @@ function Nav() {
 
 // ── App ───────────────────────────────────────────────────
 export default function App() {
+  // placeholder for guardedSetPage used by some footer pages
+  const guardedSetPage = () => {};
   return (
     <BrowserRouter>
      
@@ -53,8 +56,11 @@ export default function App() {
 
         {/* React-managed pages */}
         <Route path="/" element={<Home db={db} />} />
-
-    
+        <Route path="/redeem" element={<RedeemVoucherPage />} />
+        <Route path="/help" element={<HelpCentrePage setPage={guardedSetPage} />} />
+        <Route path="/contact" element={<ContactPage setPage={guardedSetPage} />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/terms" element={<TermsPage />} />
       </Routes>
     </BrowserRouter>
   );

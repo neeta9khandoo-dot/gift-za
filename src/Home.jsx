@@ -2,6 +2,23 @@
 
 import { Link } from "react-router-dom";
 import React, { useState, useEffect, useCallback } from "react";
+import {
+  Flower2,
+  Cake,
+  Heart,
+  Music,
+  GraduationCap,
+  UtensilsCrossed,
+  PartyPopper,
+  Sparkles,
+} from "lucide-react";
+import {
+  RedeemVoucherPage,
+  HelpCentrePage,
+  ContactPage,
+  PrivacyPage,
+  TermsPage,
+} from "./FooterPages";
 import { initializeApp } from "firebase/app";
 import {
   getFirestore,
@@ -25,7 +42,7 @@ import {
   onAuthStateChanged,
   sendPasswordResetEmail,
 } from "firebase/auth";
-
+import greatZimbabwe from "./images/hero-2.jpg";
 // ─── Firebase Init ────────────────────────────────────────────────────────
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -67,6 +84,7 @@ const getCatIcon = (cat) =>
     Skills: "📚",
     Music: "🎵",
     Events: "🎪",
+    Florists: "🌸",
     Other: "🎁",
   })[cat] || "🎁";
 
@@ -137,6 +155,71 @@ const VOUCHER_TEMPLATES = [
     icon: "wine",
     desc: "6-wine flight with artisan cheese board",
   },
+  // --- NEW: Traditional Restaurants category ---
+  {
+    name: "Sunday Lunch for Two — Kwa Terry",
+    category: "Traditional Restaurants",
+    price: 420,
+    validMonths: 12,
+    icon: "kwa_terry",
+    desc: "A proper Zimbabwean Sunday lunch for two at Kwa Terry — sadza, nyama, matemba, muriwo and all the trimmings. The taste of home, gifted from anywhere in the world.",
+  },
+  {
+    name: "Family Feast — Kwa Terry (4 People)",
+    category: "Traditional Restaurants",
+    price: 980,
+    validMonths: 12,
+    icon: "kwa_terry_family",
+    desc: "Treat the whole family to a hearty traditional feast at Kwa Terry. Sadza rezviyo, beef stew, road runner chicken, roasted groundnuts and more. Seats up to 4.",
+  },
+  {
+    name: "Feli Nandi's — Lunch for Two",
+    category: "Traditional Restaurants",
+    price: 380,
+    validMonths: 12,
+    icon: "feli_nandi",
+    desc: "Send mum (or anyone you love) for a sit-down traditional lunch at Feli Nandi's. Think freshly pounded sadza, slow-cooked dovi, covo with peanut butter and a cold Mazoe to wash it down.",
+  },
+  {
+    name: "Feli Nandi's — Mother's Special Treat",
+    category: "Traditional Restaurants",
+    price: 650,
+    validMonths: 12,
+    icon: "feli_nandi_mum",
+    desc: "The ultimate long-distance gift for mum. A full traditional spread at Feli Nandi's — 3 courses, a cold drink, and a personalised printed card delivered to her table. She deserves it.",
+  },
+  {
+    name: "Roadrunner Chicken Braai Lunch",
+    category: "Traditional Restaurants",
+    price: 320,
+    validMonths: 6,
+    icon: "roadrunner",
+    desc: "Free-range road runner chicken braaied over open fire — served with sadza, chakalaka and tomato-onion relish. Authentic Zimbabwean flavour, no shortcuts.",
+  },
+  {
+    name: "Sadza & Dovi Dinner for Two",
+    category: "Traditional Restaurants",
+    price: 350,
+    validMonths: 6,
+    icon: "sadza_dovi",
+    desc: "A comforting evening meal of sadza with peanut butter stew (dovi), covo greens and roasted groundnuts. The kind of dinner grandma would cook.",
+  },
+  {
+    name: "Traditional Breakfast Spread",
+    category: "Traditional Restaurants",
+    price: 240,
+    validMonths: 6,
+    icon: "trad_breakfast",
+    desc: "Start the day the Zimbabwean way — mahewu, rapoko porridge, roasted sweet potato and fresh maputi. A warm, nourishing breakfast for one.",
+  },
+  {
+    name: "Whole Family Sunday Roast (Up to 6)",
+    category: "Traditional Restaurants",
+    price: 1450,
+    validMonths: 12,
+    icon: "family_roast",
+    desc: "The grandest gift — a full Sunday roast for up to 6 family members. Whole road runner chicken, beef, sadza, 4 sides and traditional mahewu or Mazoe. Book ahead.",
+  },
   {
     name: "Braai Masterclass",
     category: "Dining & Wine",
@@ -145,15 +228,152 @@ const VOUCHER_TEMPLATES = [
     icon: "braai",
     desc: "Learn to braai like a pro — fire, meat & stories",
   },
+  // ─── Skills for Foreigners in Zimbabwe ────────────────────────────────────
   {
-    name: "Photography Masterclass",
+    name: "Shona Language Basics — 4 Session Bundle",
+    category: "Skills",
+    price: 850,
+    validMonths: 12,
+    icon: "shona_language",
+    desc: "Four 1-hour beginner Shona lessons with a native speaker. Learn greetings, market phrases, numbers and everyday conversation. Perfect for expats and new arrivals.",
+  },
+  {
+    name: "Zimbabwe Business Setup Consultation",
+    category: "Skills",
+    price: 1200,
+    validMonths: 12,
+    icon: "biz_setup",
+    desc: "A 90-minute 1-on-1 session with a local business consultant covering company registration, ZIMRA tax basics, forex rules and what foreign investors need to know.",
+  },
+  {
+    name: "Expat Orientation Day",
+    category: "Skills",
+    price: 980,
+    validMonths: 12,
+    icon: "expat_orientation",
+    desc: "A full guided half-day for new arrivals. Covers neighbourhoods, mobile money (Ecocash), load-shedding prep, local markets and expat community contacts. Harare or Bulawayo.",
+  },
+  {
+    name: "Zimbabwe Driving & Road Rules Crash Course",
+    category: "Skills",
+    price: 650,
+    validMonths: 6,
+    icon: "driving_lesson",
+    desc: "A 2-hour practical session for foreigners — learn local road rules, police checkpoints, licence requirements and how to navigate Zimbabwe's roads safely.",
+  },
+  {
+    name: "Shona Stone Sculpture Workshop",
+    category: "Skills",
+    price: 750,
+    validMonths: 12,
+    icon: "sculpture_workshop",
+    desc: "A hands-on 3-hour sculpting session with a Zimbabwean master sculptor. Learn the techniques behind one of Zimbabwe's most celebrated art forms. Materials included.",
+  },
+  {
+    name: "Traditional Cooking Masterclass",
+    category: "Skills",
+    price: 680,
+    validMonths: 12,
+    icon: "cooking_class",
+    desc: "Learn to cook sadza, dovi, muriwo and roasted groundnuts with a local chef. A 3-hour hands-on class — eat what you make. Perfect for expats and food-curious tourists.",
+  },
+  {
+    name: "Mbira Music Introduction — 3 Lessons",
+    category: "Skills",
+    price: 720,
+    validMonths: 12,
+    icon: "mbira_lessons",
+    desc: "Three 45-minute beginner lessons on the mbira — Zimbabwe's iconic thumb piano. Learn traditional songs, techniques and the cultural significance behind the instrument.",
+  },
+  {
+    name: "Wildlife & Bush Photography Workshop",
+    category: "Skills",
+    price: 1450,
+    validMonths: 18,
+    icon: "bush_photography",
+    desc: "A full-day practical photography workshop in the bush. Covers camera settings, tracking light, wildlife behaviour and composing the perfect safari shot. All levels welcome.",
+  },
+  {
+    name: "Ecocash & Mobile Money for Expats",
+    category: "Skills",
+    price: 350,
+    validMonths: 6,
+    icon: "mobile_money",
+    desc: "A 1-hour practical session covering Ecocash, mobile banking, USD cash economy and how to pay for everything from groceries to fuel as a foreigner in Zimbabwe.",
+  },
+  {
+    name: "Zimbabwe Labour Law for Foreign Employers",
+    category: "Skills",
+    price: 1650,
+    validMonths: 12,
+    icon: "labour_law",
+    desc: "A 2-hour briefing with an HR specialist on Zimbabwe's Labour Act — hiring local staff, contracts, termination rules, work permits and managing cross-cultural teams.",
+  },
+  {
+    name: "Solar & Off-Grid Living Workshop",
     category: "Skills",
     price: 890,
     validMonths: 12,
-    icon: "photography",
-    desc: "Full-day hands-on photography workshop",
+    icon: "solar_workshop",
+    desc: "Learn how to set up and manage solar power, inverters and water harvesting for your home or business. Essential knowledge for expats dealing with load-shedding.",
   },
-
+  {
+    name: "Batik & Textile Art Class",
+    category: "Skills",
+    price: 580,
+    validMonths: 12,
+    icon: "batik_class",
+    desc: "A 3-hour hands-on batik and fabric dyeing workshop with a local textile artist. Create your own piece to take home. No experience needed. All materials provided.",
+  },
+  // --- NEW: Florists category ---
+  {
+    name: "Birthday Bloom Bouquet",
+    category: "Florists",
+    price: 350,
+    validMonths: 6,
+    icon: "bouquet",
+    desc: "A hand-arranged seasonal bouquet perfect for birthdays — collected in-store or delivered.",
+  },
+  {
+    name: "Luxury Rose Arrangement",
+    category: "Florists",
+    price: 680,
+    validMonths: 6,
+    icon: "roses",
+    desc: "Premium long-stem roses arranged by a master florist. Choose your colour on redemption.",
+  },
+  {
+    name: "Weekly Flower Subscription",
+    category: "Florists",
+    price: 1200,
+    validMonths: 3,
+    icon: "subscription",
+    desc: "4 weeks of fresh seasonal flower deliveries — a gift that keeps giving all month long.",
+  },
+  {
+    name: "Wedding Centrepiece Voucher",
+    category: "Florists",
+    price: 2500,
+    validMonths: 12,
+    icon: "wedding_flowers",
+    desc: "One full table centrepiece arrangement for weddings or special events. Consultation included.",
+  },
+  {
+    name: "Surprise Me Seasonal Bouquet",
+    category: "Florists",
+    price: 450,
+    validMonths: 6,
+    icon: "surprise_bouquet",
+    desc: "Let the florist work their magic — a beautiful seasonal arrangement chosen fresh on the day.",
+  },
+  {
+    name: "Corporate Office Flowers",
+    category: "Florists",
+    price: 1800,
+    validMonths: 12,
+    icon: "corporate_flowers",
+    desc: "Monthly fresh flower arrangement for reception or boardroom. Delivery and setup included.",
+  },
   // --- NEW: Music category ---
   {
     name: "Live Jazz Evening for Two",
@@ -161,7 +381,7 @@ const VOUCHER_TEMPLATES = [
     price: 780,
     validMonths: 12,
     icon: "jazz",
-    desc: "Two tickets to an intimate live jazz performance at a premier South African venue, including welcome cocktails.",
+    desc: "Two tickets to an intimate live jazz performance at a premier Zimbabwean venue, including welcome cocktails.",
   },
   {
     name: "Private Guitar Lesson Bundle",
@@ -185,7 +405,7 @@ const VOUCHER_TEMPLATES = [
     price: 450,
     validMonths: 6,
     icon: "concert",
-    desc: "Redeemable against any single concert ticket purchased through our partner venues across South Africa.",
+    desc: "Redeemable against any single concert ticket purchased through our partner venues across Zimbabwe.",
   },
   {
     name: "DJ Workshop — Beginner",
@@ -227,7 +447,7 @@ const VOUCHER_TEMPLATES = [
     price: 2200,
     validMonths: 12,
     icon: "anniversary",
-    desc: "Private 5-course dinner for two at a top SA restaurant with a dedicated sommelier and personalised menu.",
+    desc: "Private 5-course dinner for two at a top ZIM restaurant with a dedicated sommelier and personalised menu.",
   },
   {
     name: "Festival General Access Pass",
@@ -235,7 +455,32 @@ const VOUCHER_TEMPLATES = [
     price: 580,
     validMonths: 6,
     icon: "festival",
-    desc: "One general-access pass redeemable at any participating South African food, arts or music festival.",
+    desc: "One general-access pass redeemable at any participating Zimbabwean food, arts or music festival.",
+  },
+  {
+    name: "Ancient City Lodge — 1 Night Stay",
+    category: "Stays",
+    price: 2800,
+    validMonths: 12,
+    icon: "ancient_city",
+    desc: "One night for two at Ancient City Lodge, Masvingo — stone-walled luxury steps from the Great Zimbabwe Ruins. Breakfast included.",
+    imageUrl: "/images/ancient-city-lodge-masvingo-698880.webp",
+  },
+  {
+    name: "Great Zimbabwe Ruins Weekend",
+    category: "Stays",
+    price: 5200,
+    validMonths: 12,
+    icon: "great_zim_weekend",
+    desc: "Two nights for two at Ancient City Lodge — guided ruins tour, full breakfast daily and sunset drinks by the stone pool.",
+  },
+  {
+    name: "Masvingo Heritage Escape",
+    category: "Stays",
+    price: 3600,
+    validMonths: 12,
+    icon: "masvingo_escape",
+    desc: "One night bed & breakfast plus a private guided tour of the Great Zimbabwe National Monument. History, luxury and nature in one gift.",
   },
 ];
 
@@ -300,7 +545,8 @@ button{font-family:var(--sans);cursor:pointer}
 /* Nav */
 .nav{background:rgba(245,240,232,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
 .nav-inner{max-width:var(--max);margin:0 auto;padding:0 32px;display:flex;align-items:center;gap:32px;height:72px}
-.nav-logo{font-family:var(--serif);font-size:1.7rem;font-weight:700;color:var(--forest);letter-spacing:-.5px;white-space:nowrap;flex-shrink:0;background:none;border:none;cursor:pointer}
+.nav-logo{font-family:var(--serif);font-size:1.7rem;font-weight:700;color:var(--forest);letter-spacing:-.5px;white-space:nowrap;flex-shrink:0;background:none;border:none;cursor:pointer; display: flex;
+  align-items: center;}
 .nav-logo span{color:var(--terra)}
 .nav-search{flex:1;max-width:460px;background:var(--white);border:1.5px solid var(--border2);border-radius:50px;display:flex;align-items:center;gap:10px;padding:0 18px;height:44px;transition:border-color .2s,box-shadow .2s}
 .nav-search:focus-within{border-color:var(--leaf);box-shadow:0 0 0 3px rgba(61,107,71,.1)}
@@ -315,12 +561,114 @@ button{font-family:var(--sans);cursor:pointer}
 .nav-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--leaf),var(--leaf2));display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:.8rem;flex-shrink:0;cursor:pointer}
 .nav-logout{display:flex;align-items:center;gap:5px;padding:8px 14px;border-radius:8px;border:1.5px solid var(--border2);background:transparent;color:var(--sub);font-family:var(--sans);font-size:.78rem;font-weight:600;cursor:pointer;transition:all .2s}
 .nav-logout:hover{border-color:var(--terra);color:var(--terra)}
+.cbadge-florist{background:rgba(180,57,140,.88);color:white}
 
 /* Hero */
 .hero{position:relative;min-height:600px;display:flex;align-items:center;overflow:hidden}
-.hero-bg{position:absolute;inset:0;background:linear-gradient(135deg,rgba(26,46,31,.72) 0%,rgba(26,46,31,.3) 50%,transparent 80%),url("https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=1600&q=80") center/cover no-repeat}
-.hero-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(to bottom,transparent 60%,var(--cream) 100%)}
-.hero-content{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:80px 32px 100px}
+.hero-bg {
+  position: absolute; 
+  inset: 0;
+  background-image: 
+    linear-gradient(135deg, rgba(26,46,31,.75) 0%, rgba(26,46,31,.35) 55%, transparent 85%),
+    url('/images/Great_Enclosure_ruins_UNESCO_Site_in_Great_Zimbabwe.jpg');
+  background-size: cover;
+  background-position: center 60%;
+  background-repeat: no-repeat;
+  background-attachment: fixed; /* optional — gives a nice parallax feel */
+}
+.hero-bg::before {
+  content: ""; position: absolute;
+  top: -80px; right: -80px;
+  width: 400px; height: 400px; border-radius: 50%;
+  background: rgba(61,107,71,.22); pointer-events: none;
+}
+.hero-bg::after {
+  content: ""; position: absolute;
+  bottom: -100px; left: 25%;
+  width: 280px; height: 280px; border-radius: 50%;
+  background: rgba(184,148,42,.14); pointer-events: none;
+}
+  /* Hero sliding cards */
+.hero-cards-col {
+  position: absolute;
+  left: 48px;
+  top: 0;
+  bottom: 0;
+  width: 200px;
+  overflow: hidden;
+  pointer-events: none;
+  mask-image: linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%);
+}
+.hero-cards-track {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: slideUp 28s linear infinite;
+  padding: 12px 0;
+}
+@keyframes slideUp {
+  0%   { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
+.hero-card-item {
+  background: rgba(255,255,255,.10);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 14px;
+  overflow: hidden;
+  width: 200px;
+  flex-shrink: 0;
+}
+.hero-card-img {
+  width: 100%;
+  height: 110px;
+  object-fit: cover;
+  display: block;
+}
+.hero-card-img-placeholder {
+  width: 100%;
+  height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.4rem;
+  background: rgba(255,255,255,.06);
+}
+.hero-card-body {
+  padding: 10px 12px 12px;
+}
+.hero-card-cat {
+  font-size: .6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--gold2);
+  margin-bottom: 3px;
+}
+.hero-card-name {
+  font-family: var(--serif);
+  font-size: .92rem;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.25;
+  margin-bottom: 6px;
+}
+.hero-card-price {
+  font-size: .78rem;
+  font-weight: 700;
+  color: rgba(255,255,255,.75);
+  background: rgba(255,255,255,.1);
+  border-radius: 6px;
+  padding: 3px 8px;
+  display: inline-block;
+}
+@media(max-width: 1024px) {
+  .hero-cards-col { display: none; }
+}
+.hero-content{position:relative;z-index:1;max-width:720px; margin-left: 280px; 
+  margin-right: auto;padding:80px 32px 100px}
 .hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(245,240,232,.15);border:1px solid rgba(245,240,232,.25);backdrop-filter:blur(8px);border-radius:20px;padding:6px 16px;margin-bottom:22px;font-size:.72rem;font-weight:600;color:rgba(245,240,232,.9);letter-spacing:1.5px;text-transform:uppercase}
 .hero h1{font-family:var(--serif);font-size:clamp(3rem,6vw,5.5rem);font-weight:600;line-height:1.02;letter-spacing:-.5px;color:var(--white);margin-bottom:20px}
 .hero h1 em{font-style:italic;color:var(--gold2)}
@@ -333,7 +681,11 @@ button{font-family:var(--sans);cursor:pointer}
 .hero-search-btn:hover{background:var(--terra2)}
 .hero-trust{display:flex;align-items:center;gap:20px;margin-top:28px;flex-wrap:wrap}
 .hero-trust-item{display:flex;align-items:center;gap:7px;color:rgba(245,240,232,.7);font-size:.78rem;font-weight:500}
-
+@media(max-width: 1024px) {
+  .hero-content {
+    margin-left: auto;
+  }
+}
 /* Category pills */
 .cats-section{padding:36px 0 0;background:var(--cream)}
 .cats-scroll{display:flex;gap:10px;padding:0 32px;overflow-x:auto;scrollbar-width:none;max-width:var(--max);margin:0 auto}
@@ -357,7 +709,7 @@ button{font-family:var(--sans);cursor:pointer}
 .featured-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:16px}
 .feat-card{position:relative;border-radius:var(--r2);overflow:hidden;cursor:pointer;transition:transform .3s,box-shadow .3s}
 .feat-card:hover{transform:translateY(-4px);box-shadow:var(--sh3)}
-.feat-card-img{position:relative;overflow:hidden}
+.feat-card-img{position:relative;overflow:hidden;width: 100%;}
 .feat-card-img img{transition:transform .6s cubic-bezier(.25,.46,.45,.94);height:100%}
 .feat-card:hover .feat-card-img img{transform:scale(1.05)}
 .feat-card.large .feat-card-img{height:420px}
@@ -390,6 +742,7 @@ button{font-family:var(--sans);cursor:pointer}
 /* NEW: category-specific badge tints */
 .cbadge-music{background:rgba(88,57,180,.88);color:white}
 .cbadge-events{background:rgba(180,57,120,.88);color:white}
+.cbadge-trad { background: rgba(139, 90, 30, .88); color: white; }
 .card-body{padding:18px 18px 16px;flex:1;display:flex;flex-direction:column}
 .card-cat{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--terra);margin-bottom:6px}
 .card-name{font-family:var(--serif);font-size:1.2rem;font-weight:600;line-height:1.25;margin-bottom:5px;color:var(--forest)}
@@ -417,10 +770,26 @@ button{font-family:var(--sans);cursor:pointer}
 .hiw-step p{font-size:.8rem;color:rgba(245,240,232,.5);line-height:1.65}
 
 /* Trust bar */
-.trust-bar{background:var(--cream2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:24px 0}
-.trust-bar-inner{max-width:var(--max);margin:0 auto;padding:0 32px;display:flex;justify-content:space-around;align-items:center;gap:24px;flex-wrap:wrap}
-.trust-item{display:flex;align-items:center;gap:12px}
-.trust-icon{width:44px;height:44px;border-radius:10px;background:var(--white);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.trust-bar { background: transparent; border: none; padding: 0 0 32px; }
+.trust-bar-inner {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  max-width: var(--max); margin: 0 auto; padding: 0 32px;
+}
+.trust-item {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.trust-icon {
+  width: 38px; height: 38px; border-radius: 10px;
+  background: var(--cream2); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; flex-shrink: 0;
+}
 .trust-text h4{font-size:.82rem;font-weight:700;color:var(--forest);margin-bottom:1px}
 .trust-text p{font-size:.73rem;color:var(--muted)}
 
@@ -434,11 +803,37 @@ button{font-family:var(--sans);cursor:pointer}
 .testi-name{font-weight:600;font-size:.83rem;color:var(--forest)}
 .testi-loc{font-size:.72rem;color:var(--muted)}
 .testi-product{font-size:.7rem;color:var(--leaf);font-weight:600;background:rgba(61,107,71,.08);border:1px solid rgba(61,107,71,.15);padding:2px 8px;border-radius:4px;margin-left:auto;white-space:nowrap}
-
+.eyebrow {
+  font-size: .68rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 1.5px; color: var(--terra); margin-bottom: 6px;
+}
 /* Occasions */
-.occasions{background:linear-gradient(135deg,var(--forest) 0%,var(--forest2) 100%);padding:56px 0}
-.occasions .section-title{color:var(--cream)}
-.occasions .section-sub{color:rgba(245,240,232,.5)}
+.occasions {
+  position: relative;
+  padding: 56px 0;
+  overflow: hidden;
+}
+
+.occasions::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(135deg, rgba(26,46,31,.92) 0%, rgba(26,46,31,.75) 100%),
+    url('/images/florists.jpg');
+  background-size: cover;
+  background-position: center 40%;
+  background-repeat: no-repeat;
+  z-index: 0;
+}
+
+.occasions .container {
+  position: relative;
+  z-index: 1;
+}
+
+.occasions .section-title { color: var(--cream); }
+.occasions .section-sub { color: rgba(245,240,232,.5); }
 .occ-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
 .occ{background:rgba(245,240,232,.06);border:1px solid rgba(245,240,232,.1);border-radius:14px;padding:20px 14px;text-align:center;cursor:pointer;transition:all .2s}
 .occ:hover{background:rgba(245,240,232,.12);border-color:rgba(245,240,232,.2);transform:translateY(-2px)}
@@ -473,7 +868,9 @@ button{font-family:var(--sans);cursor:pointer}
 .nl-form input{flex:1;padding:14px 18px;border:none;outline:none;font-family:var(--sans);font-size:.88rem;color:var(--text);background:var(--white)}
 .nl-btn{background:var(--terra);color:white;border:none;padding:0 22px;font-family:var(--sans);font-weight:700;font-size:.83rem;cursor:pointer;transition:background .2s;white-space:nowrap}
 .nl-btn:hover{background:var(--terra2)}
-
+.scroll-top{position:fixed;bottom:calc(90px + env(safe-area-inset-bottom));left:20px;width:42px;height:42px;border-radius:50%;background:var(--forest);color:var(--cream);border:none;font-size:1rem;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .3s,transform .2s;z-index:400;box-shadow:var(--sh2)}
+.scroll-top.show{opacity:1;pointer-events:all}
+.scroll-top:hover{transform:translateY(-2px)}
 /* Footer */
 footer{background:var(--forest);color:rgba(245,240,232,.65);padding:64px 0 32px}
 .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px}
@@ -674,6 +1071,11 @@ footer{background:var(--forest);color:rgba(245,240,232,.65);padding:64px 0 32px}
   transition:background .2s;
 }
 .bn-item.active .bn-pill{background:var(--forest)}
+.bn-item.active .bn-label::after {
+  content: ""; display: block; width: 4px; height: 4px;
+  border-radius: 50%; background: var(--terra);
+  margin: 3px auto 0;
+}
 .bn-item.active .bn-pill svg{stroke:var(--cream)}
 .bn-label{font-size:.6rem;font-weight:600;letter-spacing:.3px;line-height:1}
 .bn-badge{
@@ -709,9 +1111,16 @@ function AnnounceBanner() {
       Women: { bg: "#993556", icon: "👩", cat: "Wellness & Spa" },
       Youth: { bg: "#185FA5", icon: "🎓", cat: "Skills & Courses" },
       Heritage: { bg: "#854F0B", icon: "🏺", cat: "Dining & Wine" },
+      "Mother's Day": {
+        bg: "#854F0B",
+        icon: "🍲",
+        cat: "Traditional Restaurants",
+      },
       Freedom: { bg: "#534AB7", icon: "🏅", cat: "Adventure" },
       Workers: { bg: "#0F6E56", icon: "💪", cat: "Wellness & Spa" },
       default: { bg: "#0F6E56", icon: "🎁", cat: "Experiences" },
+      "Valentine's Day": { bg: "#991B4B", icon: "🌹", cat: "Florists" },
+      "Mother's Day": { bg: "#993556", icon: "💐", cat: "Florists" },
     };
     const getInfo = (name) => {
       const k = Object.keys(CAT_MAP).find(
@@ -827,6 +1236,16 @@ function Nav({ page, setPage, user, onLogout, onSearch }) {
     <nav className="nav">
       <div className="nav-inner">
         <button className="nav-logo" onClick={() => handleNavClick("store")}>
+          <img
+            src="/images/logo.png"
+            alt="AfriVoucher"
+            style={{
+              height: 48,
+              width: "auto",
+              marginRight: 8,
+              verticalAlign: "middle",
+            }}
+          />
           Afri<span>Voucher</span>
         </button>
         <div className="nav-search">
@@ -960,13 +1379,26 @@ function Nav({ page, setPage, user, onLogout, onSearch }) {
 function VoucherCard({ voucher, onOpen }) {
   const imgSrc = voucher.imageUrl || voucher.img;
   const descText = (voucher.desc || "").substring(0, 90);
+  const catBg = {
+    Wellness: "linear-gradient(135deg,#e8f0e8,#c8e0c8)",
+    Adventure: "linear-gradient(135deg,#e0e8f0,#c0d0e4)",
+    Music: "linear-gradient(135deg,#ece8f4,#d4c8ec)",
+    Events: "linear-gradient(135deg,#f4e8ec,#ecd0d8)",
+    Florists: "linear-gradient(135deg,#f4eee8,#e8d8c8)",
+    Beauty: "linear-gradient(135deg,#f4e8f0,#e8c8d8)",
+    "Dining & Wine": "linear-gradient(135deg,#f8f0e0,#f0e0c0)",
+    "Traditional Restaurants": "linear-gradient(135deg,#f5ede0,#e8d5b0)",
+    Stays: "linear-gradient(135deg,#e8f0ec,#c8e0cc)",
+  };
   // Pick a badge class based on category
   const catBadgeClass =
     voucher.cat === "Music"
       ? "cbadge cbadge-music"
       : voucher.cat === "Events"
         ? "cbadge cbadge-events"
-        : "cbadge cbadge-pop";
+        : voucher.cat === "Traditional Restaurants"
+          ? "cbadge cbadge-trad"
+          : "cbadge cbadge-pop";
 
   return (
     <div className="card" onClick={() => onOpen(voucher)}>
@@ -979,7 +1411,14 @@ function VoucherCard({ voucher, onOpen }) {
             style={{ width: "100%", height: "100%", objectFit: "cover" }}
           />
         ) : (
-          <div className="card-img-placeholder">
+          <div
+            className="card-img-placeholder"
+            style={{
+              background:
+                catBg[voucher.cat] ||
+                "linear-gradient(135deg,var(--cream2),var(--cream3))",
+            }}
+          >
             {voucher.icon || getCatIcon(voucher.cat) || "🎁"}
           </div>
         )}
@@ -1049,7 +1488,8 @@ function VoucherCard({ voucher, onOpen }) {
 }
 
 // ─── Store Page ───────────────────────────────────────────────────────────
-function StorePage({ vouchers, loading, setPage }) {
+function StorePage({ vouchers, loading, setPage, onCatSelect }) {
+  const [lastViewed, setLastViewed] = useState(null);
   const [currentCat, setCurrentCat] = useState("All");
   const [sortVal, setSortVal] = useState("default");
   const [searchQ, setSearchQ] = useState("");
@@ -1060,27 +1500,102 @@ function StorePage({ vouchers, loading, setPage }) {
   // ── Updated category list now includes Music and Events ─────────────────
   const allCats = [
     "All",
-    "Wellness",
-    "Beauty",
+    "Wellness & Spa",
+    "Hair & Beauty",
     "Adventure",
     "Dining & Wine",
+    "Traditional Restaurants",
     "Stays",
     "Skills",
     "Music",
     "Events",
+    "Florists",
   ];
   const catIcons = {
     All: "🌟",
-    Wellness: "🧖",
-    Beauty: "💅",
+    "Wellness & Spa": "🧖",
+    "Hair & Beauty": "💅",
     Adventure: "🪂",
     "Dining & Wine": "🍷",
+    "Traditional Restaurants": "🍲",
     Stays: "🏡",
+    Florists: "🌸",
     Skills: "📚",
-    Music: "🎵", // ← NEW
-    Events: "🎪", // ← NEW
+    Music: "🎵",
+    Events: "🎪",
   };
-
+  const HERO_CARDS = [
+    {
+      emoji: "🧖",
+      name: "Couples Spa Day",
+      cat: "Wellness",
+      price: "R 1,800",
+      img: "/images/spa.jpg",
+    },
+    {
+      emoji: "🪂",
+      name: "Tandem Skydive",
+      cat: "Adventure",
+      price: "R 2,950",
+      img: "",
+    },
+    {
+      emoji: "🍲",
+      name: "Sunday Lunch for Two",
+      cat: "Traditional",
+      price: "R 420",
+      img: "/images/kwaterry.jpg",
+    },
+    {
+      emoji: "🎵",
+      name: "Live Jazz Evening",
+      cat: "Music",
+      price: "R 780",
+      img: "/images/music.jpg",
+    },
+    {
+      emoji: "🌸",
+      name: "Luxury Rose Arrangement",
+      cat: "Florists",
+      price: "R 680",
+      img: "/images/florists.jpg",
+    },
+    {
+      emoji: "🏡",
+      name: "Ancient City Lodge Stay",
+      cat: "Stays",
+      price: "R 2,800",
+      img: "/images/ancient-city-lodge-masvingo-698880.webp",
+    },
+    {
+      emoji: "📸",
+      name: "Photography Masterclass",
+      cat: "Skills",
+      price: "R 890",
+      img: "",
+    },
+    {
+      emoji: "🍷",
+      name: "Wine Tasting for Two",
+      cat: "Dining",
+      price: "R 620",
+      img: "/images/dining.webp",
+    },
+  ];
+  const occasions = [
+    [<Flower2 size={28} strokeWidth={1.5} />, "Mother's Day"],
+    [<Sparkles size={28} strokeWidth={1.5} />, "Just Because"],
+    [<Cake size={28} strokeWidth={1.5} />, "Birthday"],
+    [<Heart size={28} strokeWidth={1.5} />, "Anniversary"],
+    [<Music size={28} strokeWidth={1.5} />, "Concert Night"],
+    [<UtensilsCrossed size={28} strokeWidth={1.5} />, "Send Mum Lunch"],
+    [<PartyPopper size={28} strokeWidth={1.5} />, "Private Function"],
+    [<GraduationCap size={28} strokeWidth={1.5} />, "Graduation"],
+  ];
+  const handleOpenVoucher = (v) => {
+    setLastViewed(v);
+    setSelectedVoucher(v);
+  };
   const filtered = vouchers
     .filter((v) => currentCat === "All" || v.cat === currentCat)
     .filter((v) => {
@@ -1121,17 +1636,45 @@ function StorePage({ vouchers, loading, setPage }) {
     <>
       {/* Hero */}
       <section className="hero">
-        <div className="hero-bg" />
+        <div
+          className="hero-bg"
+          style={{
+            backgroundImage: `linear-gradient(135deg, rgba(26,46,31,.75) 0%, rgba(26,46,31,.3) 50%, transparent 80%), url(${greatZimbabwe})`,
+          }}
+        />
+        <div className="hero-cards-col">
+          <div className="hero-cards-track">
+            {/* Duplicate the array so the loop is seamless */}
+            {[...HERO_CARDS, ...HERO_CARDS].map((card, i) => (
+              <div key={i} className="hero-card-item">
+                {card.img ? (
+                  <img
+                    src={card.img}
+                    alt={card.name}
+                    className="hero-card-img"
+                  />
+                ) : (
+                  <div className="hero-card-img-placeholder">{card.emoji}</div>
+                )}
+                <div className="hero-card-body">
+                  <div className="hero-card-cat">{card.cat}</div>
+                  <div className="hero-card-name">{card.name}</div>
+                  <span className="hero-card-price">{card.price}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
         <div className="hero-content">
           <div className="hero-eyebrow">
-            <span>🇿🇦</span> South Africa's #1 Gift Experience Marketplace
+            <span>ZW</span> Zimbabwe's #1 Gift Experience Marketplace
           </div>
           <h1>
             Give the gift of <em>unforgettable</em> experiences.
           </h1>
           <p>
-            From Magaliesberg safaris to Cape Town jazz nights — browse 200+
-            curated South African experiences, delivered instantly via WhatsApp.
+            From Victoria Falls to Great Zimbabwe Ruins — browse 200+ curated
+            Zimbabwean experiences, delivered instantly via WhatsApp.
           </p>
           <div className="hero-search">
             <div className="hero-search-field" style={{ flex: "1.2" }}>
@@ -1145,7 +1688,7 @@ function StorePage({ vouchers, loading, setPage }) {
               <span>📍</span>
               <div>
                 <span className="hsf-label">Where?</span>
-                <div className="hsf-val">Anywhere in SA</div>
+                <div className="hsf-val">Anywhere in ZIM</div>
               </div>
             </div>
             <div
@@ -1177,6 +1720,60 @@ function StorePage({ vouchers, loading, setPage }) {
             <div className="hero-trust-item">⭐ 4.9/5 from 2,800+ reviews</div>
             <div className="hero-trust-item">🔒 Secure PayFast payments</div>
             <div className="hero-trust-item">📱 Instant WhatsApp delivery</div>
+            <div
+              className="hero-trust-item"
+              style={{
+                background: "rgba(245,240,232,.15)",
+                border: "1px solid rgba(245,240,232,.25)",
+                borderRadius: 20,
+                padding: "4px 14px",
+              }}
+            >
+              🎟️ <strong>{vouchers.length * 3 + 2340}</strong> vouchers sold
+              this month
+            </div>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              gap: 32,
+              marginTop: 28,
+              paddingTop: 24,
+              borderTop: "1px solid rgba(255,255,255,.1)",
+            }}
+          >
+            {[
+              ["2,800+", "Reviews · 4.9★"],
+              ["200+", "Experiences"],
+              ["Instant", "WhatsApp delivery"],
+              ["R0", "Partner setup cost"],
+            ].map(([val, lbl]) => (
+              <div key={lbl}>
+                <div
+                  style={{
+                    fontFamily: "var(--serif)",
+                    fontSize: "1.6rem",
+                    fontWeight: 700,
+                    color: "#fff",
+                    lineHeight: 1,
+                    marginBottom: 3,
+                  }}
+                >
+                  {val}
+                </div>
+                <div
+                  style={{
+                    fontSize: ".65rem",
+                    color: "rgba(255,255,255,.4)",
+                    textTransform: "uppercase",
+                    letterSpacing: ".8px",
+                    fontWeight: 500,
+                  }}
+                >
+                  {lbl}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -1189,6 +1786,8 @@ function StorePage({ vouchers, loading, setPage }) {
               key={cat}
               className={`cat-pill${currentCat === cat ? " active" : ""}`}
               onClick={() => setCurrentCat(cat)}
+              onDoubleClick={() => cat !== "All" && onCatSelect(cat)}
+              title={`Double-click to open ${cat} page`}
             >
               <span>{catIcons[cat]}</span>{" "}
               {cat === "All" ? "All Experiences" : cat}
@@ -1209,7 +1808,9 @@ function StorePage({ vouchers, loading, setPage }) {
                 Hand-selected from our partner listings
               </p>
             </div>
-            <button className="see-all">View all →</button>
+            <button className="see-all" onClick={() => onCatSelect(currentCat)}>
+              View all {currentCat !== "All" ? currentCat : ""} →
+            </button>
           </div>
           <div className="featured-grid">
             {vouchers[0] && (
@@ -1219,15 +1820,28 @@ function StorePage({ vouchers, loading, setPage }) {
               >
                 <div className="feat-card-img">
                   {vouchers[0].imageUrl ? (
-                    <img
-                      src={vouchers[0].imageUrl}
-                      alt={vouchers[0].name}
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                      }}
-                    />
+                   <div style={{ position: "relative", width: "100%", height: "100%" }}>
+  {/* Blurred background fill */}
+  <div style={{
+    position: "absolute", inset: 0,
+    backgroundImage: `url(${vouchers[0].imageUrl})`,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    filter: "blur(12px) brightness(.6)",
+    transform: "scale(1.1)", 
+  }} />
+  {/* Sharp image on top */}
+  <img
+    src={vouchers[0].imageUrl}
+    alt={vouchers[0].name}
+    style={{
+      position: "relative", zIndex: 1,
+      width: "100%", height: "100%",
+      objectFit: "contain",
+      objectPosition: "center",
+    }}
+  />
+</div>
                   ) : (
                     <div
                       style={{
@@ -1270,19 +1884,21 @@ function StorePage({ vouchers, loading, setPage }) {
                 <div
                   key={i}
                   className="feat-card small"
-                  onClick={() => setSelectedVoucher(v)}
+                  onClick={() => handleOpenVoucher(v)}
                 >
                   <div className="feat-card-img">
                     {v.imageUrl ? (
-                      <img
-                        src={v.imageUrl}
-                        alt={v.name}
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "cover",
-                        }}
-                      />
+                     <img
+  src={v.imageUrl}
+  alt={v.name}
+  style={{
+    width: "100%",
+    height: "100%",
+    objectFit: "contain",
+    objectPosition: "center",
+    background: "var(--forest)",
+  }}
+/>
                     ) : (
                       <div
                         style={{
@@ -1352,7 +1968,7 @@ function StorePage({ vouchers, loading, setPage }) {
                 ? "Loading partner experiences..."
                 : filtered.length === 0
                   ? "No experiences listed yet"
-                  : `Showing ${filtered.length} experience${filtered.length !== 1 ? "s" : ""} from our SA partners`}
+                  : `Showing ${filtered.length} experience${filtered.length !== 1 ? "s" : ""} from our ZIM partners`}
             </p>
           </div>
           <select
@@ -1376,6 +1992,38 @@ function StorePage({ vouchers, loading, setPage }) {
             <option value="rating">Top Rated</option>
           </select>
         </div>
+        {lastViewed && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+              padding: "12px 16px",
+              background: "var(--white)",
+              border: "1px solid var(--border)",
+              borderRadius: 12,
+              marginBottom: 16,
+              cursor: "pointer",
+              fontSize: ".82rem",
+              color: "var(--sub)",
+            }}
+            onClick={() => setSelectedVoucher(lastViewed)}
+          >
+            👁️ You recently viewed:{" "}
+            <strong style={{ color: "var(--forest)" }}>
+              {lastViewed.name}
+            </strong>
+            <span
+              style={{
+                marginLeft: "auto",
+                color: "var(--leaf)",
+                fontWeight: 600,
+              }}
+            >
+              View again →
+            </span>
+          </div>
+        )}
         <div className="cards-grid">
           {loading ? (
             <div
@@ -1395,10 +2043,10 @@ function StorePage({ vouchers, loading, setPage }) {
               style={{
                 gridColumn: "1/-1",
                 textAlign: "center",
-                padding: "80px 20px",
+                padding: "60px 20px",
               }}
             >
-              <div style={{ fontSize: "3rem", marginBottom: 16 }}>🎁</div>
+              <div style={{ fontSize: "3rem", marginBottom: 16 }}>🔍</div>
               <h3
                 style={{
                   fontFamily: "var(--serif)",
@@ -1407,11 +2055,47 @@ function StorePage({ vouchers, loading, setPage }) {
                   marginBottom: 8,
                 }}
               >
-                No experiences yet
+                No results for "{searchQ || currentCat}"
               </h3>
-              <p style={{ color: "var(--muted)", fontSize: ".88rem" }}>
-                Partners are setting up their vouchers. Check back soon!
+              <p
+                style={{
+                  color: "var(--muted)",
+                  fontSize: ".88rem",
+                  marginBottom: 20,
+                }}
+              >
+                Try browsing a different category:
               </p>
+              <div
+                style={{
+                  display: "flex",
+                  gap: 8,
+                  justifyContent: "center",
+                  flexWrap: "wrap",
+                }}
+              >
+                {["Wellness", "Adventure", "Music", "Events"].map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => {
+                      setCurrentCat(cat);
+                      setSearchQ("");
+                    }}
+                    style={{
+                      padding: "8px 16px",
+                      borderRadius: 20,
+                      border: "1.5px solid var(--border2)",
+                      background: "var(--white)",
+                      cursor: "pointer",
+                      fontSize: ".82rem",
+                      fontWeight: 600,
+                      color: "var(--sub)",
+                    }}
+                  >
+                    {getCatIcon(cat)} {cat}
+                  </button>
+                ))}
+              </div>
             </div>
           ) : (
             filtered.map((v) => (
@@ -1434,16 +2118,18 @@ function StorePage({ vouchers, loading, setPage }) {
             </div>
           </div>
           <div className="occ-grid">
-            {[
-              ["💐", "Mother's Day"],
-              ["🎂", "Birthday"],
-              ["💍", "Anniversary"],
-              ["🎵", "Concert Night"],
-              ["🎪", "Private Function"],
-              ["🎓", "Graduation"],
-            ].map(([icon, name]) => (
+            {occasions.map(([icon, name]) => (
               <div key={name} className="occ">
-                <span className="occ-icon">{icon}</span>
+                <span
+                  className="occ-icon"
+                  style={{
+                    color: "var(--leaf)",
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
+                >
+                  {icon}
+                </span>
                 <div className="occ-name">{name}</div>
               </div>
             ))}
@@ -1464,44 +2150,62 @@ function StorePage({ vouchers, loading, setPage }) {
             [
               "Adventure",
               "🪂",
-              "https://images.unsplash.com/photo-1503220317375-aaad61436b1b?w=600&q=80",
+              "/images/ancient-city-lodge-masvingo-698880.webp?w=600&q=80",
               "4 experiences from R850",
             ],
             [
               "Wellness",
               "🧖",
-              "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80",
+              "/images/wellness.avif?w=600&q=80",
               "3 experiences from R550",
             ],
             [
               "Dining & Wine",
               "🍷",
-              "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=80",
+              "/images/dining.webp?w=600&q=80",
               "4 experiences from R560",
+            ],
+            [
+              "Traditional Restaurants",
+              "🍲",
+              "/images/kwaterry.jpg?w=600&q=80",
+              "8 experiences from R240",
             ],
             [
               "Music",
               "🎵",
-              "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&q=80",
+              "/images/music.jpg?w=600&q=80",
               "5 experiences from R450",
             ],
             [
               "Events",
               "🎪",
-              "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80",
+              "/images/events.jpg?w=600&q=80",
               "5 experiences from R580",
+            ],
+            [
+              "Florists",
+              "🌸",
+              "/images/florists.jpg?w=600&q=80",
+              "6 experiences from R350",
+            ],
+            [
+              "Hair & Beauty",
+              "📚",
+              "/images/hair.jpg?w=600&q=80",
+              "2 experiences from R650",
             ],
             [
               "Skills",
               "📚",
-              "https://images.unsplash.com/photo-1484417894907-623942c8ee29?w=600&q=80",
-              "2 experiences from R650",
+              "/images/skills.jpg?w=600&q=80",
+              "12 experiences from R350",
             ],
           ].map(([cat, icon, img, sub]) => (
             <div
               key={cat}
               className="cat-block"
-              onClick={() => setCurrentCat(cat)}
+              onClick={() => onCatSelect(cat)}
             >
               <div className="cat-block-img">
                 <img
@@ -1533,23 +2237,23 @@ function StorePage({ vouchers, loading, setPage }) {
             {
               init: "TN",
               name: "Thabo N.",
-              loc: "Johannesburg",
+              loc: "Harare",
               prod: "Couples Spa Day",
               text: "Bought this for my wife's birthday. She got the code on WhatsApp within seconds and absolutely loved the spa day.",
             },
             {
-              init: "SB",
-              name: "Sarah B.",
-              loc: "Pretoria",
-              prod: "Live Jazz Evening",
-              text: "We used the jazz evening voucher for our anniversary. The venue was intimate and the welcome cocktails were a lovely touch. Will gift again.",
-            },
-            {
               init: "MK",
               name: "Michelle K.",
-              loc: "Cape Town",
+              loc: "Victoria Falls",
               prod: "Corporate Function",
               text: "Organised a half-day corporate function for 25 people. The on-site coordinator handled everything — our team was blown away.",
+            },
+            {
+              init: "TC",
+              name: "Tinashe C.",
+              loc: "London, UK",
+              prod: "Feli Nandi's — Mum's Treat",
+              text: "I'm in London and couldn't be there for Mother's Day. Bought mum the Feli Nandi's special — she called me crying happy tears. The printed card on the table made it.",
             },
           ].map((t) => (
             <div key={t.name} className="testi">
@@ -1570,7 +2274,7 @@ function StorePage({ vouchers, loading, setPage }) {
 
       {/* Partner logos */}
       <div className="partners-section">
-        <p className="partners-label">Trusted South African Partners</p>
+        <p className="partners-label">Trusted Zimbabwean Partners</p>
         <div className="partners-row">
           {[
             ["Relax", "Zone"],
@@ -1607,7 +2311,7 @@ function StorePage({ vouchers, loading, setPage }) {
                 "01",
                 "🛍️",
                 "Browse & Choose",
-                "Find the perfect experience from our 200+ curated South African partners — from spa days to live music events.",
+                "Find the perfect experience from our 200+ curated Zimbabwean partners — from spa days to live music events.",
               ],
               [
                 "02",
@@ -1717,7 +2421,7 @@ function NewsletterSection() {
   return (
     <div className="newsletter">
       <div className="container">
-        <h2>Get the best SA experiences first.</h2>
+        <h2>Get the best ZIM experiences first.</h2>
         <p>
           New partners, live music events, seasonal specials and gifting ideas —
           straight to your inbox.
@@ -2233,6 +2937,56 @@ function SuccessDrawer({ info, onClose }) {
             ← Back to Store
           </button>
         </div>
+        <div
+          style={{
+            width: "100%",
+            background: "var(--cream2)",
+            border: "1px solid var(--border)",
+            borderRadius: 12,
+            padding: 18,
+            textAlign: "left",
+          }}
+        >
+          <p
+            style={{
+              fontWeight: 700,
+              color: "var(--forest)",
+              marginBottom: 8,
+              fontSize: ".88rem",
+            }}
+          >
+            📅 Book Your Experience
+          </p>
+          <p
+            style={{
+              fontSize: ".78rem",
+              color: "var(--sub)",
+              marginBottom: 12,
+            }}
+          >
+            Show this code to the partner and book your preferred date:
+          </p>
+
+          <a
+            href={`https://wa.me/27XXXXXXXXX?text=Hi! I have voucher ${info.code} and would like to book`}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: "block",
+              width: "100%",
+              padding: "11px 0",
+              background: "#25D366",
+              color: "white",
+              borderRadius: 9,
+              textAlign: "center",
+              fontWeight: 700,
+              fontSize: ".85rem",
+              textDecoration: "none",
+            }}
+          >
+            💬 Book via WhatsApp
+          </a>
+        </div>
       </div>
     </div>
   );
@@ -2740,6 +3494,7 @@ function AdminPage({ user, onLogout }) {
     validity: "12",
     desc: "",
     includes: "",
+    city: "",
   });
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
@@ -2831,6 +3586,7 @@ function AdminPage({ user, onLogout }) {
         code: genCode(),
         name: formData.name,
         category: formData.category,
+        city: formData.city || "Zimbabwe",
         price: parseFloat(formData.price),
         desc: formData.desc,
         includes: formData.includes
@@ -2869,6 +3625,7 @@ function AdminPage({ user, onLogout }) {
         validity: "12",
         desc: "",
         includes: "",
+        city: "",
       });
       setImageFile(null);
       setImagePreview("");
@@ -2918,10 +3675,12 @@ function AdminPage({ user, onLogout }) {
     "Beauty",
     "Adventure",
     "Dining & Wine",
+    "Traditional Restaurants",
     "Stays",
     "Skills",
     "Music",
     "Events",
+    "Florists",
     "Other",
   ];
 
@@ -3145,6 +3904,7 @@ function AdminPage({ user, onLogout }) {
                   />
                 </div>
               ))}
+
               <div>
                 <label
                   style={{
@@ -3198,7 +3958,27 @@ function AdminPage({ user, onLogout }) {
                 </select>
               </div>
             </div>
-
+            <div>
+              <label
+                style={{
+                  fontSize: ".68rem",
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: 1,
+                  color: "var(--muted)",
+                  display: "block",
+                  marginBottom: 6,
+                }}
+              >
+                City / Area *
+              </label>
+              <input
+                className="admin-input"
+                value={formData.city}
+                onChange={setF("city")}
+                placeholder="Gweru, Victoria Falls, JHB…"
+              />
+            </div>
             <div style={{ marginBottom: 16 }}>
               <label
                 style={{
@@ -3409,6 +4189,7 @@ function AdminPage({ user, onLogout }) {
                     validity: "12",
                     desc: "",
                     includes: "",
+                    city: "",
                   });
                   setImageFile(null);
                   setImagePreview("");
@@ -3702,6 +4483,9 @@ function PartnersPage() {
           textAlign: "center",
           position: "relative",
           overflow: "hidden",
+          backgroundImage: "url('/images/hero-3.jpg')",
+    backgroundSize: "cover",
+    backgroundPosition: "center 40%",
         }}
       >
         <div
@@ -3874,13 +4658,15 @@ function PartnersPage() {
               >
                 {[
                   "Wellness & Spa",
-                  "Beauty",
+                  "Hair & Beauty",
                   "Adventure",
                   "Dining & Wine",
+                  "Traditional Restaurants",
                   "Stays",
                   "Skills & Courses",
                   "Music",
                   "Events",
+                  "Florists",
                   "Other",
                 ].map((c) => (
                   <option key={c}>{c}</option>
@@ -4011,7 +4797,468 @@ function PartnersPage() {
     </>
   );
 }
+function CategoryPage({ cat, vouchers, onBack, onOpenVoucher }) {
+  const [sortVal, setSortVal] = useState("default");
+  const [searchQ, setSearchQ] = useState("");
 
+  const catMeta = {
+    Adventure: {
+      icon: "🪂",
+      img: "/images/ancient-city-lodge-masvingo-698880.webp",
+      color: "#1a3a4a",
+      tagline: "Push your limits. Create stories worth telling.",
+      desc: "From 15,000ft skydives to hot air balloon sunrises — Zimbabwe's most thrilling experiences, gifted in seconds.",
+    },
+    "Wellness & Spa": {
+      icon: "🧖",
+      img: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1200&q=80",
+      color: "#1a2e1f",
+      tagline: "Rest, restore and feel completely renewed.",
+      desc: "Treat someone to the gift of stillness — massages, spa days and full pamper packages from Zimbabwe's top wellness partners.",
+    },
+    "Hair & Beauty": {
+      icon: "💅",
+      img: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=1200&q=80",
+      color: "#2e1a22",
+      tagline: "Because they deserve to feel gorgeous.",
+      desc: "Gel manis, spa pedis, bridal packages and full glam treatments — from Zimbabwe's top salons and beauty professionals.",
+    },
+    "Dining & Wine": {
+      icon: "🍷",
+      img: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&q=80",
+      color: "#2e1a0e",
+      tagline: "Food is love. Gift a table worth remembering.",
+      desc: "Wine tastings, braai masterclasses and fine dining experiences — for the food lovers in your life.",
+    },
+    "Traditional Restaurants": {
+      icon: "🍲",
+      img: "/images/kwaterry.jpg",
+      color: "#2e1f0a",
+      tagline: "The taste of home, gifted from anywhere in the world.",
+      desc: "Sadza, dovi, road runner chicken — send mum, dad or the whole family for a proper Zimbabwean meal, even when you're miles away.",
+    },
+    Music: {
+      icon: "🎵",
+      img: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=1200&q=80",
+      color: "#1a1a2e",
+      tagline: "Give the gift of live music.",
+      desc: "Jazz evenings, studio sessions, DJ workshops and concert tickets — for the music lovers who deserve a night to remember.",
+    },
+    Events: {
+      icon: "🎪",
+      img: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&q=80",
+      color: "#2e1a2e",
+      tagline: "Every occasion deserves a celebration.",
+      desc: "Corporate functions, birthday bundles, kids parties and anniversary dinners — fully hosted, fully unforgettable.",
+    },
+    Florists: {
+      icon: "🌸",
+      img: "https://images.unsplash.com/photo-1487530811015-780b95070bb5?w=1200&q=80",
+      color: "#2e1a1f",
+      tagline: "Say it with flowers.",
+      desc: "Bouquets, luxury arrangements, weekly subscriptions and wedding centrepieces — from Zimbabwe's finest florists.",
+    },
+
+    Stays: {
+      icon: "🏡",
+      img: "/images/ancient-city-lodge-masvingo-698880.webp",
+      color: "#1a2e1f",
+      tagline: "A getaway they'll never forget.",
+      desc: "Lodge stays, heritage escapes and weekend retreats — Zimbabwe's most beautiful places to wake up.",
+    },
+    Beauty: {
+      icon: "💅",
+      img: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=1200&q=80",
+      color: "#2e1a22",
+      tagline: "Because they deserve to feel gorgeous.",
+      desc: "Gel manis, spa pedis, bridal packages and full glam treatments — from Zimbabwe's top beauty professionals.",
+    },
+  };
+
+  const meta = catMeta[cat] || {
+    icon: "🎁",
+    img: "",
+    color: "#1a2e1f",
+    tagline: "Discover amazing experiences.",
+    desc: "Browse our curated selection of vouchers.",
+  };
+
+  const filtered = vouchers
+    .filter((v) => v.cat === cat)
+    .filter((v) => {
+      if (!searchQ.trim()) return true;
+      const q = searchQ.toLowerCase();
+      return (
+        (v.name || "").toLowerCase().includes(q) ||
+        (v.desc || "").toLowerCase().includes(q)
+      );
+    })
+    .sort((a, b) => {
+      if (sortVal === "price-asc") return a.price - b.price;
+      if (sortVal === "price-desc") return b.price - a.price;
+      if (sortVal === "rating") return b.rating - a.rating;
+      return 0;
+    });
+
+  const [selectedVoucher, setSelectedVoucher] = useState(null);
+  const [drawerVoucher, setDrawerVoucher] = useState(null);
+  const [checkoutSuccess, setCheckoutSuccess] = useState(null);
+
+  const handleCheckout = async (form) => {
+    await new Promise((r) => setTimeout(r, 2000));
+    const code = genCode();
+    setCheckoutSuccess({
+      code,
+      voucher: drawerVoucher,
+      recipientPhone: form.recipientPhone,
+    });
+  };
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
+  return (
+    <>
+      {/* Category Hero */}
+      <div
+        style={{
+          position: "relative",
+          minHeight: 380,
+          display: "flex",
+          alignItems: "flex-end",
+          overflow: "hidden",
+        }}
+      >
+        {/* Background image */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            backgroundImage: `linear-gradient(to top, ${meta.color} 0%, rgba(0,0,0,.4) 50%, rgba(0,0,0,.15) 100%), url('${meta.img}')`,
+            backgroundSize: "cover",
+            backgroundPosition: "center 40%",
+            backgroundRepeat: "no-repeat",
+          }}
+        />
+
+        {/* Back button */}
+        <button
+          onClick={onBack}
+          style={{
+            position: "absolute",
+            top: 24,
+            left: 32,
+            background: "rgba(255,255,255,.15)",
+            backdropFilter: "blur(8px)",
+            border: "1px solid rgba(255,255,255,.25)",
+            borderRadius: 10,
+            padding: "9px 16px",
+            color: "#fff",
+            fontFamily: "var(--sans)",
+            fontSize: ".8rem",
+            fontWeight: 600,
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            gap: 7,
+            zIndex: 2,
+          }}
+        >
+          ← Back
+        </button>
+
+        {/* Hero content */}
+        <div
+          style={{
+            position: "relative",
+            zIndex: 1,
+            padding: "0 32px 44px",
+            maxWidth: "var(--max)",
+            width: "100%",
+            margin: "0 auto",
+          }}
+        >
+          <div
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              background: "rgba(255,255,255,.12)",
+              border: "1px solid rgba(255,255,255,.2)",
+              borderRadius: 20,
+              padding: "5px 14px",
+              fontSize: ".7rem",
+              fontWeight: 600,
+              color: "rgba(255,255,255,.85)",
+              letterSpacing: "1px",
+              textTransform: "uppercase",
+              marginBottom: 14,
+            }}
+          >
+            {meta.icon} {cat}
+          </div>
+          <h1
+            style={{
+              fontFamily: "var(--serif)",
+              fontSize: "clamp(2rem,5vw,3.5rem)",
+              fontWeight: 600,
+              color: "#fff",
+              lineHeight: 1.05,
+              marginBottom: 10,
+              letterSpacing: "-.3px",
+            }}
+          >
+            {meta.tagline}
+          </h1>
+          <p
+            style={{
+              color: "rgba(255,255,255,.65)",
+              fontSize: ".92rem",
+              lineHeight: 1.75,
+              maxWidth: 560,
+              fontWeight: 300,
+            }}
+          >
+            {meta.desc}
+          </p>
+
+          {/* Stats row */}
+          <div
+            style={{
+              display: "flex",
+              gap: 24,
+              marginTop: 24,
+              paddingTop: 20,
+              borderTop: "1px solid rgba(255,255,255,.15)",
+              flexWrap: "wrap",
+            }}
+          >
+            {[
+              [filtered.length, "Experiences available"],
+              [
+                `R${Math.min(...filtered.map((v) => v.price || 0)).toLocaleString()}`,
+                "Starting from",
+              ],
+              ["Instant", "WhatsApp delivery"],
+            ].map(([val, lbl]) => (
+              <div key={lbl}>
+                <div
+                  style={{
+                    fontFamily: "var(--serif)",
+                    fontSize: "1.4rem",
+                    fontWeight: 700,
+                    color: "#fff",
+                    lineHeight: 1,
+                    marginBottom: 3,
+                  }}
+                >
+                  {val}
+                </div>
+                <div
+                  style={{
+                    fontSize: ".62rem",
+                    color: "rgba(255,255,255,.45)",
+                    textTransform: "uppercase",
+                    letterSpacing: ".8px",
+                    fontWeight: 500,
+                  }}
+                >
+                  {lbl}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Filter bar */}
+      <div
+        style={{
+          background: "var(--white)",
+          borderBottom: "1px solid var(--border)",
+          position: "sticky",
+          top: 72,
+          zIndex: 50,
+        }}
+      >
+        <div
+          style={{
+            maxWidth: "var(--max)",
+            margin: "0 auto",
+            padding: "14px 32px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 16,
+            flexWrap: "wrap",
+          }}
+        >
+          {/* Search */}
+          <div
+            style={{
+              flex: 1,
+              maxWidth: 380,
+              background: "var(--cream)",
+              border: "1.5px solid var(--border2)",
+              borderRadius: 50,
+              display: "flex",
+              alignItems: "center",
+              gap: 9,
+              padding: "0 16px",
+              height: 40,
+            }}
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              style={{ color: "var(--muted)", flexShrink: 0 }}
+            >
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.35-4.35" />
+            </svg>
+            <input
+              placeholder={`Search ${cat} experiences…`}
+              value={searchQ}
+              onChange={(e) => setSearchQ(e.target.value)}
+              style={{
+                border: "none",
+                outline: "none",
+                background: "transparent",
+                fontFamily: "var(--sans)",
+                fontSize: ".85rem",
+                color: "var(--text)",
+                width: "100%",
+              }}
+            />
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            {/* Result count */}
+            <span
+              style={{
+                fontSize: ".8rem",
+                color: "var(--muted)",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {filtered.length} experience{filtered.length !== 1 ? "s" : ""}
+            </span>
+
+            {/* Sort */}
+            <select
+              value={sortVal}
+              onChange={(e) => setSortVal(e.target.value)}
+              style={{
+                padding: "8px 14px",
+                border: "1.5px solid var(--border2)",
+                borderRadius: 8,
+                fontFamily: "var(--sans)",
+                fontSize: ".8rem",
+                color: "var(--sub)",
+                background: "var(--white)",
+                outline: "none",
+                cursor: "pointer",
+              }}
+            >
+              <option value="default">Sort: Featured</option>
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+              <option value="rating">Top Rated</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      {/* Voucher grid */}
+      <section className="section container">
+        {filtered.length === 0 ? (
+          <div
+            style={{
+              textAlign: "center",
+              padding: "80px 20px",
+            }}
+          >
+            <div style={{ fontSize: "3rem", marginBottom: 16 }}>🔍</div>
+            <h3
+              style={{
+                fontFamily: "var(--serif)",
+                fontSize: "1.4rem",
+                color: "var(--forest)",
+                marginBottom: 8,
+              }}
+            >
+              No {cat} experiences yet
+            </h3>
+            <p
+              style={{
+                color: "var(--muted)",
+                fontSize: ".88rem",
+                marginBottom: 24,
+              }}
+            >
+              Our partners are adding new experiences all the time.
+            </p>
+            <button
+              onClick={onBack}
+              style={{
+                padding: "11px 24px",
+                background: "var(--forest)",
+                color: "var(--cream)",
+                border: "none",
+                borderRadius: 9,
+                fontFamily: "var(--serif)",
+                fontSize: ".95rem",
+                fontWeight: 700,
+                cursor: "pointer",
+              }}
+            >
+              ← Browse all experiences
+            </button>
+          </div>
+        ) : (
+          <div className="cards-grid">
+            {filtered.map((v) => (
+              <VoucherCard key={v.id} voucher={v} onOpen={setSelectedVoucher} />
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* Modals */}
+      {selectedVoucher && (
+        <ProductModal
+          voucher={selectedVoucher}
+          onClose={() => setSelectedVoucher(null)}
+          onBuy={() => {
+            setDrawerVoucher(selectedVoucher);
+            setSelectedVoucher(null);
+          }}
+        />
+      )}
+      {drawerVoucher && !checkoutSuccess && (
+        <CheckoutDrawer
+          voucher={drawerVoucher}
+          onClose={() => setDrawerVoucher(null)}
+          onSuccess={handleCheckout}
+        />
+      )}
+      {checkoutSuccess && (
+        <SuccessDrawer
+          info={checkoutSuccess}
+          onClose={() => {
+            setCheckoutSuccess(null);
+            setDrawerVoucher(null);
+          }}
+        />
+      )}
+    </>
+  );
+}
 // ─── Footer ───────────────────────────────────────────────────────────────
 function Footer({ setPage }) {
   return (
@@ -4023,14 +5270,28 @@ function Footer({ setPage }) {
               Afri<span>Voucher</span>
             </div>
             <p className="footer-tagline">
-              South Africa's leading digital gift experience marketplace.
-              Connecting people with unforgettable moments since 2024.
+              Zimbabwe's leading digital gift experience marketplace. Connecting
+              people with unforgettable moments since 2024.
             </p>
             <div className="footer-socials">
-              {["𝕏", "in", "f", "📸"].map((s) => (
-                <Link href="#" key={s} className="social-btn">
-                  {s}
-                </Link>
+              {[
+                { label: "𝕏", href: "https://twitter.com/afrivoucher" },
+                {
+                  label: "in",
+                  href: "https://linkedin.com/company/afrivoucher",
+                },
+                { label: "f", href: "https://facebook.com/afrivoucher" },
+                { label: "📸", href: "https://instagram.com/afrivoucher" },
+              ].map((s) => (
+                <a
+                  href={s.href}
+                  key={s.label}
+                  className="social-btn"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {s.label}
+                </a>
               ))}
             </div>
           </div>
@@ -4077,7 +5338,11 @@ function Footer({ setPage }) {
                 "Privacy Policy",
                 "Terms of Service",
               ].map((l) => (
-                <Link href="#" key={l} className="footer-link">
+                <Link
+                  onClick={() => setPage("...")}
+                  key={l}
+                  className="footer-link"
+                >
                   {l}
                 </Link>
               ))}
@@ -4087,7 +5352,7 @@ function Footer({ setPage }) {
         <div className="footer-bottom">
           <p className="footer-legal">
             © 2025 AfriVoucher (Pty) Ltd · All rights reserved · Registered in
-            South Africa
+            Zimbabwe
           </p>
           <div className="footer-payments">
             <span
@@ -4297,14 +5562,19 @@ export default function App() {
   const [vouchers, setVouchers] = useState([]);
   const [loadingV, setLoadingV] = useState(true);
   const [searchQ, setSearchQ] = useState("");
-
+  const [activeCat, setActiveCat] = useState(null);
+  const [showScroll, setShowScroll] = useState(false);
   useEffect(() => {
     const style = document.createElement("style");
     style.textContent = CSS;
     document.head.appendChild(style);
     return () => document.head.removeChild(style);
   }, []);
-
+  useEffect(() => {
+    const handler = () => setShowScroll(window.scrollY > 400);
+    window.addEventListener("scroll", handler);
+    return () => window.removeEventListener("scroll", handler);
+  }, []);
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (u) => setUser(u || null));
     return unsub;
@@ -4323,7 +5593,7 @@ export default function App() {
             cat: v.category || "Other",
             name: v.name || "Unnamed Voucher",
             partner: v.businessEmail?.split("@")[1]?.split(".")[0] || "Partner",
-            city: "South Africa",
+            city: "Zimbabwe",
             price: v.price || 0,
             comm: 0,
             rating: 0,
@@ -4383,13 +5653,21 @@ export default function App() {
         onSearch={setSearchQ}
       />
 
-      {page === "store" && (
+      {page === "store" && activeCat ? (
+        <CategoryPage
+          cat={activeCat}
+          vouchers={displayedVouchers}
+          onBack={() => setActiveCat(null)}
+          onOpenVoucher={(v) => {}}
+        />
+      ) : page === "store" ? (
         <StorePage
           vouchers={displayedVouchers}
           loading={loadingV}
           setPage={guardedSetPage}
+          onCatSelect={setActiveCat}
         />
-      )}
+      ) : null}
       {page === "auth" && (
         <AuthPage onSuccess={() => guardedSetPage("admin")} />
       )}
@@ -4409,6 +5687,42 @@ export default function App() {
 
       <Footer setPage={guardedSetPage} />
       <BottomNav page={page} setPage={guardedSetPage} user={user} />
+      {/* WhatsApp Float Button */}
+
+      <a
+        href="https://wa.me/27676056777"
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          position: "fixed",
+          bottom: "calc(90px + env(safe-area-inset-bottom))",
+          right: 20,
+          zIndex: 500,
+          background: "#25D366",
+          color: "white",
+          width: 54,
+          height: 54,
+          borderRadius: "50%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: "1.6rem",
+          boxShadow: "0 4px 20px rgba(37,211,102,.45)",
+          textDecoration: "none",
+          transition: "transform .2s",
+        }}
+        onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.1)")}
+        onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+      >
+        💬
+      </a>
+      <button
+        className={`scroll-top${showScroll ? " show" : ""}`}
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        aria-label="Back to top"
+      >
+        ↑
+      </button>
     </>
   );
 }
