@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  getFirestore,
   collection,
   addDoc,
   serverTimestamp,
@@ -312,7 +311,6 @@ export function RedeemVoucherPage({ user }) {
    ══════════════════════════════════════════════════════════════════════ */
 export function HelpCentrePage({ setPage }) {
   useSharedCSS();
-  const [openIdx, setOpenIdx] = useState(null);
   const [searchQ, setSearchQ] = useState("");
 
   const categories = [

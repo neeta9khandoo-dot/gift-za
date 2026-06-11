@@ -1111,11 +1111,6 @@ function AnnounceBanner() {
       Women: { bg: "#993556", icon: "👩", cat: "Wellness & Spa" },
       Youth: { bg: "#185FA5", icon: "🎓", cat: "Skills & Courses" },
       Heritage: { bg: "#854F0B", icon: "🏺", cat: "Dining & Wine" },
-      "Mother's Day": {
-        bg: "#854F0B",
-        icon: "🍲",
-        cat: "Traditional Restaurants",
-      },
       Freedom: { bg: "#534AB7", icon: "🏅", cat: "Adventure" },
       Workers: { bg: "#0F6E56", icon: "💪", cat: "Wellness & Spa" },
       default: { bg: "#0F6E56", icon: "🎁", cat: "Experiences" },
