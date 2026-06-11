@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 
 import { Link } from "react-router-dom";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Flower2,
   Cake,
@@ -42,7 +42,7 @@ import {
   onAuthStateChanged,
   sendPasswordResetEmail,
 } from "firebase/auth";
-import greatZimbabwe from "./images/hero-2.jpg";
+import greatZimbabwe from "./images/zimbabwe-v.jpg";
 // ─── Firebase Init ────────────────────────────────────────────────────────
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -558,11 +558,30 @@ button{font-family:var(--sans);cursor:pointer}
 .nav-link.active{color:var(--forest);font-weight:600}
 .nav-cta{background:var(--forest);color:var(--cream);padding:9px 20px;border-radius:8px;font-size:.83rem;font-weight:600;border:none;transition:all .2s;white-space:nowrap;flex-shrink:0;cursor:pointer}
 .nav-cta:hover{background:var(--forest2);transform:translateY(-1px)}
-.nav-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--leaf),var(--leaf2));display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:.8rem;flex-shrink:0;cursor:pointer}
-.nav-logout{display:flex;align-items:center;gap:5px;padding:8px 14px;border-radius:8px;border:1.5px solid var(--border2);background:transparent;color:var(--sub);font-family:var(--sans);font-size:.78rem;font-weight:600;cursor:pointer;transition:all .2s}
-.nav-logout:hover{border-color:var(--terra);color:var(--terra)}
 .cbadge-florist{background:rgba(180,57,140,.88);color:white}
-
+.nav-user{position:relative;display:flex;align-items:center;flex-shrink:0}
+.nav-user-btn{display:flex;align-items:center;gap:8px;padding:4px 10px 4px 4px;border-radius:50px;border:1.5px solid var(--border2);background:transparent;cursor:pointer;transition:all .2s}
+.nav-user-btn:hover{border-color:var(--leaf);background:rgba(61,107,71,.04)}
+.nav-user-name{font-size:.82rem;font-weight:600;color:var(--text);max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nav-chevron{color:var(--muted);transition:transform .2s;flex-shrink:0}
+.nav-chevron.open{transform:rotate(180deg)}
+.nav-dropdown{position:absolute;top:calc(100% + 8px);right:0;min-width:210px;background:var(--white);border:1px solid var(--border2);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.12);overflow:hidden;opacity:0;pointer-events:none;transform:translateY(-6px);transition:opacity .18s,transform .18s;z-index:200}
+.nav-dropdown.open{opacity:1;pointer-events:all;transform:translateY(0)}
+.nav-dropdown-header{padding:14px 16px 10px;border-bottom:1px solid var(--border)}
+.nav-dropdown-name{font-size:.88rem;font-weight:700;color:var(--text)}
+.nav-dropdown-email{font-size:.76rem;color:var(--muted);margin-top:2px}
+.nav-dropdown-section{padding:6px 0}
+.nav-dropdown-item{display:flex;align-items:center;gap:10px;width:100%;padding:9px 16px;background:none;border:none;cursor:pointer;font-family:var(--sans);font-size:.83rem;color:var(--text);text-align:left;transition:background .15s}
+.nav-dropdown-item:hover{background:var(--cream2)}
+.nav-dropdown-item i{font-size:16px;color:var(--sub);flex-shrink:0}
+.nav-dropdown-divider{height:1px;background:var(--border)}
+.nav-dropdown-item.danger{color:var(--terra)}
+.nav-dropdown-item.danger i{color:var(--terra)}
+.mobile-user-header{display:flex;align-items:center;gap:12px;padding:12px 16px 8px}
+.mobile-user-name{font-size:.88rem;font-weight:700;color:var(--forest)}
+.mobile-user-email{font-size:.74rem;color:var(--muted);margin-top:1px}
+.mobile-menu-link{display:flex;align-items:center;gap:10px}
+.mobile-menu-link i{font-size:16px;color:var(--muted);flex-shrink:0}
 /* Hero */
 .hero{position:relative;min-height:600px;display:flex;align-items:center;overflow:hidden}
 .hero-bg {
@@ -757,7 +776,24 @@ button{font-family:var(--sans);cursor:pointer}
 
 /* HIW */
 .hiw{background:var(--forest);padding:80px 0;position:relative;overflow:hidden}
-.hiw::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(61,107,71,.4) 0%,transparent 50%),radial-gradient(ellipse at 80% 50%,rgba(184,148,42,.2) 0%,transparent 50%)}
+.hiw {
+  position: relative;
+  padding: 56px 0;
+  overflow: hidden;
+}
+
+.hiw::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(135deg, rgba(26,46,31,.92) 0%, rgba(26,46,31,.75) 100%),
+    url('/images/zimbabwe.jpg');
+  background-size: cover;
+  background-position: center 40%;
+  background-repeat: no-repeat;
+  z-index: 0;
+}
 .hiw .section-eyebrow{color:var(--gold2)}
 .hiw .section-title{color:var(--cream)}
 .hiw .section-sub{color:rgba(245,240,232,.55)}
@@ -991,6 +1027,7 @@ footer{background:var(--forest);color:rgba(245,240,232,.65);padding:64px 0 32px}
   .section{padding:40px 0}
   .section-head{flex-direction:column;align-items:flex-start;gap:12px}
   .nav-inner{padding:0 16px;gap:12px}
+  .nav-user{display:none}
   .nav-search,.nav-links,.nav-cta{display:none}
   .nav-hamburger{display:flex}
   .nav{position:relative}
@@ -1207,6 +1244,18 @@ function AnnounceBanner() {
 }
 
 function Nav({ page, setPage, user, onLogout, onSearch }) {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+const userRef = useRef(null);
+
+useEffect(() => {
+  const handleClickOutside = (e) => {
+    if (userRef.current && !userRef.current.contains(e.target)) {
+      setDropdownOpen(false);
+    }
+  };
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => document.removeEventListener("mousedown", handleClickOutside);
+}, []);
   const [mobileOpen, setMobileOpen] = useState(false);
   const initials = user
     ? (user.displayName || user.email || "P")
@@ -1275,18 +1324,64 @@ function Nav({ page, setPage, user, onLogout, onSearch }) {
         <button className="nav-cta" onClick={() => handleNavClick("partners")}>
           List Your Business
         </button>
+        
         {user && (
-          <button className="nav-logout" onClick={onLogout}>
-            Sign Out
-          </button>
-        )}
-        <div
-          className="nav-avatar"
-          onClick={() => !user && handleNavClick("auth")}
-          title={user?.email || "Partner Login"}
-        >
-          {initials}
-        </div>
+  <div className="nav-user" ref={userRef}>
+    <button
+      className="nav-user-btn"
+      onClick={() => setDropdownOpen((o) => !o)}
+      aria-haspopup="true"
+      aria-expanded={dropdownOpen}
+    >
+      <div className="nav-avatar">{initials}</div>
+      <span className="nav-user-name">{user.displayName || user.email?.split("@")[0]}</span>
+      <svg
+        className={`nav-chevron${dropdownOpen ? " open" : ""}`}
+        width="14" height="14" viewBox="0 0 24 24"
+        fill="none" stroke="currentColor" strokeWidth="2.5"
+        aria-hidden="true"
+      >
+        <path d="m6 9 6 6 6-6" />
+      </svg>
+    </button>
+
+    <div className={`nav-dropdown${dropdownOpen ? " open" : ""}`} role="menu">
+      <div className="nav-dropdown-header">
+        <div className="nav-dropdown-name">{user.displayName || "My Account"}</div>
+        <div className="nav-dropdown-email">{user.email}</div>
+      </div>
+      <div className="nav-dropdown-section">
+        <button className="nav-dropdown-item" role="menuitem" onClick={() => { handleNavClick("profile"); setDropdownOpen(false); }}>
+          <i className="ti ti-user" aria-hidden="true" /> My Profile
+        </button>
+        <button className="nav-dropdown-item" role="menuitem" onClick={() => { handleNavClick("favourites"); setDropdownOpen(false); }}>
+          <i className="ti ti-heart" aria-hidden="true" /> Favourites
+        </button>
+        <button className="nav-dropdown-item" role="menuitem" onClick={() => { handleNavClick("vouchers"); setDropdownOpen(false); }}>
+          <i className="ti ti-ticket" aria-hidden="true" /> My Vouchers
+        </button>
+        <button className="nav-dropdown-item" role="menuitem" onClick={() => { handleNavClick("notifications"); setDropdownOpen(false); }}>
+          <i className="ti ti-bell" aria-hidden="true" /> Notifications
+        </button>
+      </div>
+      <div className="nav-dropdown-divider" />
+      <div className="nav-dropdown-section">
+        <button className="nav-dropdown-item" role="menuitem" onClick={() => { handleNavClick("settings"); setDropdownOpen(false); }}>
+          <i className="ti ti-settings" aria-hidden="true" /> Settings
+        </button>
+        <button className="nav-dropdown-item danger" role="menuitem" onClick={() => { onLogout(); setDropdownOpen(false); }}>
+          <i className="ti ti-logout" aria-hidden="true" /> Sign Out
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+{!user && (
+  <div className="nav-avatar" onClick={() => handleNavClick("auth")} title="Sign In">
+    {initials}
+  </div>
+)}
         <button
           className={`nav-hamburger${mobileOpen ? " open" : ""}`}
           onClick={() => setMobileOpen((o) => !o)}
@@ -1353,19 +1448,52 @@ function Nav({ page, setPage, user, onLogout, onSearch }) {
         >
           List Your Business
         </button>
-        {user && (
-          <button
-            className="mobile-menu-link"
-            onClick={() => {
-              onLogout();
-              setMobileOpen(false);
-            }}
-            style={{ color: "var(--terra)", marginTop: 4 }}
-          >
-            Sign Out
-          </button>
-        )}
+         <div className="mobile-menu-divider" />
+  {navLinks.map(([p, label]) => (
+    <button key={p} className={`mobile-menu-link${page === p ? " active" : ""}`} onClick={() => handleNavClick(p)}>
+      {label}
+    </button>
+  ))}
+  <div className="mobile-menu-divider" />
+  <button className="mobile-menu-cta" onClick={() => handleNavClick("partners")}>
+    List Your Business
+  </button>
+
+  {user ? (
+    <>
+      <div className="mobile-menu-divider" />
+      <div className="mobile-user-header">
+        <div className="nav-avatar" style={{width:38,height:38,fontSize:".82rem"}}>{initials}</div>
+        <div>
+          <div className="mobile-user-name">{user.displayName || user.email?.split("@")[0]}</div>
+          <div className="mobile-user-email">{user.email}</div>
+        </div>
       </div>
+      <button className="mobile-menu-link" onClick={() => { handleNavClick("profile"); setMobileOpen(false); }}>
+        <i className="ti ti-user" aria-hidden="true" /> My Profile
+      </button>
+      <button className="mobile-menu-link" onClick={() => { handleNavClick("favourites"); setMobileOpen(false); }}>
+        <i className="ti ti-heart" aria-hidden="true" /> Favourites
+      </button>
+      <button className="mobile-menu-link" onClick={() => { handleNavClick("vouchers"); setMobileOpen(false); }}>
+        <i className="ti ti-ticket" aria-hidden="true" /> My Vouchers
+      </button>
+      <button className="mobile-menu-link" onClick={() => { handleNavClick("settings"); setMobileOpen(false); }}>
+        <i className="ti ti-settings" aria-hidden="true" /> Settings
+      </button>
+      <div className="mobile-menu-divider" />
+      <button className="mobile-menu-link" onClick={() => { onLogout(); setMobileOpen(false); }} style={{color:"var(--terra)"}}>
+        <i className="ti ti-logout" aria-hidden="true" /> Sign Out
+      </button>
+    </>
+  ) : (
+    <button className="mobile-menu-link" onClick={() => { handleNavClick("auth"); setMobileOpen(false); }}
+      style={{color:"var(--leaf)",fontWeight:600}}>
+      Sign In
+    </button>
+  )}
+</div>
+      
     </nav>
   );
 }
@@ -1634,7 +1762,7 @@ function StorePage({ vouchers, loading, setPage, onCatSelect }) {
         <div
           className="hero-bg"
           style={{
-            backgroundImage: `linear-gradient(135deg, rgba(26,46,31,.75) 0%, rgba(26,46,31,.3) 50%, transparent 80%), url(${greatZimbabwe})`,
+            backgroundImage: `linear-gradient(135deg, rgba(26,46,31,.85) 30%, rgba(26,46,31,.7) 50%, transparent 80%), url(${greatZimbabwe})`,
           }}
         />
         <div className="hero-cards-col">
