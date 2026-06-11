@@ -5384,9 +5384,42 @@ function CategoryPage({ cat, vouchers, onBack, onOpenVoucher }) {
 }
 // ─── Footer ───────────────────────────────────────────────────────────────
 function Footer({ setPage }) {
+   const footerRef = useRef(null);
+   useEffect(() => {
+  const footerContainer = footerRef.current;
+  if (!footerContainer) return;
+
+  const handleMouseMove = (e) => {
+    const rect = footerContainer.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const gradient = `radial-gradient(circle at ${x}px ${y}px, rgb(0, 0, 0) 0%, rgba(0, 0, 0, 0) 60%)`;
+    footerContainer.style.maskImage = gradient;
+    footerContainer.style.webkitMaskImage = gradient;
+  };
+
+  const handleMouseLeave = () => {
+    const gradient = 'radial-gradient(circle at 1004px -170.984px, rgb(0, 0, 0) 0%, rgba(0, 0, 0, 0) 60%)';
+    footerContainer.style.maskImage = gradient;
+    footerContainer.style.webkitMaskImage = gradient;
+  };
+
+  footerContainer.addEventListener('mousemove', handleMouseMove);
+  footerContainer.addEventListener('mouseleave', handleMouseLeave);
+
+  return () => {
+    footerContainer.removeEventListener('mousemove', handleMouseMove);
+    footerContainer.removeEventListener('mouseleave', handleMouseLeave);
+  };
+}, []);
   return (
     <footer>
-      <div className="container">
+      <div className="container" >
+          <div style={{ maskImage: "radial-gradient(circle at 1004px -170.984px, rgb(0, 0, 0) 0%, rgba(0, 0, 0, 0) 60%)" }}
+              className="footer-container" ref={footerRef}  >
+              <img src="images/grey-logo.png" alt="" style={{ width: "100%", height: "auto" }} />
+            </div>
         <div className="footer-grid">
           <div>
             <div className="footer-brand">
