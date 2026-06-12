@@ -4,14 +4,17 @@ import {
   Route,
   useNavigate,
 } from "react-router-dom";
-import Home from "./Home";
-import {
-  RedeemVoucherPage,
-  HelpCentrePage,
-  ContactPage,
-  PrivacyPage,
-  TermsPage,
-} from "./FooterPages";
+import Home from "./pages/Home";
+import AdminPage from "./pages/AdminPage";
+import StorePage from "./pages/StorePage";
+import CategoryPage from "./pages/CategoryPage";
+import OrdersPage from "./pages/OrdersPage";
+import AuthPage from "./pages/AuthPage";
+import PrivacyPage from "./pages/PrivacyPage";
+import TermsPage from "./pages/TermsPage";
+import RedeemPage from "./pages/RedeemPage";
+import HelpCentrePage from "./pages/HelpCentrePage";
+import ContactPage from "./pages/ContactPage";
 import { initializeApp } from "firebase/app";
 import {
   getFirestore,
@@ -44,7 +47,7 @@ function AppRoutes() {
         path="/"
         element={<Home db={db} onAuthSuccess={handleAuthSuccess} />}
       />
-      <Route path="/redeem" element={<RedeemVoucherPage />} />
+      <Route path="/redeem" element={<RedeemPage />} />
       <Route
         path="/help"
         element={<HelpCentrePage setPage={guardedSetPage} />}
