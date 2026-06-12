@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 
 import { Link } from "react-router-dom";
-import React, { useState, useEffect, useCallback, useRef, onSearch } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Flower2,
   Cake,
@@ -2540,7 +2540,7 @@ function StorePage({ vouchers, loading, setPage, onCatSelect }) {
   const [selectedVoucher, setSelectedVoucher] = useState(null);
   const [drawerVoucher, setDrawerVoucher] = useState(null);
   const [checkoutSuccess, setCheckoutSuccess] = useState(null);
-
+  const onSearch = (q) => setSearchQ(q);
   // ── Updated category list now includes Music and Events ─────────────────
   const allCats = [
     "All",
@@ -7038,7 +7038,7 @@ function ToastProvider({ children }) {
 const useToast = () => React.useContext(ToastContext);
 
 // ─── App Root ─────────────────────────────────────────────────────────────
-export default function App() {
+export default function App({ db, onAuthSuccess }) {
   const [page, setPage] = useState("store");
   const [user, setUser] = useState(null);
   const [vouchers, setVouchers] = useState([]);
@@ -7151,19 +7151,28 @@ export default function App() {
         />
       ) : null}
       {page === "auth" && (
-        <AuthPage onSuccess={() => guardedSetPage("admin")} />
+        <AuthPage onSuccess={() => {
+  guardedSetPage("admin");
+  if (onAuthSuccess) onAuthSuccess();
+}} />
       )}
       {page === "redeem" &&
         (user ? (
           <RedeemPage user={user} />
         ) : (
-          <AuthPage onSuccess={() => guardedSetPage("redeem")} />
+          <AuthPage onSuccess={() => {
+  guardedSetPage("redeem"); // or "admin" depending on which block
+  if (onAuthSuccess) onAuthSuccess();
+}} />
         ))}
       {page === "admin" &&
         (user ? (
           <AdminPage user={user} onLogout={handleLogout} />
         ) : (
-          <AuthPage onSuccess={() => guardedSetPage("admin")} />
+          <AuthPage onSuccess={() => {
+  guardedSetPage("admin");
+  if (onAuthSuccess) onAuthSuccess();
+}} />
         ))}
       {page === "partners" && <PartnersPage />}
 {page === "orders" && user && <OrdersPage user={user} />}

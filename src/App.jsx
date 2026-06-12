@@ -1,10 +1,20 @@
-/* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
-import { BrowserRouter, Routes, Route, Link, useNavigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Link,
+  useNavigate,
+} from "react-router-dom";
 import Home from "./Home";
-import { RedeemVoucherPage, HelpCentrePage, ContactPage, PrivacyPage, TermsPage } from "./FooterPages";
+import {
+  RedeemVoucherPage,
+  HelpCentrePage,
+  ContactPage,
+  PrivacyPage,
+  TermsPage,
+} from "./FooterPages";
 import { initializeApp } from "firebase/app";
-
 import {
   getFirestore,
   collection,
@@ -19,50 +29,51 @@ import {
 } from "firebase/firestore";
 
 const firebaseConfig = {
-        apiKey: "AIzaSyBx01_b7Dkm6QCnZiGnSrRK0dZGf9p5IaY",
-        authDomain: "gift-za.firebaseapp.com",
-        projectId: "gift-za",
-        storageBucket: "gift-za.firebasestorage.app",
-        messagingSenderId: "732762883935",
-        appId: "1:732762883935:web:1fc9b21f71c9ffaa43d8ea",
-      };
+  apiKey: "AIzaSyBx01_b7Dkm6QCnZiGnSrRK0dZGf9p5IaY",
+  authDomain: "gift-za.firebaseapp.com",
+  projectId: "gift-za",
+  storageBucket: "gift-za.firebasestorage.app",
+  messagingSenderId: "732762883935",
+  appId: "1:732762883935:web:1fc9b21f71c9ffaa43d8ea",
+};
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// ── Navigation component ──────────────────────────────────
-// Uses <a href> for static HTML pages, <Link> for React pages
-function Nav() {
-  return (
-    <nav>
-      <Link to="/">Home</Link>
+// ── Wrapper so useNavigate works inside BrowserRouter ────
+function AppRoutes() {
+  const navigate = useNavigate();
+  const guardedSetPage = () => {};
 
-      <a href="/about-us.html">About Us</a>
-      <a href="/contact.html">Contact</a>
-      <a href="/corporate.html">Corporate</a>
-      <a href="/help.html">Help</a>
-      <a href="/privacy.html">Privacy</a>
-      <a href="/terms.html">Terms</a>
-    </nav>
+  // Called by AuthPage after successful login or register
+  const handleAuthSuccess = () => {
+    navigate("/");
+  };
+
+  return (
+    <Routes>
+      <Route
+        path="/"
+        element={<Home db={db} onAuthSuccess={handleAuthSuccess} />}
+      />
+      <Route path="/redeem" element={<RedeemVoucherPage />} />
+      <Route
+        path="/help"
+        element={<HelpCentrePage setPage={guardedSetPage} />}
+      />
+      <Route
+        path="/contact"
+        element={<ContactPage setPage={guardedSetPage} />}
+      />
+      <Route path="/privacy" element={<PrivacyPage />} />
+      <Route path="/terms" element={<TermsPage />} />
+    </Routes>
   );
 }
 
-// ── App ───────────────────────────────────────────────────
 export default function App() {
-  // placeholder for guardedSetPage used by some footer pages
-  const guardedSetPage = () => {};
   return (
     <BrowserRouter>
-     
-      <Routes>
-
-        {/* React-managed pages */}
-        <Route path="/" element={<Home db={db} />} />
-        <Route path="/redeem" element={<RedeemVoucherPage />} />
-        <Route path="/help" element={<HelpCentrePage setPage={guardedSetPage} />} />
-        <Route path="/contact" element={<ContactPage setPage={guardedSetPage} />} />
-        <Route path="/privacy" element={<PrivacyPage />} />
-        <Route path="/terms" element={<TermsPage />} />
-      </Routes>
+      <AppRoutes />
     </BrowserRouter>
   );
 }
