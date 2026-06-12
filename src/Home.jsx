@@ -770,67 +770,123 @@ button{font-family:var(--sans);cursor:pointer}
 .hscroll-row::-webkit-scrollbar{display:none}
  
 /* ── Voucher card (Sixty60-style) ── */
+/* ── Voucher card — Avo-style ── */
 .card{
-  background:#fff;border-radius:var(--r2);overflow:hidden;
-  border:1px solid var(--border);cursor:pointer;
-  transition:box-shadow .2s,transform .2s;
+  background:#fff;
+  border-radius:16px;
+  overflow:hidden;
+  border:none;
+  cursor:pointer;
+  transition:box-shadow .22s,transform .18s;
   display:flex;flex-direction:column;
-  width:220px;min-width:220px;flex-shrink:0;
+  width:200px;min-width:200px;flex-shrink:0;
+  box-shadow:0 2px 8px rgba(0,0,0,.07);
 }
-.card:hover{box-shadow:var(--sh2);transform:translateY(-2px)}
+.card:hover{
+  box-shadow:0 8px 28px rgba(0,0,0,.13);
+  transform:translateY(-3px);
+}
 .card-img{
   position:relative;overflow:hidden;
-  height:160px;background:var(--bg2);flex-shrink:0;
+  height:150px;background:var(--bg2);flex-shrink:0;
 }
-.card-img img{height:100%;transition:transform .4s}
-.card:hover .card-img img{transform:scale(1.04)}
+.card-img img{
+  width:100%;height:100%;object-fit:cover;
+  transition:transform .4s;
+}
+.card:hover .card-img img{transform:scale(1.05)}
 .card-img-placeholder{
-  height:100%;display:flex;align-items:center;justify-content:center;
-  font-size:2.8rem;background:var(--bg2);
+  height:100%;display:flex;align-items:center;
+  justify-content:center;font-size:3rem;
+  background:var(--bg2);
 }
-.card-badge-row{position:absolute;top:8px;left:8px;display:flex;gap:4px}
+/* category badge pill on image */
+.card-badge-row{
+  position:absolute;top:10px;left:10px;
+  display:flex;gap:4px;
+}
 .cbadge{
-  font-size:.6rem;font-weight:700;text-transform:uppercase;
-  letter-spacing:.6px;padding:2px 7px;border-radius:4px;
+  font-size:.58rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:.5px;padding:3px 9px;border-radius:20px;
+  backdrop-filter:blur(6px);
 }
-.cbadge-pop{background:var(--red);color:#fff}
-.cbadge-sale{background:#111;color:#fff}
-.cbadge-music{background:#5839b4;color:#fff}
-.cbadge-events{background:#b43978;color:#fff}
-.cbadge-trad{background:#8B5A1E;color:#fff}
-.cbadge-florist{background:#b4398c;color:#fff}
-.card-body{padding:12px;flex:1;display:flex;flex-direction:column}
+.cbadge-pop{background:rgba(227,0,27,.85);color:#fff}
+.cbadge-sale{background:rgba(17,17,17,.75);color:#fff}
+.cbadge-music{background:rgba(88,57,180,.85);color:#fff}
+.cbadge-events{background:rgba(180,57,120,.85);color:#fff}
+.cbadge-trad{background:rgba(139,90,30,.85);color:#fff}
+.cbadge-florist{background:rgba(180,57,140,.85);color:#fff}
+.card-body{
+  padding:12px 14px 14px;
+  flex:1;display:flex;flex-direction:column;gap:0;
+}
 .card-cat{
-  font-size:.65rem;font-weight:700;text-transform:uppercase;
-  letter-spacing:.8px;color:var(--muted);margin-bottom:4px;
+  font-size:.6rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:.9px;color:var(--muted);margin-bottom:4px;
 }
 .card-name{
-  font-size:.92rem;font-weight:700;line-height:1.3;
-  margin-bottom:3px;color:var(--black);
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  font-size:.88rem;font-weight:700;line-height:1.35;
+  color:var(--black);margin-bottom:2px;
+  display:-webkit-box;-webkit-line-clamp:2;
+  -webkit-box-orient:vertical;overflow:hidden;
 }
-.card-partner{font-size:.72rem;color:var(--muted);margin-bottom:8px}
+.card-partner{
+  font-size:.68rem;color:var(--muted);margin-bottom:10px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
 .card-desc{display:none}
 .card-includes{display:none}
 .card-footer{
-  margin-top:auto;padding-top:10px;
-  border-top:1px solid var(--border);
-  display:flex;justify-content:space-between;align-items:center;gap:8px;
+  margin-top:auto;
+  display:flex;justify-content:space-between;
+  align-items:center;gap:8px;
 }
 .card-price-from{display:none}
 .card-price-val{
-  font-size:1.1rem;font-weight:800;color:var(--black);letter-spacing:-.5px;line-height:1;
+  font-size:1.05rem;font-weight:800;
+  color:var(--black);letter-spacing:-.5px;line-height:1;
 }
-.card-price-val small{font-size:.7rem;font-weight:600;margin-right:1px;vertical-align:top;margin-top:2px;display:inline-block}
-.card-rating{display:flex;align-items:center;gap:3px;font-size:.72rem;font-weight:600;color:var(--sub)}
+.card-price-val small{
+  font-size:.62rem;font-weight:700;
+  margin-right:1px;vertical-align:top;
+  margin-top:1px;display:inline-block;
+  color:var(--muted);
+}
+.card-rating{
+  display:flex;align-items:center;gap:3px;
+  font-size:.68rem;font-weight:600;color:var(--sub);
+  margin-top:3px;
+}
 .star{color:#f59e0b}
+/* Avo-style round add button */
 .card-add-btn{
   background:var(--red);color:#fff;border:none;
-  border-radius:6px;padding:5px 10px;font-size:.75rem;font-weight:700;
-  cursor:pointer;transition:background .15s;white-space:nowrap;flex-shrink:0;
+  border-radius:50%;
+  width:34px;height:34px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.2rem;line-height:1;
+  cursor:pointer;transition:background .15s,transform .15s;
+  flex-shrink:0;padding:0;
 }
-.card-add-btn:hover{background:var(--red2)}
- 
+.card-add-btn:hover{
+  background:var(--red2);
+  transform:scale(1.1);
+}
+
+/* ── Grid mode ── */
+.cards-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+  gap:14px;padding:0 20px;
+}
+.cards-grid .card{width:auto;min-width:auto}
+
+/* ── Horizontal scroll row — tighter Avo spacing ── */
+.hscroll-row{
+  display:flex;gap:14px;padding:0 20px;
+  overflow-x:auto;scrollbar-width:none;
+}
+.hscroll-row::-webkit-scrollbar{display:none}
 /* ── Grid mode (for "All" listing) ── */
 .cards-grid{
   display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
@@ -1149,9 +1205,16 @@ footer{background:var(--black);color:rgba(255,255,255,.55);padding:48px 0 24px}
   .promo-banner-title{font-size:1.2rem}
 }
 @media(max-width:600px){
-  .cards-grid{grid-template-columns:1fr 1fr}
-  .card{width:170px;min-width:170px}
-  .card-img{height:130px}
+  .cards-grid{
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    padding:0 14px;
+  }
+  .card{width:auto;min-width:auto}
+  .card-img{height:120px}
+  .card-name{font-size:.82rem}
+  .card-price-val{font-size:.95rem}
+  .card-add-btn{width:30px;height:30px;font-size:1.1rem}
   .hiw-steps{grid-template-columns:1fr}
   .testi-grid{grid-template-columns:1fr}
   .footer-socials{gap:5px}
@@ -1162,6 +1225,52 @@ footer{background:var(--black);color:rgba(255,255,255,.55);padding:48px 0 24px}
   .bottom-nav{display:block}
   body{padding-bottom:calc(64px + env(safe-area-inset-bottom))}
   footer{padding-bottom:calc(60px + env(safe-area-inset-bottom))}
+}
+  /* ── Mobile nav fix ── */
+@media(max-width:768px){
+  .nav-inner{
+    display:grid;
+    grid-template-columns:auto 1fr auto;
+    align-items:center;
+    padding:0 14px;
+    height:56px;
+    gap:10px;
+  }
+  .nav-logo{
+    grid-column:1;
+    font-size:1.1rem;
+  }
+  .nav-address-btn{
+    display:none;
+  }
+  .nav-hamburger{
+    grid-column:3;
+    display:flex;
+    margin-left:0;
+  }
+  .mobile-menu{
+    top:56px;
+  }
+}
+
+/* ── Mobile content edge-to-edge fix ── */
+@media(max-width:600px){
+  .container{padding:0 14px}
+  .section-head{padding:0 14px}
+  .hscroll-row{padding:0 14px}
+  .cards-grid{
+    padding:0 14px;
+    grid-template-columns:1fr 1fr;
+  }
+  .cat-showcase{padding:0 14px}
+  .occ-grid{padding:0 14px}
+  .testi-grid{padding:0 14px}
+  .promo-banner{margin:0 14px 6px}
+  .hiw-steps{margin:0 14px}
+  .partners-row{padding:0 14px}
+  .hero-search-bar{margin:12px 14px}
+  .hero-trust-row{padding:0 14px}
+  section.section > *:not(.section-head){padding-left:14px;padding-right:14px}
 }
 `;
 
@@ -1560,101 +1669,81 @@ function SkeletonCard({ grid = false }) {
 // ─── VoucherCard ──────────────────────────────────────────────────────────
 function VoucherCard({ voucher, onOpen }) {
   const imgSrc = voucher.imageUrl || voucher.img;
-  const descText = (voucher.desc || "").substring(0, 90);
+
   const catBg = {
-    Wellness: "linear-gradient(135deg,#e8f0e8,#c8e0c8)",
-    Adventure: "linear-gradient(135deg,#e0e8f0,#c0d0e4)",
-    Music: "linear-gradient(135deg,#ece8f4,#d4c8ec)",
-    Events: "linear-gradient(135deg,#f4e8ec,#ecd0d8)",
-    Florists: "linear-gradient(135deg,#f4eee8,#e8d8c8)",
-    Beauty: "linear-gradient(135deg,#f4e8f0,#e8c8d8)",
-    "Dining & Wine": "linear-gradient(135deg,#f8f0e0,#f0e0c0)",
-    "Traditional Restaurants": "linear-gradient(135deg,#f5ede0,#e8d5b0)",
-    Stays: "linear-gradient(135deg,#e8f0ec,#c8e0cc)",
+    Wellness:                "linear-gradient(145deg,#e8f5ee,#c8e8d8)",
+    Adventure:               "linear-gradient(145deg,#e0ecf8,#c0d8f0)",
+    Music:                   "linear-gradient(145deg,#eeebf8,#d8d0f0)",
+    Events:                  "linear-gradient(145deg,#f8e8f0,#f0c8dc)",
+    Florists:                "linear-gradient(145deg,#fdf0e8,#f8dcc8)",
+    Beauty:                  "linear-gradient(145deg,#fce8f4,#f4c8e4)",
+    "Dining & Wine":         "linear-gradient(145deg,#fdf4e0,#f8e4b8)",
+    "Traditional Restaurants":"linear-gradient(145deg,#faf0e0,#f0d8a8)",
+    Stays:                   "linear-gradient(145deg,#e8f4ec,#c8dcc8)",
+    Skills:                  "linear-gradient(145deg,#e8f0fc,#c8d8f8)",
   };
-  // Pick a badge class based on category
+
   const catBadgeClass =
-    voucher.cat === "Music"
-      ? "cbadge cbadge-music"
-      : voucher.cat === "Events"
-        ? "cbadge cbadge-events"
-        : voucher.cat === "Traditional Restaurants"
-          ? "cbadge cbadge-trad"
-          : "cbadge cbadge-pop";
+    voucher.cat === "Music"                  ? "cbadge cbadge-music"
+    : voucher.cat === "Events"               ? "cbadge cbadge-events"
+    : voucher.cat === "Traditional Restaurants" ? "cbadge cbadge-trad"
+    : voucher.cat === "Florists"             ? "cbadge cbadge-florist"
+    : "cbadge cbadge-pop";
 
   return (
     <div className="card" onClick={() => onOpen(voucher)}>
+      {/* Image area */}
       <div className="card-img">
         {imgSrc ? (
-          <img
-            src={imgSrc}
-            alt={voucher.name}
-            loading="lazy"
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
-          />
+          <img src={imgSrc} alt={voucher.name} loading="lazy" />
         ) : (
           <div
             className="card-img-placeholder"
-            style={{
-              background:
-                catBg[voucher.cat] ||
-                "linear-gradient(135deg,var(--cream2),var(--cream3))",
-            }}
+            style={{ background: catBg[voucher.cat] || "var(--bg2)" }}
           >
-            {voucher.icon || getCatIcon(voucher.cat) || "🎁"}
+            <span style={{ fontSize: "3rem", filter: "drop-shadow(0 2px 6px rgba(0,0,0,.12))" }}>
+              {getCatIcon(voucher.cat)}
+            </span>
           </div>
         )}
+        {/* Category pill badge on image */}
         <div className="card-badge-row">
-          {(voucher.tags || []).slice(0, 2).map((t) => (
-            <span key={t} className={catBadgeClass}>
-              {t}
-            </span>
-          ))}
+          <span className={catBadgeClass}>{voucher.cat}</span>
           {voucher.source === "firebase" && (
             <span className="cbadge cbadge-sale">Partner</span>
           )}
         </div>
       </div>
+
+      {/* Body */}
       <div className="card-body">
-        <div className="card-cat">{voucher.cat}</div>
         <div className="card-name">{voucher.name}</div>
         <div className="card-partner">
           📍 {voucher.partner} · {voucher.city}
         </div>
-        <div className="card-desc">
-          {descText}
-          {descText.length >= 90 ? "…" : ""}
+
+        <div className="card-footer">
+          <div>
+            <div className="card-price-val">
+              <small>R</small>{Number(voucher.price).toLocaleString("en-ZA")}
+            </div>
+            {voucher.rating > 0 ? (
+              <div className="card-rating">
+                <span className="star">★</span> {voucher.rating}
+              </div>
+            ) : (
+              <div style={{ fontSize: ".6rem", color: "var(--green)",
+                fontWeight: 700, marginTop: 2 }}>New ✦</div>
+            )}
+          </div>
+          <button
+            className="card-add-btn"
+            onClick={e => { e.stopPropagation(); onOpen(voucher); }}
+            aria-label={`Buy ${voucher.name}`}
+          >
+            +
+          </button>
         </div>
-        <div className="card-includes">
-          {(voucher.includes || []).slice(0, 3).map((i) => (
-            <span key={i} className="inc">
-              ✓ {i}
-            </span>
-          ))}
-          {(voucher.includes || []).length > 3 && (
-            <span className="inc">+{voucher.includes.length - 3} more</span>
-          )}
-        </div>
-       <div className="card-footer">
-  <div>
-    <div className="card-price-val">
-      <small>R</small>{Number(voucher.price).toLocaleString()}
-    </div>
-    {voucher.rating > 0 ? (
-      <div className="card-rating" style={{marginTop:2}}>
-        <span className="star">★</span> {voucher.rating}
-      </div>
-    ) : (
-      <div style={{fontSize:'.65rem',color:'var(--green)',fontWeight:700,marginTop:2}}>New</div>
-    )}
-  </div>
-  <button
-    className="card-add-btn"
-    onClick={e => { e.stopPropagation(); onOpen(voucher); }}
-  >
-    Buy →
-  </button>
-</div>
       </div>
     </div>
   );
@@ -3530,6 +3619,278 @@ function AnalyticsSection({ vouchers, sold }) {
     </div>
   );
 }
+function ProspectingTool() {
+  const [query, setQuery] = useState("");
+  const [city, setCity] = useState("Harare");
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [saved, setSaved] = useState([]);
+
+  const CATEGORIES = [
+    "spas", "beauty salons", "hair salons", "restaurants",
+    "florists", "music venues", "event venues", "lodges",
+    "adventure tours", "photography studios", "cooking classes",
+  ];
+  const CITIES = ["Harare", "Bulawayo", "Masvingo", "Victoria Falls",
+                  "Mutare", "Gweru", "Kwekwe"];
+
+  const search = async (customQuery) => {
+    const q = customQuery || query;
+    if (!q.trim()) return;
+    setLoading(true);
+    setError("");
+    setResults([]);
+    try {
+      const searchTerm = `${q} ${city} Zimbabwe`;
+      const res = await fetch(
+        `${WORKER_URL}/places-search?query=${encodeURIComponent(searchTerm)}`,
+        { headers: { "X-Upload-Secret": UPLOAD_SECRET } }
+      );
+      if (!res.ok) throw new Error("Search failed");
+      const data = await res.json();
+      setResults(data.results || []);
+      if ((data.results || []).length === 0) setError("No results found. Try a different search term.");
+    } catch (e) {
+      setError("Could not connect to search. Make sure your Worker is set up with the Places API route.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const saveContact = (place) => {
+    setSaved(s => s.find(x => x.place_id === place.place_id)
+      ? s : [...s, place]);
+  };
+
+  const copyAll = () => {
+    const text = saved.map(p =>
+      `${p.name} | ${p.formatted_phone_number || "no number"} | ${p.formatted_address}`
+    ).join("\n");
+    navigator.clipboard.writeText(text);
+    alert(`${saved.length} contacts copied to clipboard`);
+  };
+
+  const waMessage = encodeURIComponent(
+    "Hi! I run AfriVoucher — a Zimbabwe gift voucher platform. " +
+    "We list local businesses so diaspora customers can gift your services to family back home. " +
+    "Listing is free, setup takes 10 minutes, and we pay you weekly. " +
+    "Can I show you how it works? 🇿🇼"
+  );
+
+  return (
+    <div>
+      {/* Search bar */}
+      <div style={{ background: "#fff", border: "1px solid var(--border)",
+        borderRadius: 14, padding: 20, marginBottom: 16 }}>
+        <div style={{ fontSize: ".72rem", fontWeight: 700, textTransform: "uppercase",
+          letterSpacing: 1, color: "var(--muted)", marginBottom: 12 }}>
+          Search Google Places
+        </div>
+
+        {/* Quick category pills */}
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 14 }}>
+          {CATEGORIES.map(cat => (
+            <button key={cat}
+              onClick={() => { setQuery(cat); search(cat); }}
+              style={{ padding: "5px 12px", borderRadius: 20, border: "1.5px solid var(--border2)",
+                background: query === cat ? "var(--red)" : "#fff",
+                color: query === cat ? "#fff" : "var(--sub)",
+                fontSize: ".72rem", fontWeight: 600, cursor: "pointer",
+                transition: "all .15s" }}>
+              {cat}
+            </button>
+          ))}
+        </div>
+
+        {/* Search input row */}
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+          <input
+            className="admin-input"
+            placeholder="e.g. spas · florists · music venues"
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+            onKeyDown={e => e.key === "Enter" && search()}
+            style={{ flex: 1, minWidth: 200 }}
+          />
+          <select
+            className="admin-input"
+            value={city}
+            onChange={e => setCity(e.target.value)}
+            style={{ width: 160 }}
+          >
+            {CITIES.map(c => <option key={c}>{c}</option>)}
+          </select>
+          <button
+            onClick={() => search()}
+            disabled={loading}
+            style={{ padding: "10px 22px", background: loading ? "var(--bg3)" : "var(--red)",
+              color: loading ? "var(--muted)" : "#fff", border: "none",
+              borderRadius: 8, fontWeight: 700, fontSize: ".85rem",
+              cursor: loading ? "not-allowed" : "pointer", whiteSpace: "nowrap",
+              transition: "all .18s" }}
+          >
+            {loading ? "Searching…" : "🔍 Search"}
+          </button>
+        </div>
+
+        {error && (
+          <div style={{ marginTop: 12, padding: "10px 14px", background: "#FEF2F2",
+            border: "1px solid #EF4444", borderRadius: 8,
+            fontSize: ".78rem", color: "#B91C1C" }}>
+            {error}
+          </div>
+        )}
+      </div>
+
+      {/* Saved contacts bar */}
+      {saved.length > 0 && (
+        <div style={{ background: "#fff", border: "1px solid var(--green)",
+          borderRadius: 12, padding: "12px 18px", marginBottom: 16,
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          gap: 12, flexWrap: "wrap" }}>
+          <div style={{ fontSize: ".82rem", fontWeight: 600, color: "var(--green)" }}>
+            ✅ {saved.length} contact{saved.length !== 1 ? "s" : ""} saved
+          </div>
+          <div style={{ display: "flex", gap: 8 }}>
+            <button onClick={copyAll}
+              style={{ padding: "7px 14px", background: "var(--bg2)",
+                border: "1px solid var(--border)", borderRadius: 7,
+                fontSize: ".75rem", fontWeight: 700, cursor: "pointer" }}>
+              📋 Copy all to clipboard
+            </button>
+            <button onClick={() => setSaved([])}
+              style={{ padding: "7px 14px", background: "transparent",
+                border: "1px solid var(--border)", borderRadius: 7,
+                fontSize: ".75rem", color: "var(--muted)", cursor: "pointer" }}>
+              Clear
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Loading skeletons */}
+      {loading && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          {[...Array(5)].map((_, i) => (
+            <div key={i} style={{ background: "#fff", border: "1px solid var(--border)",
+              borderRadius: 12, padding: 18, display: "flex", gap: 14 }}>
+              <div className="skeleton" style={{ width: 48, height: 48,
+                borderRadius: 10, flexShrink: 0 }} />
+              <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 8 }}>
+                <div className="skeleton skel-line med" />
+                <div className="skeleton skel-line short" />
+                <div className="skeleton skel-line" style={{ width: "35%" }} />
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Results */}
+      {!loading && results.length > 0 && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <div style={{ fontSize: ".75rem", color: "var(--muted)",
+            marginBottom: 4, fontWeight: 600 }}>
+            {results.length} businesses found
+          </div>
+          {results.map(place => {
+            const isSaved = saved.find(x => x.place_id === place.place_id);
+            const phone = place.formatted_phone_number;
+            const cleanPhone = (phone || "").replace(/\D/g, "");
+
+            return (
+              <div key={place.place_id} style={{
+                background: "#fff", border: `1px solid ${isSaved ? "var(--green)" : "var(--border)"}`,
+                borderRadius: 12, padding: "16px 18px",
+                display: "flex", alignItems: "center",
+                gap: 14, flexWrap: "wrap",
+                transition: "border-color .2s"
+              }}>
+                {/* Icon */}
+                <div style={{ width: 48, height: 48, borderRadius: 10,
+                  background: "var(--bg2)", display: "flex", alignItems: "center",
+                  justifyContent: "center", fontSize: "1.4rem", flexShrink: 0 }}>
+                  🏢
+                </div>
+
+                {/* Details */}
+                <div style={{ flex: 1, minWidth: 180 }}>
+                  <div style={{ fontWeight: 700, fontSize: ".92rem",
+                    color: "var(--black)", marginBottom: 2 }}>
+                    {place.name}
+                  </div>
+                  <div style={{ fontSize: ".72rem", color: "var(--muted)",
+                    marginBottom: 4 }}>
+                    📍 {place.formatted_address}
+                  </div>
+                  {phone ? (
+                    <div style={{ fontSize: ".78rem", fontWeight: 700,
+                      color: "var(--green)" }}>
+                      📞 {phone}
+                    </div>
+                  ) : (
+                    <div style={{ fontSize: ".72rem", color: "var(--muted)",
+                      fontStyle: "italic" }}>
+                      No phone number listed
+                    </div>
+                  )}
+                  {place.rating && (
+                    <div style={{ fontSize: ".68rem", color: "var(--muted)",
+                      marginTop: 3 }}>
+                      ⭐ {place.rating} · {place.user_ratings_total || 0} reviews
+                    </div>
+                  )}
+                </div>
+
+                {/* Action buttons */}
+                <div style={{ display: "flex", gap: 7, flexShrink: 0,
+                  flexWrap: "wrap", justifyContent: "flex-end" }}>
+                  {phone && (
+                    
+                     <a href={`https://wa.me/${cleanPhone}?text=${waMessage}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ padding: "8px 14px", background: "#25D366",
+                        color: "#fff", borderRadius: 8, fontSize: ".72rem",
+                        fontWeight: 700, textDecoration: "none",
+                        display: "flex", alignItems: "center", gap: 5 }}
+                    >
+                      💬 WhatsApp
+                    </a>
+                  )}
+                  {phone && (
+                    
+                     <a href={`tel:${cleanPhone}`}
+                      style={{ padding: "8px 14px", background: "var(--bg2)",
+                        border: "1px solid var(--border)", color: "var(--black)",
+                        borderRadius: 8, fontSize: ".72rem", fontWeight: 700,
+                        textDecoration: "none", display: "flex",
+                        alignItems: "center", gap: 5 }}
+                    >
+                      📞 Call
+                    </a>
+                  )}
+                  <button
+                    onClick={() => saveContact(place)}
+                    style={{ padding: "8px 12px",
+                      background: isSaved ? "#F0FDF4" : "var(--bg2)",
+                      border: `1px solid ${isSaved ? "var(--green)" : "var(--border)"}`,
+                      borderRadius: 8, fontSize: ".72rem",
+                      color: isSaved ? "var(--green)" : "var(--sub)",
+                      fontWeight: 700, cursor: "pointer" }}
+                  >
+                    {isSaved ? "✓ Saved" : "+ Save"}
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
 // ─── Admin Page ───────────────────────────────────────────────────────────
 function AdminPage({ user, onLogout }) {
   const [vouchers, setVouchers] = useState([]);
@@ -3537,6 +3898,7 @@ function AdminPage({ user, onLogout }) {
   const [bizName, setBizName] = useState("My Dashboard");
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [activeTab, setActiveTab] = useState("vouchers");
   const [formData, setFormData] = useState({
     name: "",
     category: "Wellness",
@@ -3807,18 +4169,36 @@ function AdminPage({ user, onLogout }) {
           </button>
         </div>
       </div>
-
-      {/* Stats */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill,minmax(175px,1fr))",
-          gap: 14,
-          marginBottom: 36,
-        }}
-      >
-       <AnalyticsSection vouchers={vouchers} sold={sold} />
-      </div>
+{/* ── Tab switcher ── */}
+<div style={{
+  display: "flex", gap: 0, marginBottom: 28,
+  background: "var(--bg2)", borderRadius: 10,
+  padding: 4, width: "fit-content",
+  border: "1px solid var(--border)"
+}}>
+  {[
+    ["vouchers",     "🎟️ My Vouchers"],
+    ["prospecting",  "🔍 Find Partners"],
+  ].map(([id, label]) => (
+    <button
+      key={id}
+      onClick={() => setActiveTab(id)}
+      style={{
+        padding: "9px 20px", border: "none", borderRadius: 8,
+        fontFamily: "var(--sans)", fontSize: ".82rem", fontWeight: 700,
+        cursor: "pointer", transition: "all .18s",
+        background: activeTab === id ? "#fff" : "transparent",
+        color: activeTab === id ? "var(--black)" : "var(--muted)",
+        boxShadow: activeTab === id ? "0 1px 4px rgba(0,0,0,.1)" : "none",
+      }}
+    >
+      {label}
+    </button>
+  ))}
+</div>
+     {activeTab === "vouchers" && (
+  <>
+      <AnalyticsSection vouchers={vouchers} sold={sold} />
 
       {/* Add Voucher */}
       <div
@@ -4434,7 +4814,13 @@ function AdminPage({ user, onLogout }) {
           </table>
         </div>
       </div>
-    </div>
+      </>
+)}
+{activeTab === "prospecting" && (
+  <ProspectingTool />
+)}
+      </div>
+  
   );
 }
 function TermsPage({ setPage }) {
@@ -5920,7 +6306,7 @@ export default function App() {
       {/* WhatsApp Float Button */}
 
       <a
-        href="https://wa.me/27676056777"
+        href="https://wa.me/27780066108"
         target="_blank"
         rel="noopener noreferrer"
         style={{

@@ -153,7 +153,83 @@ async function handleDeleteImage(key, request, env) {
   await env.VOUCHER_IMAGES.delete(decodeURIComponent(key));
   return json({ success: true, deleted: key });
 }
+// ── GET /places-search?query=spas+Harare+Zimbabwe ─────────────────────────────
+async function handlePlacesSearch(request, env) {
 
+  // Auth check — same secret your React app already uses
+  const secret = request.headers.get("X-Upload-Secret");
+  if (!env.UPLOAD_SECRET || secret !== env.UPLOAD_SECRET) return noAuth();
+
+  if (!env.GOOGLE_PLACES_KEY)
+    return err("GOOGLE_PLACES_KEY secret not set — run: wrangler secret put GOOGLE_PLACES_KEY");
+
+  const url = new URL(request.url);
+  const query = url.searchParams.get("query");
+  if (!query) return err("Missing ?query= parameter");
+
+  try {
+    // Step 1 — Text Search: get up to 20 place_ids matching the query
+    const searchRes = await fetch(
+      `https://maps.googleapis.com/maps/api/place/textsearch/json` +
+      `?query=${encodeURIComponent(query)}` +
+      `&key=${env.GOOGLE_PLACES_KEY}`
+    );
+    const searchData = await searchRes.json();
+
+    if (searchData.status === "REQUEST_DENIED")
+      return err("Google Places API key rejected — check the key and make sure Places API is enabled");
+
+    if (searchData.status === "ZERO_RESULTS" || !searchData.results?.length)
+      return json({ results: [] });
+
+    // Step 2 — Place Details: fetch phone number for each result (max 15)
+    const results = await Promise.all(
+      searchData.results.slice(0, 15).map(async (place) => {
+        try {
+          const detailRes = await fetch(
+            `https://maps.googleapis.com/maps/api/place/details/json` +
+            `?place_id=${place.place_id}` +
+            `&fields=name,formatted_phone_number,international_phone_number,` +
+            `formatted_address,rating,user_ratings_total,place_id,website,` +
+            `opening_hours,business_status` +
+            `&key=${env.GOOGLE_PLACES_KEY}`
+          );
+          const detail = await detailRes.json();
+          // Merge base result with detail fields
+          return {
+            place_id:                place.place_id,
+            name:                    detail.result?.name                    || place.name,
+            formatted_address:       detail.result?.formatted_address       || place.formatted_address,
+            formatted_phone_number:  detail.result?.formatted_phone_number  || null,
+            international_phone_number: detail.result?.international_phone_number || null,
+            rating:                  detail.result?.rating                  || place.rating || null,
+            user_ratings_total:      detail.result?.user_ratings_total      || place.user_ratings_total || 0,
+            website:                 detail.result?.website                 || null,
+            business_status:         detail.result?.business_status         || place.business_status || null,
+            open_now:                detail.result?.opening_hours?.open_now ?? null,
+          };
+        } catch {
+          // If detail call fails, return base result without phone
+          return {
+            place_id:               place.place_id,
+            name:                   place.name,
+            formatted_address:      place.formatted_address,
+            formatted_phone_number: null,
+            rating:                 place.rating || null,
+            user_ratings_total:     place.user_ratings_total || 0,
+            website:                null,
+          };
+        }
+      })
+    );
+
+    return json({ results, total: searchData.results.length });
+
+  } catch (e) {
+    console.error("Places search error:", e);
+    return err("Places search failed: " + e.message, 500);
+  }
+}
 // ── Firebase helpers ──────────────────────────────────────────────────────────
 async function getFirebaseToken(env) {
   const privateKey = atob(env.FIREBASE_PRIVATE_KEY).replace(/\\n/g, "\n");
@@ -486,7 +562,7 @@ async function handleVoucherLookup(code, env) {
 }
 
 // ── Main handler ──────────────────────────────────────────────────────────────
-export default {
+const handler = {
   async fetch(request, env) {
     const { pathname } = new URL(request.url);
     const method = request.method;
@@ -509,19 +585,23 @@ export default {
         return handleRedeem(request, env);
       if (method === "GET" && pathname.startsWith("/voucher/"))
         return handleVoucherLookup(pathname.split("/voucher/")[1], env);
-      if (method === "GET" && pathname === "/health")
-        return json({
-          ok: true,
-          routes: [
-            "POST /upload-image",
-            "GET /images/:key",
-            "DELETE /images/:key",
-            "POST /create-voucher",
-            "POST /payment-webhook",
-            "POST /redeem",
-            "GET /voucher/:code",
-          ],
-        });
+      if (method === "GET" && pathname === "/places-search")
+  return handlePlacesSearch(request, env);
+
+if (method === "GET" && pathname === "/health")
+  return json({
+    ok: true,
+    routes: [
+      "POST /upload-image",
+      "GET /images/:key",
+      "DELETE /images/:key",
+      "POST /create-voucher",
+      "POST /payment-webhook",
+      "POST /redeem",
+      "GET /voucher/:code",
+      "GET /places-search?query=spas+Harare",
+    ],
+  });
 
       return json({ error: "Not found" }, 404);
     } catch (e) {
@@ -530,6 +610,8 @@ export default {
     }
   },
 };
+
+export default handler;
 
 /*
 ══════════════════════════════════════════════════════════
