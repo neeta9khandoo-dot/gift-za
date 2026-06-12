@@ -14,7 +14,6 @@ import {
   collection,
   addDoc,
   getDocs,
-  doc,
   orderBy,
   query,
   where,
@@ -39,13 +38,13 @@ const WORKER_URL = process.env.REACT_APP_WORKER_URL;
 const UPLOAD_SECRET = process.env.REACT_APP_UPLOAD_SECRET;
 const ZAR_TO_USD = 16.53;
 
-// ─── Helpers ──────────────────────────────────────────────────────────────
+/*
 const fmtUSD = (n) =>
   `$${(Number(n) / ZAR_TO_USD).toLocaleString("en-US", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   })}`;
-
+*/
 const fmtZAR = (n) =>
   `R ${Number(n).toLocaleString("en-ZA", {
     minimumFractionDigits: 0,

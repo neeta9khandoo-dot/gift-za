@@ -117,7 +117,7 @@ const PROMO_SLIDES = [
   {
     emoji: "✿",
     bg: "linear-gradient(135deg,#160a10,#2e1a1f)",
-    img: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80",
+    img: "https://images.unsplash.com/photo-1502977249166-824b3a8a4d6d?w=600&q=80",
     tag: "Florists",
     name: "Luxury Rose Arrangement",
     price: "From US$41",
@@ -139,7 +139,7 @@ const CAT_TILES = [
   { emoji: "⊕", name: "Traditional",   cat: "Traditional Restaurants", img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=200&q=80" },
   { emoji: "♪", name: "Music",         cat: "Music",                 img: "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=200&q=80" },
   { emoji: "✈", name: "Adventure",     cat: "Adventure",             img: "https://images.unsplash.com/photo-1601024445121-e5b82f020549?w=200&q=80" },
- { emoji: "✿", name: "Florists", cat: "Florists", img: "https://images.unsplash.com/photo-1490750967868-88df5691cc57?w=200&q=80" },
+ { emoji: "✿", name: "Florists", cat: "Florists",                     img: "https://images.unsplash.com/photo-1455659817273-f96807779a8a?w=200&q=80"},
   { emoji: "◈", name: "Dining & Wine", cat: "Dining & Wine",         img: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=200&q=80" },
   { emoji: "✺", name: "Events",        cat: "Events",                img: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=200&q=80" },
   { emoji: "◎", name: "Skills",        cat: "Skills",                img: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=200&q=80" },
@@ -231,8 +231,6 @@ function AvoPromoRow({ onCatSelect }) {
 
     // Pause on hover/touch
     const pause = () => clearInterval(tick);
-    const resume = () => {}; // restart handled by re-render, or you can re-trigger
-
     el.addEventListener("mouseenter", pause);
     el.addEventListener("touchstart", pause);
 
@@ -1247,7 +1245,7 @@ export default function StorePage({
   const [checkoutSuccess, setCheckoutSuccess] = useState(null);
   const [currentCat, setCurrentCat] = useState("All");
   const [sortVal, setSortVal] = useState("default");
-  const [searchQ, setSearchQ] = useState("");
+  const [searchQ ] = useState("");
 
   const handleCatSelect = (cat) => {
     setCurrentCat(cat);

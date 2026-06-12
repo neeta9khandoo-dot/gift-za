@@ -9,15 +9,11 @@ import {
 import {
   getFirestore,
   collection,
-  addDoc,
   doc,
   setDoc,
   writeBatch,
   serverTimestamp,
 } from "firebase/firestore";
-
-// ─── Re-export or import these from a shared constants file if preferred ──
-const ZAR_TO_USD = 16.53;
 
 const genCode = () =>
   "VCH-" +
