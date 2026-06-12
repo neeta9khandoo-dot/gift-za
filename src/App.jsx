@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, Link, useNavigate } from "react-router-do
 import Home from "./Home";
 import { RedeemVoucherPage, HelpCentrePage, ContactPage, PrivacyPage, TermsPage } from "./FooterPages";
 import { initializeApp } from "firebase/app";
+
 import {
   getFirestore,
   collection,

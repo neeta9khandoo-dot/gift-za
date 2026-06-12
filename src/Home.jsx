@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 
 import { Link } from "react-router-dom";
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback, useRef, onSearch } from "react";
 import {
   Flower2,
   Cake,
@@ -547,9 +547,14 @@ const CSS = `
 .skel-grid-card{width:auto;min-width:auto}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --red:#E3001B;
-  --red2:#c8001a;
-  --red3:#ff1a30;
+ --green-primary:   #1A7A3C;   /* main CTA, buttons, active states   */
+  --green-dark:      #145f2e;   /* hover state on buttons              */
+  --green-bright:    #22a64f;   /* highlights, glows, badge borders    */
+  --green-soft:      #e8f5ee;   /* light tint backgrounds              */
+  --green-glow:      rgba(26,122,60,.15);  /* shadow/glow tint         */
+  --red:    #1A7A3C;
+  --red2:   #145f2e;
+  --red3:   #22a64f;
   --black:#111111;
   --dark:#222222;
   --mid:#555555;
@@ -617,7 +622,7 @@ button{font-family:var(--sans);cursor:pointer}
   gap:8px;padding:0 14px;height:42px;
   transition:border-color .2s;
 }
-.nav-search:focus-within{border-color:var(--red);box-shadow:0 0 0 3px rgba(227,0,27,.08)}
+.nav-search:focus-within{border-color:var(--red);box-shadow:0 0 0 3px rgba(26,122,60,.08)}
 .nav-search input{
   flex:1;border:none;outline:none;background:transparent;
   font-family:var(--sans);font-size:.88rem;color:var(--text);
@@ -810,7 +815,7 @@ button{font-family:var(--sans);cursor:pointer}
   letter-spacing:.5px;padding:3px 9px;border-radius:20px;
   backdrop-filter:blur(6px);
 }
-.cbadge-pop{background:rgba(227,0,27,.85);color:#fff}
+.cbadge-pop{background:rgba(26,122,60,.85);color:#fff}
 .cbadge-sale{background:rgba(17,17,17,.75);color:#fff}
 .cbadge-music{background:rgba(88,57,180,.85);color:#fff}
 .cbadge-events{background:rgba(180,57,120,.85);color:#fff}
@@ -1015,7 +1020,7 @@ button{font-family:var(--sans);cursor:pointer}
 .testi-avatar{width:34px;height:34px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.75rem;flex-shrink:0}
 .testi-name{font-weight:700;font-size:.8rem;color:var(--black)}
 .testi-loc{font-size:.68rem;color:var(--muted)}
-.testi-product{font-size:.65rem;color:var(--red);font-weight:700;background:rgba(227,0,27,.08);border:1px solid rgba(227,0,27,.15);padding:2px 7px;border-radius:4px;margin-left:auto;white-space:nowrap}
+.testi-product{font-size:.65rem;color:var(--red);font-weight:700;background:rgba(26,122,60,.08);border:1px solid rgba(26,122,60,.15);padding:2px 7px;border-radius:4px;margin-left:auto;white-space:nowrap}
  
 /* ── Newsletter ── */
 .newsletter{background:var(--bg2);border-top:1px solid var(--border);padding:40px 0;text-align:center}
@@ -1127,7 +1132,7 @@ footer{background:var(--black);color:rgba(255,255,255,.55);padding:48px 0 24px}
 .bn-item{display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 4px;border:none;background:none;cursor:pointer;border-radius:8px;color:var(--muted);transition:color .15s;position:relative;-webkit-tap-highlight-color:transparent}
 .bn-item.active{color:var(--red)}
 .bn-pill{width:40px;height:28px;border-radius:12px;display:flex;align-items:center;justify-content:center;transition:background .15s}
-.bn-item.active .bn-pill{background:rgba(227,0,27,.08)}
+.bn-item.active .bn-pill{background:rgba(26,122,60,.08)}
 .bn-item.active .bn-pill svg{stroke:var(--red)}
 .bn-label{font-size:.58rem;font-weight:700;letter-spacing:.2px;line-height:1}
 .bn-badge{position:absolute;top:3px;right:calc(50% - 22px);width:7px;height:7px;border-radius:50%;background:var(--red);border:2px solid #fff}
@@ -1272,118 +1277,652 @@ footer{background:var(--black);color:rgba(255,255,255,.55);padding:48px 0 24px}
   .hero-trust-row{padding:0 14px}
   section.section > *:not(.section-head){padding-left:14px;padding-right:14px}
 }
+   
+/* ── Sliding Promo Banner (Avo-style) ── */
+.promo-strip {
+  position: relative;
+  overflow: hidden;
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+}
+.promo-strip-track {
+  display: flex;
+  transition: transform .55s cubic-bezier(.4,0,.2,1);
+  will-change: transform;
+}
+.promo-slide {
+  min-width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 320px;
+  cursor: pointer;
+}
+.promo-slide-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 44px 48px;
+  background: var(--slide-bg, #fff);
+  position: relative;
+  overflow: hidden;
+}
+.promo-slide-left::before {
+  content: '';
+  position: absolute;
+  right: -60px; top: -60px;
+  width: 260px; height: 260px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.08);
+  pointer-events: none;
+}
+.promo-slide-right {
+  position: relative;
+  overflow: hidden;
+}
+.promo-slide-right img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .6s ease;
+}
+.promo-slide:hover .promo-slide-right img {
+  transform: scale(1.04);
+}
+.promo-eyebrow {
+  font-size: .65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+  opacity: .75;
+}
+.promo-headline {
+  font-size: clamp(1.6rem, 3.5vw, 2.6rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -.5px;
+  margin-bottom: 10px;
+}
+.promo-sub {
+  font-size: .88rem;
+  line-height: 1.65;
+  margin-bottom: 22px;
+  opacity: .75;
+  max-width: 360px;
+}
+.promo-cta-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.promo-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 12px 22px;
+  border-radius: 8px;
+  font-family: var(--sans);
+  font-size: .85rem;
+  font-weight: 800;
+  cursor: pointer;
+  border: none;
+  transition: all .18s;
+  background: #fff;
+  letter-spacing: -.1px;
+}
+.promo-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,.15);
+}
+.promo-btn-ghost {
+  font-size: .82rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  background: none;
+  opacity: .7;
+  transition: opacity .15s;
+  font-family: var(--sans);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.promo-btn-ghost:hover { opacity: 1; }
+.promo-price-badge {
+  position: absolute;
+  top: 20px; right: 20px;
+  background: var(--red);
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 50px;
+  font-size: .72rem;
+  font-weight: 800;
+  box-shadow: 0 4px 16px rgba(26,122,60,.35);
+  z-index: 2;
+  white-space: nowrap;
+}
+/* Nav dots */
+.promo-dots {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  z-index: 10;
+}
+.promo-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0,0,0,.2);
+  cursor: pointer;
+  padding: 0;
+  transition: all .2s;
+}
+.promo-dot.active {
+  background: var(--red);
+  width: 22px;
+  border-radius: 4px;
+}
+/* Prev/next arrows */
+.promo-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,.92);
+  box-shadow: 0 2px 12px rgba(0,0,0,.12);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .9rem;
+  color: var(--black);
+  transition: all .18s;
+}
+.promo-arrow:hover {
+  background: #fff;
+  box-shadow: 0 4px 20px rgba(0,0,0,.18);
+  transform: translateY(-50%) scale(1.08);
+}
+.promo-arrow.prev { left: 14px; }
+.promo-arrow.next { right: 14px; }
+/* Progress bar */
+.promo-progress {
+  position: absolute;
+  bottom: 0; left: 0;
+  height: 3px;
+  background: var(--red);
+  border-radius: 0 2px 2px 0;
+  transition: width linear;
+  z-index: 10;
+}
+ 
+/* ── Flash Deals Section ── */
+.flash-deals-section {
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  padding: 0 0 28px;
+}
+.flash-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 20px 16px;
+  max-width: var(--max);
+  margin: 0 auto;
+}
+.flash-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.flash-fire {
+  font-size: 1.1rem;
+  animation: flicker 1.2s ease-in-out infinite alternate;
+}
+@keyframes flicker {
+  from { filter: brightness(1); }
+  to { filter: brightness(1.35) drop-shadow(0 0 4px #ff6b00); }
+}
+.flash-title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--black);
+  letter-spacing: -.2px;
+}
+.flash-countdown {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: .72rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+.flash-timer-block {
+  background: var(--black);
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 5px;
+  font-size: .75rem;
+  font-weight: 800;
+  min-width: 28px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.flash-colon {
+  color: var(--red);
+  font-weight: 800;
+  font-size: .9rem;
+  margin-top: -2px;
+}
+.flash-row {
+  display: flex;
+  gap: 12px;
+  padding: 0 20px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  max-width: var(--max);
+  margin: 0 auto;
+}
+.flash-row::-webkit-scrollbar { display: none; }
+.flash-deal-card {
+  flex-shrink: 0;
+  width: 180px;
+  background: #fff;
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all .22s;
+  position: relative;
+}
+.flash-deal-card:hover {
+  border-color: var(--red);
+  box-shadow: 0 6px 24px rgba(26,122,60,.1);
+  transform: translateY(-3px);
+}
+.flash-deal-img {
+  height: 120px;
+  background: var(--bg2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.8rem;
+  position: relative;
+}
+.flash-deal-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.flash-off-badge {
+  position: absolute;
+  top: 8px; left: 8px;
+  background: var(--red);
+  color: #fff;
+  font-size: .6rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 4px;
+  letter-spacing: .3px;
+}
+.flash-deal-body {
+  padding: 10px 12px 12px;
+}
+.flash-deal-name {
+  font-size: .78rem;
+  font-weight: 700;
+  color: var(--black);
+  line-height: 1.3;
+  margin-bottom: 6px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.flash-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.flash-price-now {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--red);
+  letter-spacing: -.3px;
+}
+.flash-price-was {
+  font-size: .72rem;
+  color: var(--muted);
+  text-decoration: line-through;
+}
+.flash-stock-bar {
+  height: 3px;
+  background: var(--bg2);
+  border-radius: 2px;
+  margin-top: 8px;
+  overflow: hidden;
+}
+.flash-stock-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--red), #ff6b35);
+  border-radius: 2px;
+  transition: width .3s;
+}
+.flash-stock-lbl {
+  font-size: .58rem;
+  color: var(--muted);
+  margin-top: 4px;
+  font-weight: 600;
+}
+ 
+/* ── Hero redesign ── */
+.hero-v2 {
+  background: var(--black);
+  position: relative;
+  overflow: hidden;
+  min-height: 420px;
+  display: flex;
+  flex-direction: column;
+}
+.hero-v2-bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a0505 50%, #0a0a0a 100%);
+}
+.hero-v2-pattern {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at 20% 50%, rgba(26,122,60,.12) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 20%, rgba(26,122,60,.08) 0%, transparent 40%);
+}
+.hero-v2-inner {
+  position: relative;
+  z-index: 2;
+  max-width: var(--max);
+  margin: 0 auto;
+  width: 100%;
+  padding: 36px 24px 28px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 24px;
+  align-items: center;
+}
+.hero-v2-left {}
+.hero-v2-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(26,122,60,.15);
+  border: 1px solid rgba(26,122,60,.3);
+  border-radius: 50px;
+  padding: 5px 13px;
+  font-size: .68rem;
+  font-weight: 700;
+  color: #ff6b6b;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  margin-bottom: 14px;
+}
+.hero-v2-eyebrow-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #ff4040;
+  animation: pulse-dot 1.4s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: .5; transform: scale(.7); }
+}
+.hero-v2-title {
+  font-size: clamp(2rem, 4.5vw, 3.2rem);
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.05;
+  letter-spacing: -.5px;
+  margin-bottom: 12px;
+}
+.hero-v2-title em {
+  font-style: normal;
+  color: var(--red);
+}
+.hero-v2-sub {
+  font-size: .9rem;
+  color: rgba(255,255,255,.55);
+  line-height: 1.65;
+  margin-bottom: 24px;
+  max-width: 520px;
+}
+.hero-v2-search {
+  display: flex;
+  background: rgba(255,255,255,.08);
+  border: 1.5px solid rgba(255,255,255,.15);
+  border-radius: 10px;
+  overflow: hidden;
+  max-width: 560px;
+  backdrop-filter: blur(8px);
+  transition: border-color .2s;
+}
+.hero-v2-search:focus-within {
+  border-color: rgba(227,0,27,.5);
+  background: rgba(255,255,255,.12);
+}
+.hero-v2-search input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  padding: 14px 16px;
+  color: #fff;
+  font-family: var(--sans);
+  font-size: .9rem;
+}
+.hero-v2-search input::placeholder { color: rgba(255,255,255,.35); }
+.hero-v2-search-btn {
+  background: var(--red);
+  border: none;
+  padding: 0 22px;
+  color: #fff;
+  font-weight: 800;
+  font-size: .85rem;
+  font-family: var(--sans);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+  transition: background .15s;
+}
+.hero-v2-search-btn:hover { background: var(--red2); }
+.hero-v2-trust {
+  display: flex;
+  gap: 20px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+.hero-v2-trust-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: .72rem;
+  color: rgba(255,255,255,.45);
+  font-weight: 500;
+}
+.hero-v2-trust-item strong { color: rgba(255,255,255,.75); }
+/* Floating stats card on the right */
+.hero-v2-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.hero-stat-card {
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.1);
+  backdrop-filter: blur(12px);
+  border-radius: 12px;
+  padding: 14px 18px;
+  text-align: center;
+  min-width: 120px;
+  transition: background .2s;
+}
+.hero-stat-card:hover { background: rgba(255,255,255,.1); }
+.hero-stat-val {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -.5px;
+  line-height: 1;
+  margin-bottom: 3px;
+}
+.hero-stat-lbl {
+  font-size: .6rem;
+  color: rgba(255,255,255,.4);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+/* Ticker strip under hero */
+.hero-ticker {
+  background: var(--red);
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+  height: 38px;
+  display: flex;
+  align-items: center;
+}
+.hero-ticker-track {
+  display: flex;
+  gap: 0;
+  animation: ticker-scroll 35s linear infinite;
+  white-space: nowrap;
+}
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.hero-ticker-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 24px;
+  font-size: .72rem;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+}
+.hero-ticker-sep {
+  color: rgba(255,255,255,.4);
+  margin: 0 4px;
+}
+ 
+/* ── Category Pills (enhanced) ── */
+.cats-section-v2 {
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 64px;
+  z-index: 90;
+}
+.cat-pill-v2 {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 14px 18px;
+  border-bottom: 3px solid transparent;
+  font-size: .8rem;
+  font-weight: 600;
+  color: var(--sub);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all .15s;
+  flex-shrink: 0;
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+}
+.cat-pill-v2:hover { color: var(--black); }
+.cat-pill-v2.active { color: var(--red); border-bottom-color: var(--red); }
+.cat-pill-v2-emoji { font-size: 1.1rem; }
+ 
+/* Mobile responsive for promo strip */
+@media(max-width: 768px) {
+  .promo-slide { grid-template-columns: 1fr; min-height: auto; }
+  .promo-slide-right { height: 200px; }
+  .promo-slide-left { padding: 28px 20px; }
+  .promo-arrow { display: none; }
+  .hero-v2-inner { grid-template-columns: 1fr; }
+  .hero-v2-stats { flex-direction: row; flex-wrap: wrap; }
+  .hero-stat-card { min-width: 100px; padding: 10px 14px; }
+  .hero-v2-title { font-size: clamp(1.6rem, 6vw, 2.2rem); }
+}
+@media(max-width: 600px) {
+  .hero-v2-stats { display: none; }
+  .flash-deal-card { width: 158px; }
+}
 `;
 
 // ══════════════════════════════════════════════════════════════════════════
 // COMPONENTS
 // ══════════════════════════════════════════════════════════════════════════
 
-function AnnounceBanner() {
-  const [banner, setBanner] = useState({
-    icon: "⏳",
-    text: "Loading holiday promotions…",
-    urgency: "",
-    bg: "#1a2e1f",
-  });
-
-  useEffect(() => {
-    const CAT_MAP = {
-      Christmas: { bg: "#3B6D11", icon: "🎄", cat: "Stays & Getaways" },
-      "New Year": { bg: "#534AB7", icon: "🎆", cat: "Adventure" },
-      Easter: { bg: "#0F6E56", icon: "🐣", cat: "Stays & Getaways" },
-      Women: { bg: "#993556", icon: "👩", cat: "Wellness & Spa" },
-      Youth: { bg: "#185FA5", icon: "🎓", cat: "Skills & Courses" },
-      Heritage: { bg: "#854F0B", icon: "🏺", cat: "Dining & Wine" },
-      Freedom: { bg: "#534AB7", icon: "🏅", cat: "Adventure" },
-      Workers: { bg: "#0F6E56", icon: "💪", cat: "Wellness & Spa" },
-      default: { bg: "#0F6E56", icon: "🎁", cat: "Experiences" },
-      "Valentine's Day": { bg: "#991B4B", icon: "🌹", cat: "Florists" },
-      "Mother's Day": { bg: "#993556", icon: "💐", cat: "Florists" },
-    };
-    const getInfo = (name) => {
-      const k = Object.keys(CAT_MAP).find(
-        (k) => k !== "default" && name.toLowerCase().includes(k.toLowerCase()),
-      );
-      return CAT_MAP[k] || CAT_MAP.default;
-    };
-    const daysUntil = (ds) => {
-      const t = new Date();
-      t.setHours(0, 0, 0, 0);
-      const d = new Date(ds);
-      d.setHours(0, 0, 0, 0);
-      return Math.round((d - t) / 86400000);
-    };
-    let timer;
-    (async () => {
-      const year = new Date().getFullYear();
-      try {
-        const r = await fetch(
-          `https://date.nager.at/api/v3/PublicHolidays/${year}/ZA`,
-        );
-        const data = await r.json();
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const upcoming = data
-          .filter((h) => new Date(h.date) >= today)
-          .sort((a, b) => new Date(a.date) - new Date(b.date));
-        if (!upcoming.length) return;
-        let idx = 0;
-        const update = () => {
-          const h = upcoming[idx % upcoming.length];
-          const days = daysUntil(h.date);
-          const info = getInfo(h.name);
-          const urgency =
-            days === 0
-              ? "🔥 Today!"
-              : days <= 3
-                ? `🔥 ${days}d left!`
-                : days <= 7
-                  ? `${days} days away`
-                  : "";
-          setBanner({
-            icon: info.icon,
-            text: `🇿🇦 <strong>${h.name}</strong> — Gift a ${info.cat} voucher`,
-            urgency,
-            bg: info.bg,
-          });
-          idx++;
-        };
-        update();
-        timer = setInterval(update, 5000);
-      } catch {}
-    })();
-    return () => clearInterval(timer);
-  }, []);
-
+export function AnnounceBannerV2() {
+  const [banners] = React.useState([
+    { icon: '🚀', text: '<strong>NEW:</strong> Traditional Restaurant vouchers now live — send mum lunch from anywhere', bg: '#1a1a1a', accent: '#ff6b35' },
+    { icon: '🎁', text: '<strong>FREE WhatsApp delivery</strong> on all vouchers · Instant, every time', bg: '#0a1628', accent: '#38bdf8' },
+    { icon: '🇿🇼', text: 'Supporting <strong>200+ Zimbabwean businesses</strong> · Weekly EFT payouts to partners', bg: '#0a1f12', accent: '#4ade80' },
+  ]);
+  const [idx, setIdx] = React.useState(0);
+ 
+  React.useEffect(() => {
+    const t = setInterval(() => setIdx(i => (i + 1) % banners.length), 4000);
+    return () => clearInterval(t);
+  }, [banners.length]);
+ 
+  const b = banners[idx];
+ 
   return (
-    <div className="announce" style={{ background: banner.bg, padding: 0 }}>
-      <div
-        style={{
-          padding: "10px 20px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 10,
-          flexWrap: "wrap",
-        }}
-      >
-        <span>{banner.icon}</span>
-        <span
-          style={{ fontSize: ".78rem", fontWeight: 500 }}
-          dangerouslySetInnerHTML={{ __html: banner.text }}
-        />
-        {banner.urgency && (
-          <span
-            style={{
-              background: "rgba(255,255,255,.2)",
-              borderRadius: 4,
-              padding: "1px 7px",
-              fontSize: ".7rem",
-            }}
-          >
-            {banner.urgency}
-          </span>
-        )}
+    <div style={{
+      background: b.bg,
+      height: 40,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 10,
+      transition: 'background .5s',
+      position: 'relative',
+      overflow: 'hidden',
+    }}>
+      {/* accent glow */}
+      <div style={{
+        position: 'absolute', left: '50%', top: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 400, height: 40,
+        background: `radial-gradient(ellipse, ${b.accent}22 0%, transparent 70%)`,
+        pointerEvents: 'none',
+      }} />
+      <span style={{ fontSize: '1rem' }}>{b.icon}</span>
+      <span
+        style={{ fontSize: '.76rem', color: 'rgba(255,255,255,.8)', fontWeight: 500, position: 'relative' }}
+        dangerouslySetInnerHTML={{ __html: b.text }}
+      />
+      {/* Dots */}
+      <div style={{ display: 'flex', gap: 4, marginLeft: 12, position: 'relative' }}>
+        {banners.map((_, i) => (
+          <button key={i} onClick={() => setIdx(i)} style={{
+            width: i === idx ? 16 : 5, height: 5,
+            borderRadius: 3, border: 'none',
+            background: i === idx ? b.accent : 'rgba(255,255,255,.25)',
+            cursor: 'pointer', padding: 0, transition: 'all .3s',
+          }} />
+        ))}
       </div>
     </div>
   );
@@ -1404,13 +1943,13 @@ useEffect(() => {
 }, []);
   const [mobileOpen, setMobileOpen] = useState(false);
   const initials = user
-    ? (user.displayName || user.email || "P")
+    ? (user.displayName || user.email || "Login")
         .split(" ")
         .map((w) => w[0])
         .join("")
         .substring(0, 2)
         .toUpperCase()
-    : "P";
+    : "Login";
   const navLinks = [
     ["store", "Experiences"],
     ["partners", "For Partners"],
@@ -1805,6 +2344,193 @@ function HeroBurst({ cards }) {
     </div>
   );
 }
+
+export function FlashDeals({ vouchers = [], onOpen }) {
+  const [timeLeft, setTimeLeft] = React.useState({ h: 0, m: 0, s: 0 });
+ 
+  // Countdown to midnight tonight
+  React.useEffect(() => {
+    const tick = () => {
+      const now = new Date();
+      const midnight = new Date();
+      midnight.setHours(24, 0, 0, 0);
+      const diff = Math.max(0, Math.floor((midnight - now) / 1000));
+      setTimeLeft({
+        h: Math.floor(diff / 3600),
+        m: Math.floor((diff % 3600) / 60),
+        s: diff % 60,
+      });
+    };
+    tick();
+    const t = setInterval(tick, 1000);
+    return () => clearInterval(t);
+  }, []);
+ 
+  const pad = n => String(n).padStart(2, '0');
+ 
+  // Flash deal data — mix real vouchers with curated specials
+  const FLASH = [
+    { name: "60-Min Massage", emoji: "🧖", originalPrice: 750, price: 550, off: 27, stock: 4, total: 10, cat: "Wellness" },
+    { name: "Wine Tasting for Two", emoji: "🍷", originalPrice: 850, price: 620, off: 27, stock: 7, total: 15, cat: "Dining & Wine" },
+    { name: "Birthday Bloom Bouquet", emoji: "🌸", originalPrice: 450, price: 350, off: 22, stock: 3, total: 8, cat: "Florists" },
+    { name: "Concert Ticket Voucher", emoji: "🎵", originalPrice: 600, price: 450, off: 25, stock: 5, total: 12, cat: "Music" },
+    { name: "Tandem Skydive", emoji: "🪂", originalPrice: 3200, price: 2950, off: 8, stock: 2, total: 5, cat: "Adventure" },
+    { name: "Kids Party Pack", emoji: "🎪", originalPrice: 1400, price: 1200, off: 14, stock: 6, total: 10, cat: "Events" },
+    { name: "Gel Mani + Spa Pedi", emoji: "💅", originalPrice: 580, price: 480, off: 17, stock: 9, total: 20, cat: "Beauty" },
+    { name: "Sadza & Dovi Dinner", emoji: "🍲", originalPrice: 420, price: 350, off: 17, stock: 8, total: 15, cat: "Traditional Restaurants" },
+  ];
+ 
+  return (
+    <section className="flash-deals-section">
+      <div className="flash-header">
+        <div className="flash-label">
+          <span className="flash-fire">🔥</span>
+          <span className="flash-title">Flash Deals</span>
+        </div>
+        <div className="flash-countdown">
+          Ends in
+          <span className="flash-timer-block">{pad(timeLeft.h)}</span>
+          <span className="flash-colon">:</span>
+          <span className="flash-timer-block">{pad(timeLeft.m)}</span>
+          <span className="flash-colon">:</span>
+          <span className="flash-timer-block">{pad(timeLeft.s)}</span>
+        </div>
+      </div>
+      <div className="flash-row">
+        {FLASH.map((deal, i) => (
+          <div
+            key={i}
+            className="flash-deal-card"
+            onClick={() => {
+              // Try to match to a real voucher, else pass the deal object
+              const match = vouchers.find(v =>
+                v.cat === deal.cat && v.price <= deal.price * 1.1
+              );
+              if (onOpen) onOpen(match || { ...deal, id: 'flash_' + i, partner: 'AfriVoucher', city: 'Zimbabwe', desc: deal.name });
+            }}
+          >
+            <div className="flash-deal-img">
+              <span style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,.15))' }}>{deal.emoji}</span>
+              <span className="flash-off-badge">-{deal.off}%</span>
+            </div>
+            <div className="flash-deal-body">
+              <div className="flash-deal-name">{deal.name}</div>
+              <div className="flash-price-row">
+                <span className="flash-price-now">
+                  R{deal.price.toLocaleString('en-ZA')}
+                </span>
+                <span className="flash-price-was">
+                  R{deal.originalPrice.toLocaleString('en-ZA')}
+                </span>
+              </div>
+              <div className="flash-stock-bar">
+                <div
+                  className="flash-stock-fill"
+                  style={{ width: `${Math.round((deal.stock / deal.total) * 100)}%` }}
+                />
+              </div>
+              <div className="flash-stock-lbl">
+                {deal.stock} left at this price
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+ export function HeroV2({ vouchers = [], onSearch }) {
+  const [query, setQuery] = React.useState('');
+ 
+  const TICKER_ITEMS = [
+    "🧖 Couples Spa Day — R1,800",
+    "🪂 Tandem Skydive — R2,950",
+    "🍲 Sunday Lunch for Two — R420",
+    "🎵 Live Jazz Evening — R780",
+    "🌸 Luxury Rose Arrangement — R680",
+    "🏡 Ancient City Lodge Stay — R2,800",
+    "💅 Bridal Glow Package — R1,950",
+    "🎪 Birthday Bundle — R1,850",
+  ];
+  // Duplicate for seamless loop
+  const allTickers = [...TICKER_ITEMS, ...TICKER_ITEMS];
+ 
+  const handleSearch = () => onSearch && onSearch(query);
+ 
+  return (
+    <div className="hero-v2">
+      <div className="hero-v2-bg" />
+      <div className="hero-v2-pattern" />
+      <div className="hero-v2-inner">
+        <div className="hero-v2-left">
+          <div className="hero-v2-eyebrow">
+            <span className="hero-v2-eyebrow-dot" />
+            Live now · Zimbabwe's gift experience platform
+          </div>
+          <h1 className="hero-v2-title">
+            Give them an experience<br />
+            they'll never <em>forget.</em>
+          </h1>
+          <p className="hero-v2-sub">
+            200+ curated Zimbabwean experiences — spas, live music, traditional meals,
+            adventures and more. Pay once, delivered to WhatsApp instantly.
+          </p>
+          <div className="hero-v2-search">
+            <input
+              type="text"
+              placeholder="Spa day, safari, live jazz, send mum lunch…"
+              value={query}
+              onChange={e => setQuery(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && handleSearch()}
+            />
+            <button className="hero-v2-search-btn" onClick={handleSearch}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+              </svg>
+              Search
+            </button>
+          </div>
+          <div className="hero-v2-trust">
+            {[
+              ['⭐', '4.9', '/ 2,800+ reviews'],
+              ['📱', 'Instant', 'WhatsApp delivery'],
+              ['🔒', 'PayFast', 'secure checkout'],
+              ['✅', 'Verified', 'ZIM partners'],
+            ].map(([icon, val, lbl]) => (
+              <div key={lbl} className="hero-v2-trust-item">
+                {icon} <strong>{val}</strong> {lbl}
+              </div>
+            ))}
+          </div>
+        </div>
+        {/* Right: floating stat cards */}
+        <div className="hero-v2-stats">
+          {[
+            { val: vouchers.length || '200+', lbl: 'Experiences' },
+            { val: '2.8k+', lbl: 'Vouchers Sold' },
+            { val: 'R550', lbl: 'From' },
+          ].map(s => (
+            <div key={s.lbl} className="hero-stat-card">
+              <div className="hero-stat-val">{s.val}</div>
+              <div className="hero-stat-lbl">{s.lbl}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+      {/* Scrolling ticker */}
+      <div className="hero-ticker">
+        <div className="hero-ticker-track">
+          {allTickers.map((item, i) => (
+            <React.Fragment key={i}>
+              <span className="hero-ticker-item">{item}</span>
+              <span className="hero-ticker-sep">·</span>
+            </React.Fragment>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 // ─── Store Page ───────────────────────────────────────────────────────────
 function StorePage({ vouchers, loading, setPage, onCatSelect }) {
   const [lastViewed, setLastViewed] = useState(null);
@@ -1953,72 +2679,10 @@ function StorePage({ vouchers, loading, setPage, onCatSelect }) {
   return (
     <>
       {/* Hero */}
-      <section className="hero">
-  <div className="hero-delivery-bar">
-    <div className="hero-delivery-left">
-      <div className="hero-delivery-logo">AV</div>
-      <div>
-        <div className="hero-delivery-tagline">
-          <strong>Gift an experience</strong> — delivered to WhatsApp instantly
-        </div>
-        <div style={{fontSize:'.75rem',color:'rgba(255,255,255,.7)',marginTop:2}}>
-          200+ curated experiences across Zimbabwe
-        </div>
-      </div>
-    </div>
-    <div className="hero-delivery-right">
-      {['⭐ 4.9 / 2,800+ reviews','📱 Instant WhatsApp','🔒 PayFast secure'].map(b => (
-        <div key={b} className="hero-badge">{b}</div>
-      ))}
-    </div>
-  </div>
- 
-  {/* Search bar */}
-  <div className="hero-search-bar">
-    <div className="hsb-field">
-      <span className="hsb-icon">🔍</span>
-      <div className="hsb-text">
-        <span className="hsb-label">What experience?</span>
-        <span className="hsb-val placeholder">Spa, safari, live music…</span>
-      </div>
-    </div>
-    <div className="hsb-field">
-      <span className="hsb-icon">📍</span>
-      <div className="hsb-text">
-        <span className="hsb-label">Location</span>
-        <span className="hsb-val placeholder">Anywhere in ZIM</span>
-      </div>
-    </div>
-    <div className="hsb-field">
-      <span className="hsb-icon">💰</span>
-      <div className="hsb-text">
-        <span className="hsb-label">Budget</span>
-        <span className="hsb-val placeholder">Any price</span>
-      </div>
-    </div>
-    <button className="hero-search-btn">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      Search
-    </button>
-  </div>
- 
-  {/* Trust strip */}
-  <div className="hero-trust-row">
-    {[
-      ['🟢','Live now','Taking orders'],
-      ['🎟️', `${vouchers.length * 3 + 2340}`, 'vouchers sold this month'],
-      ['⏱️','Instant','WhatsApp delivery'],
-      ['✅','Verified','Zimbabwean partners'],
-      ['🔄','Flexible','Reschedule anytime'],
-    ].map(([icon, val, lbl]) => (
-      <div key={lbl} className="htrust-item">
-        <span>{icon}</span>
-        <span><strong>{val}</strong> {lbl}</span>
-      </div>
-    ))}
-  </div>
-</section>
 
+ <PromoBanner onCatSelect={onCatSelect} />
+  <HeroV2 vouchers={vouchers} onSearch={onSearch} />
+  <FlashDeals vouchers={vouchers} onOpen={setSelectedVoucher} />
       {/* Category pills — scrollable, includes Music + Events */}
      <div className="cats-section">
   <div className="cats-scroll" style={{maxWidth:'var(--max)',margin:'0 auto'}}>
@@ -3301,7 +3965,209 @@ function AuthPage({ onSuccess }) {
     </div>
   );
 }
-
+export function PromoBanner({ onCatSelect, vouchers = [] }) {
+  const [current, setCurrent] = React.useState(0);
+  const [progress, setProgress] = React.useState(0);
+  const [paused, setPaused] = React.useState(false);
+  const intervalRef = React.useRef(null);
+  const progressRef = React.useRef(null);
+  const INTERVAL = 5500; // ms per slide
+  const TICK = 50;       // progress bar update interval
+ 
+  const SLIDES = [
+    {
+      eyebrow: "🔥 This Weekend Only",
+      headline: "Spa Days from R550",
+      sub: "Treat someone to an hour of pure stillness. Swedish, hot stone or aromatherapy — delivered to WhatsApp in seconds.",
+      btnText: "Shop Wellness",
+      btnColor: "#1A7A3C",
+      bgColor: "#1a0a0a",
+      textColor: "#fff",
+      accentColor: "#ff6b6b",
+      cat: "Wellness",
+      priceBadge: "From R550",
+      img: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800&q=80",
+      emoji: "🧖",
+    },
+    {
+      eyebrow: "🎁 Long Distance Gifting",
+      headline: "Send Mum a Proper Meal",
+      sub: "You're far away — but she doesn't have to eat alone. Gift a traditional lunch at Kwa Terry or Feli Nandi's.",
+      btnText: "Browse Traditional",
+      btnColor: "#1A7A3C",
+      bgColor: "#140a00",
+      textColor: "#fff",
+      accentColor: "#ffb347",
+      cat: "Traditional Restaurants",
+      priceBadge: "From R240",
+      img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800&q=80",
+      emoji: "🍲",
+    },
+    {
+      eyebrow: "🎵 Live Music",
+      headline: "Gift a Night to Remember",
+      sub: "Jazz evenings, studio sessions and concert vouchers for the music lovers in your life.",
+      btnText: "See Music Vouchers",
+      btnColor: "#5839b4",
+      bgColor: "#09071a",
+      textColor: "#fff",
+      accentColor: "#a78bfa",
+      cat: "Music",
+      priceBadge: "From R450",
+      img: "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=800&q=80",
+      emoji: "🎵",
+    },
+    {
+      eyebrow: "🪂 Adventure Awaits",
+      headline: "15,000ft. One Jump.",
+      sub: "Tandem skydives, hot air balloon sunrises over Magaliesberg — for the one who has everything.",
+      btnText: "View Adventures",
+      btnColor: "#1A7A3C",
+      bgColor: "#000d1a",
+      textColor: "#fff",
+      accentColor: "#38bdf8",
+      cat: "Adventure",
+      priceBadge: "From R850",
+      img: "https://images.unsplash.com/photo-1601024445121-e5b82f020549?w=800&q=80",
+      emoji: "🪂",
+    },
+    {
+      eyebrow: "🌸 Say It With Flowers",
+      headline: "Fresh Bouquets, Delivered",
+      sub: "Birthday blooms, luxury roses and weekly flower subscriptions from Zimbabwe's top florists.",
+      btnText: "Shop Florists",
+      btnColor: "#c0396b",
+      bgColor: "#160a10",
+      textColor: "#fff",
+      accentColor: "#f9a8d4",
+      cat: "Florists",
+      priceBadge: "From R350",
+      img: "/images/florists.jpg",
+      emoji: "🌸",
+    },
+  ];
+ 
+  const go = React.useCallback((dir) => {
+    setCurrent(c => (c + dir + SLIDES.length) % SLIDES.length);
+    setProgress(0);
+  }, [SLIDES.length]);
+ 
+  // Auto-advance + progress bar
+  React.useEffect(() => {
+    if (paused) {
+      clearInterval(intervalRef.current);
+      clearInterval(progressRef.current);
+      return;
+    }
+    let elapsed = progress * INTERVAL / 100;
+    progressRef.current = setInterval(() => {
+      elapsed += TICK;
+      setProgress(Math.min((elapsed / INTERVAL) * 100, 100));
+    }, TICK);
+    intervalRef.current = setTimeout(() => {
+      setCurrent(c => (c + 1) % SLIDES.length);
+      setProgress(0);
+    }, INTERVAL - elapsed);
+    return () => {
+      clearInterval(progressRef.current);
+      clearTimeout(intervalRef.current);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [current, paused]);
+ 
+  const slide = SLIDES[current];
+ 
+  return (
+    <div
+      className="promo-strip"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      {/* Track */}
+      <div
+        className="promo-strip-track"
+        style={{ transform: `translateX(-${current * 100}%)` }}
+      >
+        {SLIDES.map((s, i) => (
+          <div
+            key={i}
+            className="promo-slide"
+            onClick={() => onCatSelect && onCatSelect(s.cat)}
+          >
+            {/* Left: copy */}
+            <div
+              className="promo-slide-left"
+              style={{ '--slide-bg': s.bgColor, background: s.bgColor, color: s.textColor }}
+            >
+              <div className="promo-eyebrow" style={{ color: s.accentColor }}>
+                {s.eyebrow}
+              </div>
+              <div className="promo-headline" style={{ color: s.textColor }}>
+                {s.headline}
+              </div>
+              <div className="promo-sub" style={{ color: `${s.textColor}99` }}>
+                {s.sub}
+              </div>
+              <div className="promo-cta-row">
+                <button
+                  className="promo-btn-primary"
+                  style={{ color: s.btnColor, boxShadow: `0 4px 18px ${s.accentColor}40` }}
+                  onClick={e => { e.stopPropagation(); onCatSelect && onCatSelect(s.cat); }}
+                >
+                  {s.btnText} →
+                </button>
+                <button
+                  className="promo-btn-ghost"
+                  style={{ color: `${s.textColor}70` }}
+                  onClick={e => e.stopPropagation()}
+                >
+                  Learn more
+                </button>
+              </div>
+            </div>
+            {/* Right: image */}
+            <div className="promo-slide-right">
+              {s.img
+                ? <img src={s.img} alt={s.headline} loading="lazy" />
+                : (
+                  <div style={{ width: '100%', height: '100%', background: s.bgColor,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: '6rem' }}>
+                    {s.emoji}
+                  </div>
+                )
+              }
+              <div className="promo-price-badge">{s.priceBadge}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+ 
+      {/* Arrows */}
+      <button className="promo-arrow prev" onClick={() => go(-1)} aria-label="Previous">‹</button>
+      <button className="promo-arrow next" onClick={() => go(1)} aria-label="Next">›</button>
+ 
+      {/* Dots */}
+      <div className="promo-dots">
+        {SLIDES.map((_, i) => (
+          <button
+            key={i}
+            className={`promo-dot${i === current ? ' active' : ''}`}
+            onClick={() => { setCurrent(i); setProgress(0); }}
+            aria-label={`Slide ${i + 1}`}
+          />
+        ))}
+      </div>
+ 
+      {/* Progress bar */}
+      <div
+        className="promo-progress"
+        style={{ width: `${progress}%`, transitionDuration: paused ? '0ms' : `${TICK}ms` }}
+      />
+    </div>
+  );
+}
+ 
 // ─── Redeem Page ──────────────────────────────────────────────────────────
 function RedeemPage({ user }) {
   const [code, setCode] = useState("");
@@ -6260,7 +7126,7 @@ export default function App() {
 
   return (
     <>
-      <AnnounceBanner />
+      <AnnounceBannerV2 />
       <Nav
         page={page}
         setPage={guardedSetPage}
