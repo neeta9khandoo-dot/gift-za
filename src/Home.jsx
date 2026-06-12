@@ -6225,7 +6225,7 @@ function PartnersPage() {
             disabled={loading}
             style={{
               padding: 15,
-              background: "var(--forest)",
+              background: "#22C55E",
               color: "var(--cream)",
               border: "none",
               borderRadius: 10,
