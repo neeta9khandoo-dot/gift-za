@@ -36,8 +36,6 @@ const db = getFirestore(firebaseApp);
 
 const WORKER_URL = process.env.REACT_APP_WORKER_URL;
 const UPLOAD_SECRET = process.env.REACT_APP_UPLOAD_SECRET;
-const ZAR_TO_USD = 16.53;
-
 /*
 const fmtUSD = (n) =>
   `$${(Number(n) / ZAR_TO_USD).toLocaleString("en-US", {
