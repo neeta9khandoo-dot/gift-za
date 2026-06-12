@@ -60,10 +60,10 @@ const auth = getAuth(firebaseApp);
 
 const WORKER_URL = process.env.REACT_APP_WORKER_URL;
 const UPLOAD_SECRET = process.env.REACT_APP_UPLOAD_SECRET;
-
+const ZAR_TO_USD = 16.53;
 // ─── Helpers ──────────────────────────────────────────────────────────────
 const fmt = (n) =>
-  `R ${Number(n).toLocaleString("en-ZA", { minimumFractionDigits: 0 })}`;
+  `US$${(Number(n) / ZAR_TO_USD).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
 const genCode = () =>
   "VCH-" +
@@ -2264,7 +2264,7 @@ function VoucherCard({ voucher, onOpen }) {
         <div className="card-footer">
           <div>
             <div className="card-price-val">
-              <small>R</small>{Number(voucher.price).toLocaleString("en-ZA")}
+              <small>US$</small>{(Number(voucher.price) / ZAR_TO_USD).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </div>
             {voucher.rating > 0 ? (
               <div className="card-rating">
@@ -2416,12 +2416,8 @@ export function FlashDeals({ vouchers = [], onOpen }) {
             <div className="flash-deal-body">
               <div className="flash-deal-name">{deal.name}</div>
               <div className="flash-price-row">
-                <span className="flash-price-now">
-                  R{deal.price.toLocaleString('en-ZA')}
-                </span>
-                <span className="flash-price-was">
-                  R{deal.originalPrice.toLocaleString('en-ZA')}
-                </span>
+                <span className="flash-price-now">US${(deal.price / ZAR_TO_USD).toFixed(2)}</span>
+<span className="flash-price-was">US${(deal.originalPrice / ZAR_TO_USD).toFixed(2)}</span>
               </div>
               <div className="flash-stock-bar">
                 <div
@@ -2443,14 +2439,14 @@ export function FlashDeals({ vouchers = [], onOpen }) {
   const [query, setQuery] = React.useState('');
  
   const TICKER_ITEMS = [
-    "🧖 Couples Spa Day — R1,800",
-    "🪂 Tandem Skydive — R2,950",
-    "🍲 Sunday Lunch for Two — R420",
-    "🎵 Live Jazz Evening — R780",
-    "🌸 Luxury Rose Arrangement — R680",
-    "🏡 Ancient City Lodge Stay — R2,800",
-    "💅 Bridal Glow Package — R1,950",
-    "🎪 Birthday Bundle — R1,850",
+"🧖 Couples Spa Day — US$109",
+"🪂 Tandem Skydive — US$179",
+"🍲 Sunday Lunch for Two — US$25",
+"🎵 Live Jazz Evening — US$47",
+"🌸 Luxury Rose Arrangement — US$41",
+"🏡 Ancient City Lodge Stay — US$169",
+"💅 Bridal Glow Package — US$118",
+"🎪 Birthday Bundle — US$112",
   ];
   // Duplicate for seamless loop
   const allTickers = [...TICKER_ITEMS, ...TICKER_ITEMS];
@@ -2508,7 +2504,7 @@ export function FlashDeals({ vouchers = [], onOpen }) {
           {[
             { val: vouchers.length || '200+', lbl: 'Experiences' },
             { val: '2.8k+', lbl: 'Vouchers Sold' },
-            { val: 'R550', lbl: 'From' },
+           { val: 'US$33', lbl: 'From' },
           ].map(s => (
             <div key={s.lbl} className="hero-stat-card">
               <div className="hero-stat-val">{s.val}</div>
@@ -2831,55 +2827,55 @@ function StorePage({ vouchers, loading, setPage, onCatSelect }) {
               "Adventure",
               "🪂",
               "/images/ancient-city-lodge-masvingo-698880.webp?w=600&q=80",
-              "4 experiences from R850",
+             "4 experiences from US$51",
             ],
             [
               "Wellness",
               "🧖",
               "/images/wellness.avif?w=600&q=80",
-              "3 experiences from R550",
+              "3 experiences from US$33",
             ],
             [
               "Dining & Wine",
               "🍷",
               "/images/dining.webp?w=600&q=80",
-              "4 experiences from R560",
+              "4 experiences from US$34",
             ],
             [
               "Traditional Restaurants",
               "🍲",
               "/images/kwaterry.jpg?w=600&q=80",
-              "8 experiences from R240",
+              "8 experiences from US$15",
             ],
             [
               "Music",
               "🎵",
               "/images/music.jpg?w=600&q=80",
-              "5 experiences from R450",
+              "5 experiences from US$27",
             ],
             [
               "Events",
               "🎪",
               "/images/events.jpg?w=600&q=80",
-              "5 experiences from R580",
+              "5 experiences from US$35",
             ],
             [
               "Florists",
               "🌸",
               "/images/florists.jpg?w=600&q=80",
-              "6 experiences from R350",
+              "6 experiences from US$21",
             ],
             [
               "Hair & Beauty",
               "📚",
               "/images/hair.jpg?w=600&q=80",
-              "2 experiences from R650",
+              "2 experiences from US$39",
             ],
             [
               "Skills",
               "📚",
               "/images/skills.jpg?w=600&q=80",
-              "12 experiences from R350",
+              "12 experiences from US$21",
             ],
           ].map(([cat, icon, img, sub]) => (
             <div
@@ -5621,7 +5617,7 @@ function AdminPage({ user, onLogout }) {
                         color: "var(--forest)",
                       }}
                     >
-                      R {Number(v.price || 0).toFixed(2)}
+                      US${(Number(v.price || 0) / ZAR_TO_USD).toFixed(2)}
                     </td>
                     <td
                       style={{
@@ -5850,7 +5846,7 @@ function OrdersPage({ user }) {
                 {/* Price + Resend */}
                 <div style={{ textAlign: "right", flexShrink: 0 }}>
                   <div style={{ fontSize: "1.1rem", fontWeight: 800, color: "var(--black)",
-                    marginBottom: 8 }}>R {Number(order.price || 0).toLocaleString()}</div>
+                    marginBottom: 8 }}>US${(Number(order.price || 0) / ZAR_TO_USD).toFixed(2)}</div>
                   <a href={`https://wa.me/${(order.recipientPhone||"").replace(/\D/g,"")}` +
                     `?text=Here's your AfriVoucher gift code: ${order.code}`}
                     target="_blank" rel="noopener noreferrer"
@@ -6484,7 +6480,7 @@ function CategoryPage({ cat, vouchers, loading, onBack, onOpenVoucher }) {
             {[
               [filtered.length, "Experiences available"],
               [
-                `R${Math.min(...filtered.map((v) => v.price || 0)).toLocaleString()}`,
+                `US$${(Math.min(...filtered.map((v) => v.price || 0)) / ZAR_TO_USD).toFixed(2)}`,
                 "Starting from",
               ],
               ["Instant", "WhatsApp delivery"],
