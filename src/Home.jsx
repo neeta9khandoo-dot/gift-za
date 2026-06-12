@@ -5095,7 +5095,7 @@ function AdminPage({ user, onLogout }) {
                 style={{
                   fontFamily: "var(--serif)",
                   fontSize: "1.1rem",
-                  color: "var(--cream)",
+                  color: "#15803D",
                   marginBottom: 1,
                 }}
               >
