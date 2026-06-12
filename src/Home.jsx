@@ -7099,7 +7099,7 @@ export default function App({ db, onAuthSuccess }) {
         setLoadingV(false);
       }
     })();
-  }, []);
+  }, [db]);
 
   const guardedSetPage = (p) => {
     const protected_ = ["redeem", "admin", "orders"];

@@ -1,9 +1,7 @@
-import { useState, useEffect } from "react";
 import {
   BrowserRouter,
   Routes,
   Route,
-  Link,
   useNavigate,
 } from "react-router-dom";
 import Home from "./Home";
@@ -17,15 +15,6 @@ import {
 import { initializeApp } from "firebase/app";
 import {
   getFirestore,
-  collection,
-  addDoc,
-  getDocs,
-  doc,
-  updateDoc,
-  query,
-  where,
-  orderBy,
-  serverTimestamp,
 } from "firebase/firestore";
 
 const firebaseConfig = {
