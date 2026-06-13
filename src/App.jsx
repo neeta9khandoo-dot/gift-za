@@ -14,6 +14,7 @@ import AuthPage from "./pages/AuthPage";
 import PrivacyPage from "./pages/PrivacyPage";
 import TermsPage from "./pages/TermsPage";
 import RedeemPage from "./pages/RedeemPage";
+import PartnerPage from "./pages/PartnerPage";
 import HelpCentrePage from "./pages/HelpCentrePage";
 import ContactPage from "./pages/ContactPage";
 import { initializeApp } from "firebase/app";
@@ -65,6 +66,7 @@ function AppRoutes() {
       />
       <Route path="/privacy" element={<PrivacyPage />} />
       <Route path="/terms" element={<TermsPage />} />
+      <Route path="/partner/:partnerId" element={<PartnerPage />} />
       <Route
         path="/help"
         element={<HelpCentrePage setPage={(p) => navigate(`/${p}`)} />}
@@ -127,6 +129,8 @@ function AppRoutes() {
           <CategoryPage onBack={() => navigate("/")} onOpenVoucher={() => {}} />
         }
       />
+    
+      
 
       {/* ── 404 fallback ── */}
       <Route path="*" element={<Navigate to="/" replace />} />

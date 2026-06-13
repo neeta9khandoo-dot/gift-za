@@ -3,6 +3,7 @@
 import { Link } from "react-router-dom";
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import CSS from './globalCss.js';
+import PartnerPage from "./PartnerPage.jsx";
 import {
   Flower2,
   Cake,
@@ -1312,6 +1313,14 @@ export default function App({ db, onAuthSuccess }) {
   const [loadingV, setLoadingV] = useState(true);
   const [searchQ, setSearchQ] = useState("");
   const [activeCat, setActiveCat] = useState(null);
+const [activePartnerId, setActivePartnerId] = useState(null);
+ const [selectedVoucher, setSelectedVoucher] = useState(null);
+ 
+// Handler to navigate to a partner
+const openPartner = (partnerId) => {
+  setActivePartnerId(partnerId);
+  setPage("partner");
+};
   const [showScroll, setShowScroll] = useState(false);
   useEffect(() => {
     const style = document.createElement("style");
@@ -1416,6 +1425,12 @@ export default function App({ db, onAuthSuccess }) {
           setPage={guardedSetPage}
           onCatSelect={setActiveCat}
           user={user} 
+          selectedVoucher={selectedVoucher}
+  setSelectedVoucher={setSelectedVoucher}
+   onPartnerOpen={(partnerId) => {
+    setActivePartnerId(partnerId);
+    setPage("partner");
+  }}
         />
       ) : null}
       {page === "auth" && (
@@ -1451,6 +1466,16 @@ export default function App({ db, onAuthSuccess }) {
         {page === "help" && <HelpCentrePage setPage={guardedSetPage} />}
       {page === "partners" && <PartnersPage />}
 {page === "orders" && user && <OrdersPage user={user} />}
+{page === "partner" && (
+  <PartnerPage
+    partnerId={activePartnerId}
+    onBack={() => setPage("store")}
+    onOpenVoucher={(v) => {
+      setPage("store");       
+      setSelectedVoucher(v);  
+    }}
+  />
+)}
 {page === "contact" && (
   <ContactPage firebaseApp={firebaseApp} setPage={guardedSetPage} />
 )}

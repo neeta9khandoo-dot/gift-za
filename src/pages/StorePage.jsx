@@ -9,6 +9,7 @@ import {
   PartyPopper,
   Sparkles,
 } from "lucide-react";
+import { AvoSearchBar, AvoEmptyState } from "./AvoSearch";
 // ─── Constants ────────────────────────────────────────────────────────────
 const ZAR_TO_USD = 16.53;
 
@@ -545,7 +546,7 @@ function AvoTrustStrip() {
   );
 }
 
-function AvoVoucherCard({ voucher: v, onOpen }) {
+function AvoVoucherCard({ voucher: v, onOpen, onPartnerOpen }) {
   const badgeBg =
     {
       Music: "#5839b4",
@@ -568,9 +569,16 @@ function AvoVoucherCard({ voucher: v, onOpen }) {
       </div>
       <div className="avs-v-body">
         <div className="avs-v-name">{v.name}</div>
-        <div className="avs-v-loc">
-          📍 {v.partner} · {v.city}
-        </div>
+       <div className="avs-v-loc">
+  📍{" "}
+  <span
+    onClick={(e) => { e.stopPropagation(); onPartnerOpen?.(v.partnerId); }}
+    style={{ textDecoration: "underline", cursor: "pointer", color: "var(--green-primary)" }}
+  >
+    {v.partner}
+  </span>{" "}
+  · {v.city}
+</div>
         <div className="avs-v-foot">
           <span className="avs-v-price">{fmt(v.price)}</span>
           <button
@@ -671,7 +679,7 @@ const genCode = () =>
     )
     .join("");
 
-function ProductModal({ voucher: v, onClose, onBuy }) {
+function ProductModal({ voucher: v, onClose, onBuy, onPartnerOpen }) {
   React.useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => {
@@ -709,9 +717,16 @@ function ProductModal({ voucher: v, onClose, onBuy }) {
             <div className="modal-cat">{v.cat}</div>
             <div className="modal-title">{v.name}</div>
             <div className="modal-partner">
-              📍 {v.partner} · {v.city}{" "}
-              <span className="modal-partner-badge">Verified</span>
-            </div>
+  📍{" "}
+  <span
+    onClick={() => { onClose(); onPartnerOpen?.(v.partnerId); }}
+    style={{ textDecoration: "underline", cursor: "pointer", color: "var(--green-primary)" }}
+  >
+    {v.partner}
+  </span>
+  {" "}· {v.city}{" "}
+  <span className="modal-partner-badge">Verified</span>
+</div>
             <div className="modal-desc">{v.desc}</div>
             {(v.includes || []).length > 0 && (
               <div className="modal-includes">
@@ -1238,35 +1253,20 @@ export default function StorePage({
   loading,
   setPage,
   onCatSelect,
+  onPartnerOpen,
   user,
 }) {
   const [selectedVoucher, setSelectedVoucher] = useState(null);
   const [drawerVoucher, setDrawerVoucher] = useState(null);
   const [checkoutSuccess, setCheckoutSuccess] = useState(null);
   const [currentCat, setCurrentCat] = useState("All");
-  const [sortVal, setSortVal] = useState("default");
-  const [searchQ ] = useState("");
+const [sortVal, setSortVal] = useState("default");
+const [filteredResults, setFilteredResults] = useState([]);
 
   const handleCatSelect = (cat) => {
     setCurrentCat(cat);
     onCatSelect?.(cat);
   };
-
-  const filtered = vouchers
-    .filter((v) => currentCat === "All" || v.cat === currentCat)
-    .filter((v) => {
-      if (!searchQ.trim()) return true;
-      const q = searchQ.toLowerCase();
-      return [v.name, v.desc, v.cat, v.city].some((f) =>
-        (f || "").toLowerCase().includes(q),
-      );
-    })
-    .sort((a, b) => {
-      if (sortVal === "price-asc") return a.price - b.price;
-      if (sortVal === "price-desc") return b.price - a.price;
-      if (sortVal === "rating") return b.rating - a.rating;
-      return 0;
-    });
 
   const handleCheckout = async (form) => {
     await new Promise((r) => setTimeout(r, 2000));
@@ -1299,76 +1299,53 @@ export default function StorePage({
         className="cats-section"
         style={{ position: "sticky", top: 64, zIndex: 90 }}
       >
-        <div
-          className="cats-scroll"
-          style={{ maxWidth: "var(--max)", margin: "0 auto" }}
-        >
-          {ALL_CATS.map((cat) => (
-            <button
-              key={cat}
-              className={`cat-pill${currentCat === cat ? " active" : ""}`}
-              onClick={() => setCurrentCat(cat)}
-            >
-              <span className="cat-pill-emoji">{CAT_ICONS[cat] || "🎁"}</span>
-              {cat}
-            </button>
-          ))}
-        </div>
+        <AvoSearchBar
+  currentCat={currentCat}
+  allCats={ALL_CATS}
+  catIcons={CAT_ICONS}
+  onCatSelect={handleCatSelect}
+  vouchers={vouchers}
+  onResults={setFilteredResults}
+  sortVal={sortVal}
+  onSortChange={setSortVal}
+/>
       </div>
 
       {/* Trust strip */}
       <AvoTrustStrip />
 
       {/* Voucher grid */}
-      <div className="avs-section">
-        <div className="avs-section-head">
-          <span className="avs-section-title">
-            {currentCat === "All" ? "All experiences" : currentCat}
-            <span
-              style={{
-                fontSize: ".72rem",
-                fontWeight: 400,
-                color: "#aaa",
-                marginLeft: 6,
-              }}
-            >
-              {loading ? "Loading…" : `${filtered.length} available`}
-            </span>
-          </span>
-          <select
-            value={sortVal}
-            onChange={(e) => setSortVal(e.target.value)}
-            style={{
-              padding: "6px 10px",
-              border: "1.5px solid #e5e5e5",
-              borderRadius: 7,
-              fontFamily: "var(--sans)",
-              fontSize: ".72rem",
-              color: "#666",
-              background: "#fff",
-              outline: "none",
-              cursor: "pointer",
-            }}
-          >
-            <option value="default">Featured</option>
-            <option value="price-asc">Price ↑</option>
-            <option value="price-desc">Price ↓</option>
-            <option value="rating">Top rated</option>
-          </select>
-        </div>
+     <div className="avs-section">
+  <div className="avs-section-head">
+    <span className="avs-section-title">
+      {currentCat === "All" ? "All experiences" : currentCat}
+      <span style={{ fontSize: ".72rem", fontWeight: 400, color: "#aaa", marginLeft: 6 }}>
+        {loading ? "Loading…" : `${filteredResults.length} available`}
+      </span>
+    </span>
+    {/* sort is now inside AvoSearchBar, remove the select here */}
+  </div>
 
-        <div className="avs-voucher-grid">
-          {loading
-            ? [...Array(8)].map((_, i) => <SkeletonVoucherCard key={i} />)
-            : filtered.map((v) => (
-                <AvoVoucherCard
-                  key={v.id}
-                  voucher={v}
-                  onOpen={setSelectedVoucher}
-                />
-              ))}
-        </div>
-      </div>
+  <div className="avs-voucher-grid">
+    {loading ? (
+      [...Array(8)].map((_, i) => <SkeletonVoucherCard key={i} />)
+    ) : filteredResults.length === 0 ? (
+      <AvoEmptyState
+        query=""     
+        currentCat={currentCat}
+        onClear={() => handleCatSelect("All")}
+      />
+    ) : (
+      filteredResults.map((v) => (
+        <AvoVoucherCard 
+        key={v.id} voucher={v} 
+        onOpen={setSelectedVoucher} 
+        onPartnerOpen={onPartnerOpen}
+        />
+      ))
+    )}
+  </div>
+</div>
 
       {/* Occasions */}
       <AvoOccasions />
