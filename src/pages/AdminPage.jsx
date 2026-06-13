@@ -1453,6 +1453,7 @@ function AddVoucherForm({ user, onSuccess }) {
     </div>
   );
 }
+// eslint-disable-next-line no-unused-vars
 async function updatePartnerRating(partnerId, newRating, newReviewCount) {
   const batch = writeBatch(db);
 

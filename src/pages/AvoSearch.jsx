@@ -53,6 +53,7 @@ export function AvoSearchBar({
       results = results.sort((a, b) => (b.rating || 0) - (a.rating || 0));
 
     onResults?.(results);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query, currentCat, priceRange, sortVal, vouchers]);
 
   const ZAR_TO_USD = 16.53;

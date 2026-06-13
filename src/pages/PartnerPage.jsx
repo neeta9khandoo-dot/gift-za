@@ -166,7 +166,7 @@ function PhotoGallery({ photos }) {
           >
             <img
               src={url}
-              alt={`Photo ${i + 1}`}
+              alt={`Gallery ${i + 1}`}
               loading="lazy"
               style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform .2s" }}
               onMouseEnter={(e) => (e.target.style.transform = "scale(1.04)")}
