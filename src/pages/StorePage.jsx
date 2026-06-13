@@ -184,7 +184,35 @@ const CAT_ICONS = {
 };
 
 // ─── Sub-components ───────────────────────────────────────────────────────
-
+function StarRating({ rating, reviewCount }) {
+  const full = Math.floor(rating);
+  const half = rating - full >= 0.5;
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 4 }}>
+      <span style={{ display: "inline-flex", gap: 1 }}>
+        {[...Array(5)].map((_, i) => (
+          <span
+            key={i}
+            style={{
+              fontSize: ".72rem",
+              color: i < full || (i === full && half) ? "#f5a623" : "#ddd",
+            }}
+          >
+            ★
+          </span>
+        ))}
+      </span>
+      <span style={{ fontSize: ".72rem", fontWeight: 700, color: "var(--forest)" }}>
+        {rating.toFixed(1)}
+      </span>
+      {reviewCount > 0 && (
+        <span style={{ fontSize: ".68rem", color: "var(--muted)" }}>
+          · {reviewCount.toLocaleString()} reviews
+        </span>
+      )}
+    </div>
+  );
+}
 function AvoGreeting({ user, voucherCount = 0 }) {
   const days = [
     "Sunday",
@@ -569,6 +597,12 @@ function AvoVoucherCard({ voucher: v, onOpen, onPartnerOpen }) {
       </div>
       <div className="avs-v-body">
         <div className="avs-v-name">{v.name}</div>
+         {v.partnerRating > 0 && (
+    <StarRating
+      rating={v.partnerRating}
+      reviewCount={v.partnerReviewCount}
+    />
+  )}
        <div className="avs-v-loc">
   📍{" "}
   <span

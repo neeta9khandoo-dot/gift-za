@@ -10,6 +10,8 @@ import {
 } from "recharts";
 import { initializeApp, getApps } from "firebase/app";
 import {
+  writeBatch, 
+  doc, 
   getFirestore,
   collection,
   addDoc,
@@ -1451,7 +1453,28 @@ function AddVoucherForm({ user, onSuccess }) {
     </div>
   );
 }
+async function updatePartnerRating(partnerId, newRating, newReviewCount) {
+  const batch = writeBatch(db);
 
+  // Update all their vouchers
+  const vouchersSnap = await getDocs(
+    query(collection(db, "vouchers"), where("partnerId", "==", partnerId))
+  );
+  vouchersSnap.docs.forEach((d) => {
+    batch.update(d.ref, {
+      partnerRating: newRating,
+      partnerReviewCount: newReviewCount,
+    });
+  });
+
+  // Update the partner doc itself
+  batch.update(doc(db, "partners", partnerId), {
+    rating: newRating,
+    reviewCount: newReviewCount,
+  });
+
+  await batch.commit();
+}
 // ─── AdminPage ────────────────────────────────────────────────────────────
 export default function AdminPage({ user, onLogout }) {
   const [vouchers, setVouchers] = useState([]);
