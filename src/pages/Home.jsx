@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import CSS from './globalCss.js';
 import PartnerPage from "./PartnerPage.jsx";
+import CookieConsent from "../components/CookieConsent.jsx";
 import {
   Flower2,
   Cake,
@@ -1480,6 +1481,7 @@ const openPartner = (partnerId) => {
   <ContactPage firebaseApp={firebaseApp} setPage={guardedSetPage} />
 )}
       <Footer setPage={guardedSetPage} />
+      <CookieConsent />
       <BottomNav page={page} setPage={guardedSetPage} user={user} />
       {/* WhatsApp Float Button */}
 
