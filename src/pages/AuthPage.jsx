@@ -26,7 +26,7 @@ const genCode = () =>
 const VOUCHER_TEMPLATES = [
   {
     name: "60-Min Full Body Massage",
-    category: "Wellness",
+    category: "Wellness & Spa",
     price: 550,
     validMonths: 12,
     icon: "massage",
@@ -34,7 +34,7 @@ const VOUCHER_TEMPLATES = [
   },
   {
     name: "Couples Spa Day",
-    category: "Wellness",
+    category: "Wellness & Spa",
     price: 1800,
     validMonths: 12,
     icon: "couples_spa",
@@ -42,7 +42,7 @@ const VOUCHER_TEMPLATES = [
   },
   {
     name: "Hot Stone Therapy",
-    category: "Wellness",
+    category: "Wellness & Spa",
     price: 750,
     validMonths: 12,
     icon: "hot_stone",
@@ -50,7 +50,7 @@ const VOUCHER_TEMPLATES = [
   },
   {
     name: "Luxury Pamper Package",
-    category: "Beauty",
+    category: "Hair & Beauty",
     price: 480,
     validMonths: 6,
     icon: "pamper",
@@ -58,7 +58,7 @@ const VOUCHER_TEMPLATES = [
   },
   {
     name: "Bridal Glow Package",
-    category: "Beauty",
+    category: "Hair & Beauty",
     price: 1950,
     validMonths: 12,
     icon: "bridal",
@@ -162,7 +162,7 @@ const VOUCHER_TEMPLATES = [
   },
   {
     name: "Shona Language Basics — 4 Session Bundle",
-    category: "Skills",
+    category: "Skills & Courses",
     price: 850,
     validMonths: 12,
     icon: "shona_language",
@@ -170,7 +170,7 @@ const VOUCHER_TEMPLATES = [
   },
   {
     name: "Zimbabwe Business Setup Consultation",
-    category: "Skills",
+    category: "Skills & Courses",
     price: 1200,
     validMonths: 12,
     icon: "biz_setup",
@@ -178,7 +178,7 @@ const VOUCHER_TEMPLATES = [
   },
   {
     name: "Expat Orientation Day",
-    category: "Skills",
+    category: "Skills & Courses",
     price: 980,
     validMonths: 12,
     icon: "expat_orientation",
@@ -186,7 +186,7 @@ const VOUCHER_TEMPLATES = [
   },
   {
     name: "Zimbabwe Driving & Road Rules Crash Course",
-    category: "Skills",
+    category: "Skills & Courses",
     price: 650,
     validMonths: 6,
     icon: "driving_lesson",
@@ -194,7 +194,7 @@ const VOUCHER_TEMPLATES = [
   },
   {
     name: "Shona Stone Sculpture Workshop",
-    category: "Skills",
+    category: "Skills & Courses",
     price: 750,
     validMonths: 12,
     icon: "sculpture_workshop",
@@ -202,7 +202,7 @@ const VOUCHER_TEMPLATES = [
   },
   {
     name: "Traditional Cooking Masterclass",
-    category: "Skills",
+    category: "Skills & Courses",
     price: 680,
     validMonths: 12,
     icon: "cooking_class",
@@ -210,7 +210,7 @@ const VOUCHER_TEMPLATES = [
   },
   {
     name: "Mbira Music Introduction — 3 Lessons",
-    category: "Skills",
+    category: "Skills & Courses",
     price: 720,
     validMonths: 12,
     icon: "mbira_lessons",
@@ -218,7 +218,7 @@ const VOUCHER_TEMPLATES = [
   },
   {
     name: "Wildlife & Bush Photography Workshop",
-    category: "Skills",
+    category: "Skills & Courses",
     price: 1450,
     validMonths: 18,
     icon: "bush_photography",
@@ -226,7 +226,7 @@ const VOUCHER_TEMPLATES = [
   },
   {
     name: "Ecocash & Mobile Money for Expats",
-    category: "Skills",
+    category: "Skills & Courses",
     price: 350,
     validMonths: 6,
     icon: "mobile_money",
@@ -234,7 +234,7 @@ const VOUCHER_TEMPLATES = [
   },
   {
     name: "Zimbabwe Labour Law for Foreign Employers",
-    category: "Skills",
+    category: "Skills & Courses",
     price: 1650,
     validMonths: 12,
     icon: "labour_law",
@@ -242,7 +242,7 @@ const VOUCHER_TEMPLATES = [
   },
   {
     name: "Solar & Off-Grid Living Workshop",
-    category: "Skills",
+    category: "Skills & Courses",
     price: 890,
     validMonths: 12,
     icon: "solar_workshop",
@@ -250,7 +250,7 @@ const VOUCHER_TEMPLATES = [
   },
   {
     name: "Batik & Textile Art Class",
-    category: "Skills",
+    category: "Skills & Courses",
     price: 580,
     validMonths: 12,
     icon: "batik_class",
@@ -410,10 +410,29 @@ const VOUCHER_TEMPLATES = [
   },
 ];
 
-async function seedUserVouchers(db, uid, businessName, email) {
+// The single source of truth for categories, site-wide: this is the exact
+// same list and order shown in the buyer-facing Category dropdown on
+// Afrivoucher.com. Keep this list in sync if that dropdown ever changes —
+// everything else (partner sign-up, voucher templates, allocation) reads
+// from this one array.
+const CATEGORIES = [
+  "Wellness & Spa",
+  "Hair & Beauty",
+  "Adventure",
+  "Dining & Wine",
+  "Traditional Restaurants",
+  "Stays",
+  "Skills & Courses",
+  "Music",
+  "Events",
+  "Florists",
+  "Other",
+];
+
+async function seedUserVouchers(db, uid, businessName, email, templates) {
   const userVouchersRef = collection(db, "users", uid, "vouchers");
   const batch = writeBatch(db);
-  VOUCHER_TEMPLATES.forEach((tpl) => {
+  templates.forEach((tpl) => {
     const voucherRef = doc(userVouchersRef);
     const expiryDate = new Date();
     expiryDate.setMonth(expiryDate.getMonth() + tpl.validMonths);
@@ -451,6 +470,7 @@ export default function AuthPage({ firebaseApp, onSuccess }) {
   const [loginForm, setLoginForm] = useState({ email: "", password: "" });
   const [regForm, setRegForm] = useState({
     business: "",
+    category: "",
     email: "",
     password: "",
     confirm: "",
@@ -506,6 +526,10 @@ export default function AuthPage({ firebaseApp, onSuccess }) {
       setRegError("All fields are required.");
       return;
     }
+    if (!regForm.category) {
+      setRegError("Please choose the category your business belongs to.");
+      return;
+    }
     if (regForm.password.length < 6) {
       setRegError("Password must be at least 6 characters.");
       return;
@@ -522,19 +546,32 @@ export default function AuthPage({ firebaseApp, onSuccess }) {
         regForm.password,
       );
       const uid = cred.user.uid;
+
+      // Only load the templates that match the category the partner picked.
+      const templates = VOUCHER_TEMPLATES.filter(
+        (t) => t.category === regForm.category,
+      );
+
       await setDoc(doc(db, "users", uid), {
         uid,
         businessName: regForm.business,
+        category: regForm.category,
         email: regForm.email,
         role: "partner",
         status: "active",
-        voucherCount: VOUCHER_TEMPLATES.length,
+        voucherCount: templates.length,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       });
-      await seedUserVouchers(db, uid, regForm.business, regForm.email);
+      await seedUserVouchers(
+        db,
+        uid,
+        regForm.business,
+        regForm.email,
+        templates,
+      );
       setRegMsg(
-        `Account created! ${VOUCHER_TEMPLATES.length} vouchers loaded for ${regForm.business} 🎉`,
+        `Account created! ${templates.length} ${regForm.category} voucher${templates.length === 1 ? "" : "s"} loaded for ${regForm.business} 🎉`,
       );
       setTimeout(() => onSuccess?.(), 1800);
     } catch (e) {
@@ -645,8 +682,58 @@ export default function AuthPage({ firebaseApp, onSuccess }) {
         {/* ── Register ── */}
         {!showReset && tab === "register" && (
           <>
+            <div className="auth-field">
+              <label>Business Name</label>
+              <input
+                type="text"
+                value={regForm.business}
+                onChange={setR("business")}
+                placeholder="Relax Zone Spa"
+                onKeyDown={(e) => e.key === "Enter" && handleRegister()}
+              />
+            </div>
+
+            <div className="auth-field">
+              <label>Category</label>
+              <select
+                value={regForm.category}
+                onChange={setR("category")}
+                className="auth-select"
+              >
+                <option value="" disabled>
+                  Choose your business category
+                </option>
+                {CATEGORIES.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                ))}
+              </select>
+              {regForm.category && (
+                <p
+                  style={{
+                    fontSize: ".76rem",
+                    color: "var(--sub)",
+                    marginTop: 6,
+                  }}
+                >
+                  {
+                    VOUCHER_TEMPLATES.filter(
+                      (t) => t.category === regForm.category,
+                    ).length
+                  }{" "}
+                  {regForm.category} voucher template
+                  {VOUCHER_TEMPLATES.filter(
+                    (t) => t.category === regForm.category,
+                  ).length === 1
+                    ? ""
+                    : "s"}{" "}
+                  will be loaded to your account.
+                </p>
+              )}
+            </div>
+
             {[
-              ["business", "Business Name", "text", "Relax Zone Spa"],
               ["email", "Email Address", "email", "hello@yourbusiness.co.za"],
               ["password", "Password", "password", "Minimum 6 characters"],
               ["confirm", "Confirm Password", "password", "Repeat password"],
