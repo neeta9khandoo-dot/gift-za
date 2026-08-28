@@ -1054,11 +1054,11 @@ function ProspectingTool() {
 }
 
 // ─── AddVoucherForm ───────────────────────────────────────────────────────
-function AddVoucherForm({ user, onSuccess }) {
+function AddVoucherForm({user, bizCategory, onSuccess }) {
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
-    category: "Wellness",
+    category: bizCategory || "",
     price: "",
     validity: "12",
     desc: "",
@@ -1085,7 +1085,7 @@ function AddVoucherForm({ user, onSuccess }) {
   const clearForm = () => {
     setFormData({
       name: "",
-      category: "Wellness",
+      category: bizCategory || "",
       price: "",
       validity: "12",
       desc: "",
@@ -1481,6 +1481,7 @@ export default function AdminPage({ user, onLogout }) {
   const [vouchers, setVouchers] = useState([]);
   const [sold, setSold] = useState([]);
   const [bizName, setBizName] = useState("Partner Dashboard");
+  const [bizCategory, setBizCategory] = useState("");
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("vouchers");
 
@@ -1513,9 +1514,12 @@ export default function AdminPage({ user, onLogout }) {
         const uSnap = await getDocs(
           query(collection(db, "users"), where("uid", "==", user.uid)),
         );
-        if (!uSnap.empty)
-          setBizName(uSnap.docs[0].data().businessName || "Partner Dashboard");
-      } catch {
+        if (!uSnap.empty) {
+    const udata = uSnap.docs[0].data();
+    setBizName(udata.businessName || "Partner Dashboard");
+    setBizCategory(udata.category || udata.businessCategory || ""); // NEW — adjust field name to match your schema
+  }
+} catch  {
         /* ignore */
       }
     } finally {
