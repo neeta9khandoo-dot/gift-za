@@ -1486,7 +1486,7 @@ const openPartner = (partnerId) => {
       {/* WhatsApp Float Button */}
 
       <a
-        href="https://wa.me/27780066108"
+        href="https://wa.me/263776109275"
         target="_blank"
         rel="noopener noreferrer"
         style={{

@@ -1244,7 +1244,7 @@ function AddVoucherForm({user, bizCategory, onSuccess }) {
               />
             </div>
             <div style={S.formGroup}>
-              <label style={S.label}>Price (ZAR) *</label>
+              <label style={S.label}>Price (USD) *</label>
               <input
                 style={S.input}
                 type="number"
