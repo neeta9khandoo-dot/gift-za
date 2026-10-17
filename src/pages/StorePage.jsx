@@ -35,62 +35,7 @@ const getCatIcon = (cat) =>
     Other: "◆",
   })[cat] || "◆";
 
-const PROMO_SLIDES = [
-  {
-    emoji: "☯",
-    bg: "linear-gradient(135deg,#1a2e1f,#0a1f12)",
-    img: "https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?w=600&q=80",
-    tag: "Wellness",
-    name: "Couples Spa Day",
-    price: "From US$109",
-    cat: "Wellness",
-  },
-  {
-    emoji: "◈",
-    bg: "linear-gradient(135deg,#2e1a0e,#140a00)",
-    img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600&q=80",
-    tag: "Traditional",
-    name: "Send Mum a Proper Meal",
-    price: "From US$15",
-    cat: "Traditional Restaurants",
-  },
-  {
-    emoji: "♪",
-    bg: "linear-gradient(135deg,#1a1a2e,#09071a)",
-    img: "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=600&q=80",
-    tag: "Music",
-    name: "Live Jazz Evening",
-    price: "From US$47",
-    cat: "Music",
-  },
-  {
-    emoji: "✦",
-    bg: "linear-gradient(135deg,#000d1a,#001a33)",
-    img: "https://images.unsplash.com/photo-1601024445121-e5b82f020549?w=600&q=80",
-    tag: "Adventure",
-    name: "Tandem Skydive",
-    price: "From US$179",
-    cat: "Adventure",
-  },
-  {
-    emoji: "✿",
-    bg: "linear-gradient(135deg,#160a10,#2e1a1f)",
-    img: "https://images.unsplash.com/photo-1502977249166-824b3a8a4d6d?w=600&q=80",
-    tag: "Florists",
-    name: "Luxury Rose Arrangement",
-    price: "From US$41",
-    cat: "Florists",
-  },
-  {
-    emoji: "⌂",
-    bg: "linear-gradient(135deg,#1a2e1f,#0e1f14)",
-    img: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&q=80",
-    tag: "Stays",
-    name: "Ancient City Lodge",
-    price: "From US$169",
-    cat: "Stays",
-  },
-];
+
 
 const CAT_TILES = [
   { emoji: "☯", name: "Wellness",      cat: "Wellness",              img: "https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?w=900&h=400&fit=crop&q=80" },
@@ -103,14 +48,7 @@ const CAT_TILES = [
   { emoji: "◎", name: "Skills",        cat: "Skills",                img: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=900&h=400&fit=crop&q=80" },
 ];
 
-const PERKS = [
-  { icon: "◉", label: "WhatsApp Delivery" },
-  { icon: "◈", label: "PayFast Secure" },
-  { icon: "✓", label: "Verified Partners" },
-  { icon: "↺", label: "Flexible Booking" },
-  { icon: "◆", label: "Custom Messages" },
-  { icon: "★", label: "4.9 · 2,800 Reviews" },
-];
+
 const CAT_BLURBS = {
   Wellness: "Spa days, massages & pamper packages",
   "Traditional Restaurants": "Send a proper home-cooked meal",
