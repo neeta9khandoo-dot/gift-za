@@ -1054,7 +1054,7 @@ function ProspectingTool() {
 }
 
 // ─── AddVoucherForm ───────────────────────────────────────────────────────
-function AddVoucherForm({user, bizCategory, onSuccess }) {
+function AddVoucherForm({ user, bizName, bizCategory, onSuccess }) {
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -1132,38 +1132,36 @@ function AddVoucherForm({user, bizCategory, onSuccess }) {
 
       const expiryDate = new Date();
       expiryDate.setMonth(expiryDate.getMonth() + parseInt(formData.validity));
-
-      const voucherData = {
-        code: genCode(),
-        name: formData.name,
-        category: formData.category,
-        city: formData.city || "Zimbabwe",
-        price: parseFloat(formData.price),
-        desc: formData.desc,
-        includes: formData.includes
-          .split(",")
-          .map((s) => s.trim())
-          .filter(Boolean),
-        imageUrl,
-        validMonths: parseInt(formData.validity),
-        expiryDate: expiryDate.toISOString(),
-        status: "active",
-        soldCount: 0,
-        totalRevenue: 0,
-        uid: user.uid,
-        businessEmail: user.email,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-        source: "manual",
-      };
-const businessName =  user.displayName || "";
-      const ref = await addDoc(
-        collection(db, "users", user.uid, "vouchers"),
-        voucherData,
-      );
-      await addDoc(collection(db, "all_vouchers"), {
-  ...voucherData,
+const businessName =
+  (bizName && bizName !== "Partner Dashboard" ? bizName : user.displayName) || "";
+   const voucherData = {
+  code: genCode(),
+  name: formData.name,
+  category: formData.category,
+  city: formData.city || "Zimbabwe",
+  price: parseFloat(formData.price),
+  desc: formData.desc,
+  includes: formData.includes
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean),
+  imageUrl,
+  validMonths: parseInt(formData.validity),
+  expiryDate: expiryDate.toISOString(),
+  status: "active",
+  soldCount: 0,
+  totalRevenue: 0,
+  uid: user.uid,
   businessName,
+  businessEmail: user.email,
+  createdAt: serverTimestamp(),
+  updatedAt: serverTimestamp(),
+  source: "manual",
+};
+
+  const ref = await addDoc(collection(db, "users", user.uid, "vouchers"), voucherData);
+await addDoc(collection(db, "all_vouchers"), {
+  ...voucherData,
   firestoreId: ref.id,
   partnerUid: user.uid,
 });
@@ -1482,7 +1480,7 @@ export default function AdminPage({ user, onLogout }) {
   const [vouchers, setVouchers] = useState([]);
   const [sold, setSold] = useState([]);
   const [bizName, setBizName] = useState("Partner Dashboard");
-  const [ setBizCategory] = useState("");
+  const [bizCategory, setBizCategory] = useState("");
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("vouchers");
 
@@ -1592,7 +1590,12 @@ export default function AdminPage({ user, onLogout }) {
           <>
             <AnalyticsSection vouchers={vouchers} sold={sold} />
 
-            <AddVoucherForm user={user} onSuccess={load} />
+           <AddVoucherForm
+  user={user}
+  bizName={bizName}
+  bizCategory={bizCategory}
+  onSuccess={load}
+/>
 
             {/* Vouchers table */}
             <div style={{ ...S.card, marginBottom: 24 }}>
