@@ -61,7 +61,7 @@ const CAT_BLURBS = {
 };
  
 const CAT_CARD_CSS = `
-.cc-wrap{max-width:1200px;margin:0 auto;padding:36px 16px 12px}
+.cc-wrap{margin:0 auto;padding:36px 16px 12px}
 .cc-head{text-align:center;margin-bottom:26px}
 .cc-title{font-size:1.9rem;font-weight:800;letter-spacing:1px;margin:0;color:#111}
 .cc-sub{font-size:.8rem;color:#444;margin:4px 0 0}

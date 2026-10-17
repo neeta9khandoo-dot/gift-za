@@ -33,7 +33,7 @@ const SLIDES = [
 ];
 
 const HERO_CSS = `
-.hv3{max-width:1200px;margin:0 auto;padding:20px 16px 8px;display:grid;
+.hv3{margin:0 auto;padding:20px 16px 8px;display:grid;
   grid-template-columns:2fr 1fr;gap:24px}
 .hv3-main{position:relative;height:345px;border-radius:18px;overflow:hidden;
   background:#8ec5ea;

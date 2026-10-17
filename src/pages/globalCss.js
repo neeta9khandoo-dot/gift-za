@@ -33,7 +33,6 @@ a{text-decoration:none;color:inherit}
 button{font-family:var(--sans);cursor:pointer}
 .container {
   width: 100%;
-  max-width: 1280px;
   margin: 0 auto;           
   padding: 0 24px;
   box-sizing: border-box;
@@ -59,7 +58,6 @@ main {
 
 .nav{background:#fff;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
 .nav-inner {
-  max-width: 1280px;
   margin: 0 auto;
   padding: 0 24px;
   display: flex;
@@ -242,7 +240,6 @@ footer{background:var(--black);color:rgba(255,255,255,.55);padding:48px 0 24px}
 .avs-greeting h2{font-size:1.3rem;font-weight:700;color:#111;margin-bottom:2px;letter-spacing:-.3px}
 .avs-greeting p{font-size:.78rem;color:#888}
 .avs-greeting strong{color:var(--green-primary)}
-.avs-section{padding:18px 0 6px}
 .avs-section-head{display:flex;justify-content:space-between;align-items:center;padding:0 16px;margin-bottom:12px}
 .avs-section-title{font-size:.95rem;font-weight:700;color:#111;letter-spacing:-.15px}
 .avs-hscroll{display:flex;gap:10px;padding:0 16px 6px;overflow-x:auto;scrollbar-width:none}
@@ -497,7 +494,6 @@ footer{background:var(--black);color:rgba(255,255,255,.55);padding:48px 0 24px}
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 16px;
-  max-width: 1280px;
   margin: 0 auto;
   padding: 0 24px;
 }
@@ -522,7 +518,6 @@ footer{background:var(--black);color:rgba(255,255,255,.55);padding:48px 0 24px}
 .hero-v2-bg{position:absolute;inset:0;background:linear-gradient(135deg,#0a0a0a 0%,#1a0505 50%,#0a0a0a 100%)}
 .hero-v2-pattern{position:absolute;inset:0;background-image:radial-gradient(circle at 20% 50%,rgba(26,122,60,.12) 0%,transparent 50%),radial-gradient(circle at 80% 20%,rgba(26,122,60,.08) 0%,transparent 40%)}
 .hero-v2-inner {
-  max-width: 1280px;
   margin: 0 auto;
   padding: 48px 24px;
   display: flex;
@@ -611,18 +606,20 @@ footer{background:var(--black);color:rgba(255,255,255,.55);padding:48px 0 24px}
 /* ── Page wrapper: full width, centered content ── */
 .avs-page {
   width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 24px;
-  box-sizing: border-box;
+  max-width: none;
+  margin: 0;
+  padding: 0;
 }
 
-/* ── Every section: full width ── */
 .avs-section {
   width: 100%;
-  margin-bottom: 32px;
+  max-width: 1280px;
+  margin: 0 auto 32px;
+  padding: 18px 24px 6px;
 }
-
+@media (max-width: 768px) {
+  .avs-section { padding: 18px 16px 6px; }
+}
 /* ── Section header: title + sort control ── */
 .avs-section-head {
   display: flex;
@@ -694,9 +691,7 @@ footer{background:var(--black);color:rgba(255,255,255,.55);padding:48px 0 24px}
 }
 
 @media (max-width: 768px) {
-  .avs-page {
-    padding: 0 16px;
-  }
+ 
   .avs-voucher-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
