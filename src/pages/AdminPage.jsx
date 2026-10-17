@@ -1156,16 +1156,17 @@ function AddVoucherForm({user, bizCategory, onSuccess }) {
         updatedAt: serverTimestamp(),
         source: "manual",
       };
-
+const businessName =  user.displayName || "";
       const ref = await addDoc(
         collection(db, "users", user.uid, "vouchers"),
         voucherData,
       );
       await addDoc(collection(db, "all_vouchers"), {
-        ...voucherData,
-        firestoreId: ref.id,
-        partnerUid: user.uid,
-      });
+  ...voucherData,
+  businessName,
+  firestoreId: ref.id,
+  partnerUid: user.uid,
+});
 
       setFormStatus({
         type: "success",
