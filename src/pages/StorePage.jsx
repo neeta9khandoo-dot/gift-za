@@ -457,6 +457,7 @@ function SkeletonVoucherCard() {
 }
 
 
+// eslint-disable-next-line no-unused-vars
 const QR_URL = (data) =>
   `https://api.qrserver.com/v1/create-qr-code/?size=160x160&color=1A2E1F&bgcolor=F5F0E8&data=${encodeURIComponent(data)}`;
 
