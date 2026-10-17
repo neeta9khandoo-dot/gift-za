@@ -35,7 +35,7 @@ const SECTIONS = [
   },
   {
     heading: "Contact",
-    body: "Privacy Officer: AfriVoucher (Pty) Ltd · support@afrivoucher.com · +27 67 605 6777",
+    body: "Privacy Officer: AfriVoucher (Pty) Ltd · support@afrivoucher.com · +263 77 610 9275",
   },
 ];
 

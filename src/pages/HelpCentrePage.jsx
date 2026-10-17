@@ -33,7 +33,7 @@ const FAQS = [
       },
       {
         q: "What if the recipient didn't receive their voucher?",
-        a: "Check that the WhatsApp number was entered correctly at checkout. If the number is correct, go to My Orders and use the Resend button to push the code again. Still stuck? Contact us on WhatsApp at +27 67 605 6777.",
+        a: "Check that the WhatsApp number was entered correctly at checkout. If the number is correct, go to My Orders and use the Resend button to push the code again. Still stuck? Contact us on WhatsApp at +263 77 610 9275.",
       },
       {
         q: "Can I send the voucher to myself?",
@@ -116,7 +116,7 @@ const FAQS = [
 ];
 
 const CONTACT_ITEMS = [
-  { icon: "💬", label: "WhatsApp", value: "+27 67 605 6777", href: "https://wa.me/27676056777" },
+  { icon: "💬", label: "WhatsApp", value: "+263 77 610 9275", href: "https://wa.me/27676056777" },
   { icon: "📧", label: "Email", value: "support@afrivoucher.com", href: "mailto:support@afrivoucher.com" },
   { icon: "🕐", label: "Hours", value: "Mon–Fri, 8am–6pm CAT", href: null },
 ];

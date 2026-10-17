@@ -21,7 +21,7 @@ const CONTACT_CARDS = [
   {
     icon: "💬",
     label: "WhatsApp",
-    value: "+27 67 605 6777",
+    value: "+263 77 610 9275",
     sub: "Fastest response · Mon–Fri 8am–6pm CAT",
     href: "https://wa.me/27676056777",
     cta: "Open WhatsApp",
