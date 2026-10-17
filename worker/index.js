@@ -1,13 +1,16 @@
 const IMAGE_BACKEND = "r2"; 
-
-// ── CORS headers ──────────────────────────────────────────────────────────────
+const PAYNOW_INITIATE_URL = "https://www.paynow.co.zw/interface/initiatetransaction";
 const CORS = {
   "Access-Control-Allow-Origin":  "*",
   "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Upload-Secret, x-upload-secret",
   "Access-Control-Max-Age":       "86400",
 };
-
+export const genCode = () =>
+  "VCH-" +
+  [...Array(8)]
+    .map(() => "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"[Math.floor(Math.random() * 32)])
+    .join("");
 const json = (d, s = 200) =>
   new Response(JSON.stringify(d), {
     status: s,
@@ -368,6 +371,224 @@ function waMsg({
   ].join("\n");
 }
 
+
+async function paynowHash(values, integrationKey) {
+  const base = values.join("") + integrationKey;
+  const data = new TextEncoder().encode(base);
+  const digest = await crypto.subtle.digest("SHA-512", data);
+  return [...new Uint8Array(digest)]
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("")
+    .toUpperCase();
+}
+
+function parsePaynowResponse(text) {
+  const out = {};
+  for (const pair of text.split("&")) {
+    const [k, v] = pair.split("=");
+    if (!k) continue;
+    out[decodeURIComponent(k).toLowerCase()] = decodeURIComponent((v || "").replace(/\+/g, " "));
+  }
+  return out;
+}
+
+async function handlePaynowCreate(request, env) {
+  if (!env.PAYNOW_INTEGRATION_ID || !env.PAYNOW_INTEGRATION_KEY)
+    return err("Paynow secrets not set. Run: wrangler secret put PAYNOW_INTEGRATION_ID / PAYNOW_INTEGRATION_KEY", 500);
+ 
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return err("Body must be JSON");
+  }
+ 
+  const {
+    reference,       
+    amount,          
+    buyerEmail,
+    buyerName,
+    recipientPhone,
+    recipientName,
+    note,
+    voucherName,
+    voucherId,
+  } = body;
+ 
+  if (!reference || !amount || !buyerEmail || !recipientPhone)
+    return err("Missing required fields: reference, amount, buyerEmail, recipientPhone");
+ 
+  const origin = new URL(request.url).origin;
+ 
+  const fields = {
+    id: env.PAYNOW_INTEGRATION_ID,
+    reference: String(reference),
+    amount: Number(amount).toFixed(2),
+    additionalinfo: voucherName || "AfriVoucher purchase",
+    returnurl: `${origin}/paynow/return?ref=${encodeURIComponent(reference)}`,
+    resulturl: `${origin}/paynow/result`,
+    authemail: buyerEmail,
+    status: "Message",
+  };
+ 
+  // Hash is generated over the values in this exact field order
+  const order = ["id", "reference", "amount", "additionalinfo", "returnurl", "resulturl", "authemail", "status"];
+  const hash = await paynowHash(order.map((k) => fields[k]), env.PAYNOW_INTEGRATION_KEY);
+ 
+  const form = new URLSearchParams({ ...fields, hash });
+ 
+  const res = await fetch(PAYNOW_INITIATE_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: form.toString(),
+  });
+  const text = await res.text();
+  const parsed = parsePaynowResponse(text);
+ 
+  if (parsed.status?.toLowerCase() !== "ok") {
+    console.error("Paynow initiate failed:", text);
+    return err("Paynow rejected the request: " + (parsed.error || text), 502);
+  }
+
+  try {
+    await fsReq(env, "PATCH", `pending_payments/${encodeURIComponent(reference)}`, {
+      fields: toFs({
+        reference: String(reference),
+        amount: Number(amount),
+        buyerEmail,
+        buyerName: buyerName || "",
+        recipientPhone,
+        recipientName: recipientName || "",
+        note: note || "",
+        voucherName: voucherName || "",
+        voucherId: voucherId || "",
+        pollUrl: parsed.pollurl || "",
+        status: "pending",
+        createdAt: new Date().toISOString(),
+      }),
+    });
+  } catch (e) {
+    console.error("Could not save pending payment:", e.message);
+  }
+ 
+  return json({
+    success: true,
+    browserUrl: parsed.browserurl,
+    pollUrl: parsed.pollurl,
+    reference,
+  });
+}
+ 
+// ── POST /paynow/result ──────────────────────────────────────────────────
+// Paynow calls this SERVER-TO-SERVER when the payment status changes.
+// This is where you actually confirm payment and deliver the voucher —
+// never trust the browser redirect alone for that.
+async function handlePaynowResult(request, env) {
+  const ct = request.headers.get("content-type") || "";
+  let fields;
+  if (ct.includes("application/x-www-form-urlencoded")) {
+    fields = Object.fromEntries(new URLSearchParams(await request.text()));
+  } else {
+    // Some setups send JSON; handle both defensively
+    try {
+      fields = await request.json();
+    } catch {
+      return new Response("Bad request", { status: 400 });
+    }
+  }
+ 
+  const receivedHash = (fields.hash || fields.Hash || "").toUpperCase();
+  // Validate hash: same rule — concatenate every value EXCEPT hash itself,
+  // in the order they were sent, append integration key, SHA-512, uppercase.
+  const orderedValues = Object.entries(fields)
+    .filter(([k]) => k.toLowerCase() !== "hash")
+    .map(([, v]) => v);
+  const expectedHash = await paynowHash(orderedValues, env.PAYNOW_INTEGRATION_KEY);
+ 
+  if (expectedHash !== receivedHash) {
+    console.error("Paynow result hash mismatch — possible spoofed request");
+    return new Response("Invalid hash", { status: 400 });
+  }
+ 
+  const reference = fields.reference;
+  const status = (fields.status || "").toLowerCase();
+ 
+  if (!reference) return new Response("Missing reference", { status: 400 });
+ 
+  if (status === "paid" || status === "awaiting delivery" || status === "delivered") {
+    try {
+      const pendingRes = await fsReq(env, "GET", `pending_payments/${encodeURIComponent(reference)}`);
+      const order = fsToObj(pendingRes);
+      if (order) {
+        const code = genCode();
+        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(
+          JSON.stringify({ code, amount: order.amount, valid: true }),
+        )}`;
+ 
+        // Record the sale
+        await fsReq(env, "POST", "sold_vouchers", {
+          fields: toFs({
+            code,
+            name: order.voucherName || "Voucher",
+            price: order.amount,
+            buyerEmail: order.buyerEmail,
+            buyerName: order.buyerName || "",
+            recipientPhone: order.recipientPhone,
+            recipientName: order.recipientName || "",
+            note: order.note || "",
+            voucherId: order.voucherId || "",
+            status: "delivered",
+            paynowReference: reference,
+            createdAt: new Date().toISOString(),
+          }),
+        });
+ 
+        // Deliver via WhatsApp using the helpers already in your worker
+        try {
+          await sendWA(
+            env,
+            order.recipientPhone,
+            waMsg({
+              recipientName: order.recipientName,
+              buyerName: order.buyerName,
+              productName: order.voucherName,
+              amount: order.amount,
+              code,
+              note: order.note,
+              qrUrl,
+            }),
+          );
+        } catch (e) {
+          console.error("WhatsApp delivery failed:", e.message);
+        }
+ 
+        // Mark pending payment resolved
+        await fsReq(
+          env,
+          "PATCH",
+          `pending_payments/${encodeURIComponent(reference)}?updateMask.fieldPaths=status`,
+          { fields: toFs({ status: "completed" }) },
+        );
+      }
+    } catch (e) {
+      console.error("Error finalising Paynow order:", e.message);
+    }
+  }
+ 
+  // Paynow doesn't need a specific body back, just a 200
+  return new Response("OK", { status: 200 });
+}
+ 
+// ── GET /paynow/return ────────────────────────────────────────────────
+// The buyer's browser lands here after paying (or cancelling). Redirect
+// them back into your React app's success/orders page.
+async function handlePaynowReturn(request, env) {
+  const url = new URL(request.url);
+  const ref = url.searchParams.get("ref") || "";
+  const appUrl = env.APP_URL || "https://afrivoucher.com";
+  return Response.redirect(`${appUrl}/orders?paynow_ref=${encodeURIComponent(ref)}`, 302);
+}
+
 // ── Voucher routes ────────────────────────────────────────────────────────────
 async function handleCreateVoucher(request, env) {
   const b = await request.json();
@@ -583,6 +804,12 @@ const handler = {
         return handlePaymentWebhook(request, env);
       if (method === "POST" && pathname === "/redeem")
         return handleRedeem(request, env);
+         if (method === "POST" && pathname === "/paynow/create")
+       return handlePaynowCreate(request, env);
+     if (method === "POST" && pathname === "/paynow/result")
+       return handlePaynowResult(request, env);
+     if (method === "GET" && pathname === "/paynow/return")
+       return handlePaynowReturn(request, env);
       if (method === "GET" && pathname.startsWith("/voucher/"))
         return handleVoucherLookup(pathname.split("/voucher/")[1], env);
       if (method === "GET" && pathname === "/places-search")
@@ -613,40 +840,3 @@ if (method === "GET" && pathname === "/health")
 
 export default handler;
 
-/*
-══════════════════════════════════════════════════════════
-wrangler.toml — full config with R2 binding
-══════════════════════════════════════════════════════════
-
-name = "voucher-worker"
-main = "index.js"
-compatibility_date = "2024-01-01"
-compatibility_flags = ["nodejs_compat"]
-
-[[r2_buckets]]
-binding     = "VOUCHER_IMAGES"
-bucket_name = "voucher-images"
-
-[vars]
-APP_ENV = "production"
-
-══════════════════════════════════════════════════════════
-Create the R2 bucket (run once):
-  wrangler r2 bucket create voucher-images
-
-Set all secrets (run each once):
-  wrangler secret put UPLOAD_SECRET         ← make up a strong password
-  wrangler secret put TWILIO_ACCOUNT_SID
-  wrangler secret put TWILIO_AUTH_TOKEN
-  wrangler secret put TWILIO_WHATSAPP_FROM
-  wrangler secret put FIREBASE_PROJECT_ID
-  wrangler secret put FIREBASE_CLIENT_EMAIL
-  wrangler secret put FIREBASE_PRIVATE_KEY
-  wrangler secret put PAYFAST_PASSPHRASE
-  wrangler secret put CF_IMAGES_TOKEN       (only for cf_images backend)
-  wrangler secret put CF_ACCOUNT_ID         (only for cf_images backend)
-
-Deploy:
-  wrangler deploy
-══════════════════════════════════════════════════════════
-*/

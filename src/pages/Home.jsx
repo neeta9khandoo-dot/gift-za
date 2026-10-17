@@ -1345,30 +1345,31 @@ const openPartner = (partnerId) => {
         const snap = await getDocs(
           query(collection(db, "all_vouchers"), orderBy("createdAt", "desc")),
         );
-        const data = snap.docs.map((d) => {
-          const v = d.data();
-          return {
-            id: "fb_" + d.id,
-            cat: v.category || "Other",
-            name: v.name || "Unnamed Voucher",
-            partner: v.businessEmail?.split("@")[1]?.split(".")[0] || "Partner",
-            city: "Zimbabwe",
-            price: v.price || 0,
-            comm: 0,
-            rating: 0,
-            reviews: 0,
-            tags: [],
-            icon: getCatIcon(v.category),
-            img: v.imageUrl || "",
-            imageUrl: v.imageUrl || "",
-            desc: v.desc || "",
-            includes: Array.isArray(v.includes) ? v.includes : [],
-            expiry: v.validMonths ? v.validMonths + " months" : "12 months",
-            source: "firebase",
-            uid: v.partnerUid || v.uid || "",
-            firestoreId: d.id,
-          };
-        });
+       const data = snap.docs.map((d) => {
+  const v = d.data();
+  return {
+    id: "fb_" + d.id,
+    cat: v.category || "Other",
+    name: v.name || "Unnamed Voucher",
+    partner: v.businessName || "Partner",
+    partnerId: v.partnerUid || v.uid || "",
+    city: v.city || v.businessCity || v.location || "Zimbabwe",
+    price: v.price || 0,
+    comm: 0,
+    rating: 0,
+    reviews: 0,
+    tags: [],
+    icon: getCatIcon(v.category),
+    img: v.imageUrl || "",
+    imageUrl: v.imageUrl || "",
+    desc: v.desc || "",
+    includes: Array.isArray(v.includes) ? v.includes : [],
+    expiry: v.validMonths ? v.validMonths + " months" : "12 months",
+    source: "firebase",
+    uid: v.partnerUid || v.uid || "",
+    firestoreId: d.id,
+  };
+});
         setVouchers(data);
       } catch (e) {
         console.warn("Could not load vouchers:", e.message);

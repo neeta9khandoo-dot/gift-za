@@ -834,13 +834,39 @@ function CheckoutDrawer({ voucher: v, onClose, onSuccess }) {
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
 
   const handlePay = async () => {
-    if (!form.buyerName || !form.buyerEmail || !form.recipientPhone) {
-      alert("Please fill in all required fields.");
-      return;
+  if (!form.buyerName || !form.buyerEmail || !form.recipientPhone) {
+    alert("Please fill in all required fields.");
+    return;
+  }
+  setPaying(true);
+  try {
+    const res = await fetch(`${process.env.REACT_APP_WORKER_URL}/paynow/create`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        reference: `AV-${Date.now()}`,
+        amount: (v.price / 16.53).toFixed(2), // adjust if Paynow account is ZAR/ZWL not USD
+        buyerEmail: form.buyerEmail,
+        buyerName: form.buyerName,
+        recipientPhone: form.recipientPhone,
+        recipientName: form.recipientName,
+        note: form.note,
+        voucherName: v.name,
+        voucherId: v.id,
+      }),
+    });
+    const data = await res.json();
+    if (data.success) {
+      window.location.href = data.browserUrl; // send buyer to Paynow to pay
+    } else {
+      alert("Payment could not be started. Please try again.");
+      setPaying(false);
     }
-    setPaying(true);
-    await onSuccess(form);
-  };
+  } catch (e) {
+    alert("Network error starting payment.");
+    setPaying(false);
+  }
+};
 
   return (
     <div
