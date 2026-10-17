@@ -66,6 +66,17 @@ main {
   width: 100%;
   box-sizing: border-box;
 }
+  .footer-brand picture{display:block;line-height:0}
+.footer-brand img{
+  height:48px;
+  width:auto;
+  max-width:100%;
+  display:block;
+}
+
+@media (max-width:900px){
+  .footer-brand img{height:40px}
+}
 .nav-logo{font-family:var(--sans);font-size:1.4rem;font-weight:800;color:var(--red);letter-spacing:-1px;white-space:nowrap;flex-shrink:0;background:none;border:none;cursor:pointer;display:flex;align-items:center}
 .nav-logo span{color:var(--black)}
 .nav-address-btn{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:var(--r);border:1.5px solid var(--border2);background:var(--cream);font-size:.84rem;font-weight:600;color:var(--black);cursor:pointer;white-space:nowrap;transition:border-color .2s;flex-shrink:0}
@@ -262,7 +273,12 @@ footer{background:var(--black);color:rgba(255,255,255,.55);padding:48px 0 24px}
   margin: 0;
   padding: 0;
 }
-
+.avs-wrap{
+  max-width:1232px;      /* 1200px of content + 16px padding each side */
+  margin:0 auto;
+  padding:0 16px;
+  box-sizing:border-box;
+}
 .avs-promo-img img {
   display: block;
   width: 100%;

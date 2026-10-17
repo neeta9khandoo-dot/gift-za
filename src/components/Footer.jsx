@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-
+import logoMobile from "../images/logo-mobile-footer.png";
+import logoDesktop from "../images/logo-desktop-footer.png";
 const EXPERIENCES = [
   "Wellness & Spa",
   "Adventure",
@@ -19,7 +20,6 @@ const COMPANY = [
 ];
 
 const SUPPORT_LINKS = [
-  { label: "Redeem Voucher",   target: "redeem"  },
   { label: "Help Centre",      target: "help"    },
   { label: "Contact Us",       target: "contact" },
   { label: "Privacy Policy",   target: "privacy" },
@@ -86,7 +86,10 @@ export default function Footer({ setPage }) {
           {/* Brand column */}
           <div>
             <div className="footer-brand">
-              Afri<span>Voucher</span>
+               <picture>
+    <source media="(max-width:900px)" srcSet={logoMobile} />
+    <img src={logoDesktop} alt="AfriVoucher" />
+  </picture>
             </div>
             <p className="footer-tagline">
               Zimbabwe's leading digital gift experience marketplace. Connecting

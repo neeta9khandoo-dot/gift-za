@@ -315,7 +315,7 @@ function AvoTrustStrip() {
   { icon: "↺", text: "Flexible bookings" },
 ];
   return (
-    <div style={{ padding: "14px 0 4px" }}>
+    <div style={{ alignItems: "center" }}>
       <div className="avs-hscroll">
         {items.map((it) => (
           <div key={it.text} className="avs-trust-item">
@@ -1102,24 +1102,28 @@ const [filteredResults, setFilteredResults] = useState([]);
      <AvoFlashDeals vouchers={vouchers} onOpen={setSelectedVoucher} />
 
       {/* Category filter tabs */}
-      <div
-        className="cats-section"
-        style={{ position: "sticky", top: 64, zIndex: 90 }}
-      >
-        <AvoSearchBar
-  currentCat={currentCat}
-  allCats={ALL_CATS}
-  catIcons={CAT_ICONS}
-  onCatSelect={handleCatSelect}
-  vouchers={vouchers}
-  onResults={setFilteredResults}
-  sortVal={sortVal}
-  onSortChange={setSortVal}
-/>
-      </div>
+     <div
+  className="cats-section"
+  style={{ position: "sticky", top: 64, zIndex: 90 }}
+>
+  <div className="avs-wrap">
+    <AvoSearchBar
+      currentCat={currentCat}
+      allCats={ALL_CATS}
+      catIcons={CAT_ICONS}
+      onCatSelect={handleCatSelect}
+      vouchers={vouchers}
+      onResults={setFilteredResults}
+      sortVal={sortVal}
+      onSortChange={setSortVal}
+    />
+  </div>
+</div>
 
-      {/* Trust strip */}
-      <AvoTrustStrip />
+{/* Trust strip */}
+<div className="avs-wrap">
+  <AvoTrustStrip />
+</div>
 
       {/* Voucher grid */}
      <div className="avs-section">

@@ -9,6 +9,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { initializeApp, getApps } from "firebase/app";
+import RedeemPage from "./RedeemPage";
 import {
   writeBatch, 
   doc, 
@@ -1580,9 +1581,10 @@ export default function AdminPage({ user, onLogout }) {
         {/* Tab bar */}
         <div style={S.tabBar}>
           {[
-            ["vouchers", "My Vouchers"],
-            ["prospecting", "Find Partners"],
-          ].map(([id, label]) => (
+  ["vouchers", "My Vouchers"],
+  ["redeem", "Redeem"],
+  ["prospecting", "Find Partners"],
+].map(([id, label]) => (
             <button
               key={id}
               onClick={() => setActiveTab(id)}
@@ -1735,6 +1737,10 @@ export default function AdminPage({ user, onLogout }) {
 
         {/* Prospecting tab */}
         {activeTab === "prospecting" && <ProspectingTool />}
+        {/* Redeem tab */}
+{activeTab === "redeem" && (
+  <RedeemPage user={user} firebaseApp={firebaseApp} />
+)}
       </div>
     </div>
   );

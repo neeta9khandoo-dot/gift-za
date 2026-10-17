@@ -1,6 +1,8 @@
 /* eslint-disable no-unused-vars */
 
 import { Link } from "react-router-dom";
+import logoMobile from "../images/logo-mobile.png";
+import logoDesktop from "../images/logo-desktop.png";
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import CSS from './globalCss.js';
 import PartnerPage from "./PartnerPage.jsx";
@@ -41,7 +43,6 @@ import AuthPage from "./AuthPage";
 import OrdersPage from "./OrdersPage";
 import PartnersPage from "./PartnersPage";
 import PrivacyPage from "./PrivacyPage"
-import RedeemPage from "./RedeemPage";
 import TermsPage from "./TermsPage";
 import Footer from "../components/Footer";
 import ContactPage from "./ContactPage";
@@ -114,55 +115,71 @@ const VOUCHER_TEMPLATES = [
 ];
 
 const HERO_CSS = `
+:root{
+  --av-dark:#232a35;
+  --av-dark-2:#1a2029;
+  --av-orange:#d98a35;
+  --av-orange-light:#e8a93f;
+  --av-orange-deep:#c4531a;
+  --av-kraft:#c9a27a;
+}
 .hv3{margin:0 auto;padding:20px 16px 8px;display:grid;
   grid-template-columns:2fr 1fr;gap:24px}
+
+/* ── main slider ── */
 .hv3-main{position:relative;height:345px;border-radius:18px;overflow:hidden;
-  background:#8ec5ea;
-  background-image:radial-gradient(circle at 20% 20%,rgba(255,255,255,.18) 0 2px,transparent 3px),
-                   radial-gradient(circle at 70% 60%,rgba(255,255,255,.14) 0 2px,transparent 3px);
-  background-size:46px 46px}
+  background:var(--av-dark);
+  background-image:radial-gradient(circle at 20% 20%,rgba(255,255,255,.05) 0 2px,transparent 3px),
+                   radial-gradient(circle at 70% 60%,rgba(255,255,255,.04) 0 2px,transparent 3px);
+  background-size:46px 46px;
+  box-shadow:0 10px 30px rgba(26,32,41,.25)}
 .hv3-track{display:flex;height:100%;transition:transform .6s cubic-bezier(.4,0,.2,1)}
 .hv3-slide{flex:0 0 100%;position:relative;display:flex;align-items:center;cursor:pointer}
 .hv3-copy{position:relative;z-index:2;padding:0 0 0 56px;max-width:60%}
 .hv3-title{font-size:clamp(1.8rem,4.2vw,3rem);font-weight:800;line-height:1.1;
-  color:#000;margin:0 0 12px;letter-spacing:-.5px}
-.hv3-sub{font-size:1.15rem;color:#111;margin:0 0 22px;font-weight:300}
-.hv3-cta{background:none;border:none;padding:0;font-weight:800;font-size:.78rem;
-  letter-spacing:.5px;color:#000;cursor:pointer}
-.hv3-cta:hover{text-decoration:underline}
+  color:#fff;margin:0 0 12px;letter-spacing:-.5px}
+.hv3-sub{font-size:1.15rem;color:rgba(255,255,255,.75);margin:0 0 22px;font-weight:300}
+.hv3-cta{background:var(--av-orange);border:none;padding:11px 22px;border-radius:999px;
+  font-weight:800;font-size:.78rem;letter-spacing:.5px;color:#fff;cursor:pointer;
+  transition:background .2s,transform .2s}
+.hv3-cta:hover{background:var(--av-orange-deep);transform:translateY(-1px)}
 .hv3-img{position:absolute;right:0;bottom:0;height:100%;width:42%;
   object-fit:cover;object-position:center top;
   -webkit-mask-image:linear-gradient(to right,transparent 0,#000 28%);
   mask-image:linear-gradient(to right,transparent 0,#000 28%)}
 .hv3-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:5;
   width:50px;height:50px;border-radius:50%;border:none;background:#fff;
-  box-shadow:0 4px 14px rgba(0,0,0,.18);font-size:1.6rem;font-weight:700;
+  box-shadow:0 4px 14px rgba(0,0,0,.3);font-size:1.6rem;font-weight:700;
   cursor:pointer;display:flex;align-items:center;justify-content:center;
   line-height:1;padding:0 0 3px}
-.hv3-arrow.prev{left:12px;color:#000}
-.hv3-arrow.next{right:12px;color:#f0a030}
+.hv3-arrow.prev{left:12px;color:var(--av-dark)}
+.hv3-arrow.next{right:12px;color:var(--av-orange)}
 .hv3-arrow:hover{transform:translateY(-50%) scale(1.08)}
 .hv3-dots{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);
   display:flex;gap:6px;z-index:5}
 .hv3-dot{width:7px;height:7px;border-radius:50%;border:none;padding:0;
-  background:rgba(255,255,255,.7);cursor:pointer;transition:all .3s}
-.hv3-dot.on{background:#3a9be8;width:20px;border-radius:4px}
- 
+  background:rgba(255,255,255,.35);cursor:pointer;transition:all .3s}
+.hv3-dot.on{background:var(--av-orange);width:20px;border-radius:4px}
+
+/* ── side promo card (matches the app icon) ── */
 .hv3-side{position:relative;height:345px;border-radius:18px;overflow:hidden;
-  background:#c4e0f5;display:flex;flex-direction:column;align-items:center;
-  text-align:center;padding:16px 18px 0}
-.hv3-logo{background:#4aa59a;color:#fff;font-style:italic;font-weight:700;
-  font-size:.85rem;padding:9px 16px;border-radius:6px;margin-bottom:22px}
-.hv3-side-title{font-size:1.2rem;line-height:1.7;color:#111;margin:0;font-weight:400}
+  background:linear-gradient(145deg,var(--av-orange-light) 0%,var(--av-orange-deep) 100%);
+  display:flex;flex-direction:column;align-items:center;
+  text-align:center;padding:16px 18px 0;
+  box-shadow:0 10px 30px rgba(196,83,26,.3)}
+.hv3-logo{background:var(--av-dark);color:#fff;font-weight:800;
+  font-size:.85rem;letter-spacing:.5px;padding:9px 16px;border-radius:8px;margin-bottom:22px}
+.hv3-side-title{font-size:1.2rem;line-height:1.7;color:#fff;margin:0;font-weight:500;
+  text-shadow:0 1px 8px rgba(0,0,0,.15)}
 .hv3-side-stage{position:relative;flex:1;width:100%;display:flex;
   align-items:flex-end;justify-content:center;gap:6px;font-size:4.2rem;
   padding-bottom:6px}
 .hv3-side-stage span:nth-child(2){font-size:5.4rem}
 .hv3-side-btn{position:absolute;top:14px;left:50%;transform:translateX(-50%);
-  background:#000;color:#fff;border:none;border-radius:10px;padding:10px 18px;
+  background:var(--av-dark);color:#fff;border:none;border-radius:999px;padding:10px 20px;
   font-size:.8rem;font-weight:700;cursor:pointer;z-index:2;white-space:nowrap}
-.hv3-side-btn:hover{background:#222}
- 
+.hv3-side-btn:hover{background:var(--av-dark-2)}
+
 @media (max-width:900px){
   .hv3{grid-template-columns:1fr;gap:16px}
   .hv3-main{height:300px}
@@ -274,54 +291,64 @@ export function AnnounceBannerV2() {
 } 
 
 const NAV_CSS = `
-.nv3{background:#fff;position:relative;z-index:200;font-family:inherit}
+:root{
+  --av-dark:#232a35;
+  --av-dark-2:#1a2029;
+  --av-orange:#d98a35;
+  --av-orange-deep:#c4531a;
+}
+.nv3{background:var(--av-dark);position:relative;z-index:200;font-family:inherit}
 .nv3-in{margin:0 auto;position:relative}
- 
-/* ── logo notch ── */
-.nv3-logo{position:absolute;left:0;top:0;width:230px;height:109px;background:#fff;
-  border:none;border-bottom:2px solid #3a9be8;border-radius:0 0 26px 0;
-  display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;
-  font-size:1.35rem;font-weight:800;color:#3a9be8;z-index:3;padding:0 10px}
-.nv3-logo img{height:48px;width:auto}
-.nv3-logo span{color:#f0a030}
- 
+
+/* ── logo (no background, sits on the dark header) ── */
+.nv3-logo{position:absolute;left:24px;top:18px;width:240px;height:109px;background:transparent;
+  border:none;display:flex;align-items:center;justify-content:flex-start;cursor:pointer;
+  z-index:3;padding:0}
+.nv3-logo picture{display:flex;align-items:center;height:90%}
+.nv3-logo img{height:auto;max-height:64px;width:auto;max-width:100%;display:block;
+  filter:brightness(0) invert(1)} /* remove this line once you export a white PNG */
+
 /* ── top strip ── */
 .nv3-top{height:40px;display:flex;align-items:center;justify-content:space-between;
-  padding:0 24px 0 260px}
+  padding:0 24px 0 290px;background:white;
+  border-bottom:1px solid rgba(255,255,255,.08)}
 .nv3-social{display:flex;gap:18px;align-items:center}
-.nv3-social a{color:#111;display:flex}
-.nv3-social a:hover{color:#f0a030}
+.nv3-social a{color:rgb(156, 70, 0);display:flex}
+.nv3-social a:hover{color:var(--av-orange)}
 .nv3-right{display:flex;align-items:center;gap:36px}
-.nv3-cart{position:relative;background:none;border:none;cursor:pointer;color:#f0a030;
+.nv3-cart{position:relative;background:none;border:none;cursor:pointer;color:var(--av-orange);
   display:flex;padding:0}
-.nv3-cart-badge{position:absolute;top:-4px;right:-5px;background:#3a9be8;color:#fff;
+.nv3-cart-badge{position:absolute;top:-4px;right:-5px;background:var(--av-orange);color:#fff;
   font-size:.52rem;font-weight:700;width:13px;height:13px;border-radius:50%;
   display:flex;align-items:center;justify-content:center}
-.nv3-login{background:none;border:none;cursor:pointer;color:#f0a030;font-weight:700;
+.nv3-login{background:none;border:none;cursor:pointer;color:var(--av-orange);font-weight:700;
   font-size:.82rem;display:flex;align-items:center;gap:6px;padding:0}
- 
-/* ── blue bar ── */
-.nv3-bar{margin-left:230px;height:69px;background:#3a9be8;border-radius:26px 0 0 0;
-  display:flex;align-items:center;justify-content:space-between;padding:0 24px 0 18px;gap:20px}
+.nv3-login:hover{color:#fff}
+
+/* ── main bar (full width, edge to edge) ── */
+.nv3-bar{margin-left:0;height:69px;background:var(--av-dark);border-radius:0;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px 0 290px;gap:20px;border-bottom:3px solid var(--av-orange)}
 .nv3-links{display:flex;height:100%;align-items:stretch;gap:2px;flex-wrap:nowrap}
 .nv3-link{position:relative;background:none;border:none;color:#fff;cursor:pointer;
   font-weight:700;font-size:.66rem;letter-spacing:.4px;text-transform:uppercase;
   padding:0 20px;white-space:nowrap}
 .nv3-link.active::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;
-  background:#f0a030;border-radius:0 0 2px 2px}
-.nv3-link:hover{background:rgba(255,255,255,.12)}
+  background:var(--av-orange);border-radius:0 0 2px 2px}
+.nv3-link:hover{background:rgba(255,255,255,.08)}
 .nv3-search{display:flex;align-items:stretch;background:#fff;border-radius:26px;
   overflow:hidden;height:46px;width:240px;flex-shrink:0}
 .nv3-search input{flex:1;border:none;outline:none;padding:0 16px;font-size:.72rem;
   min-width:0;background:transparent;color:#111}
-.nv3-search button{width:52px;border:none;background:#f0a030;color:#fff;cursor:pointer;
+.nv3-search button{width:52px;border:none;background:var(--av-orange);color:#fff;cursor:pointer;
   display:flex;align-items:center;justify-content:center}
- 
+.nv3-search button:hover{background:var(--av-orange-deep)}
+
 /* ── user dropdown ── */
 .nv3-user{position:relative}
 .nv3-user-btn{background:none;border:none;cursor:pointer;display:flex;align-items:center;
-  gap:8px;color:#f0a030;font-weight:700;font-size:.82rem;padding:0}
-.nv3-avatar{width:28px;height:28px;border-radius:50%;background:#3a9be8;color:#fff;
+  gap:8px;color:var(--av-orange);font-weight:700;font-size:.82rem;padding:0}
+.nv3-avatar{width:28px;height:28px;border-radius:50%;background:var(--av-orange);color:#fff;
   display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:700}
 .nv3-dd{position:absolute;right:0;top:calc(100% + 10px);min-width:220px;background:#fff;
   border-radius:12px;box-shadow:0 12px 36px rgba(0,0,0,.18);padding:8px;display:none;z-index:50}
@@ -332,32 +359,32 @@ const NAV_CSS = `
 .nv3-dd-item{display:flex;align-items:center;gap:10px;width:100%;background:none;
   border:none;text-align:left;padding:9px 12px;font-size:.82rem;color:#222;
   border-radius:8px;cursor:pointer}
-.nv3-dd-item:hover{background:#eef6fd}
+.nv3-dd-item:hover{background:#fbf1e6}
 .nv3-dd-item.danger{color:#dc2626}
- 
+
 /* ── hamburger + mobile ── */
 .nv3-burger{display:none;background:none;border:none;cursor:pointer;width:34px;height:34px;
   flex-direction:column;justify-content:center;gap:5px;padding:6px}
-.nv3-burger span{display:block;height:2px;background:#3a9be8;border-radius:2px}
+.nv3-burger span{display:block;height:2px;background:#fff;border-radius:2px}
 .nv3-mobile{display:none}
- 
+
 @media (max-width:900px){
-  .nv3-logo{position:static;width:auto;height:64px;border:none;border-radius:0;
-    justify-content:flex-start;padding:0 16px;font-size:1.2rem}
+  .nv3-logo{position:static;width:auto;height:64px;padding:0 12px}
+  .nv3-logo img{max-height:40px}
   .nv3-in{display:flex;align-items:center;justify-content:space-between;
-    border-bottom:2px solid #3a9be8;padding-right:12px}
-  .nv3-top{padding:0;height:auto;order:2}
+    background:var(--av-dark);border-bottom:3px solid var(--av-orange);padding-right:12px}
+  .nv3-top{padding:0;height:auto;order:2;border-bottom:none, background:transparent}
   .nv3-social,.nv3-cart{display:none}
   .nv3-right{gap:12px}
   .nv3-bar{display:none}
   .nv3-burger{display:flex;order:3;margin-left:8px}
-  .nv3-mobile{display:none;background:#fff;border-bottom:2px solid #3a9be8;padding:12px 16px 16px}
+  .nv3-mobile{display:none;background:#fff;border-bottom:3px solid var(--av-orange);padding:12px 16px 16px}
   .nv3-mobile.open{display:block}
-  .nv3-mobile .nv3-search{width:100%;border:1.5px solid #3a9be8;margin-bottom:10px}
+  .nv3-mobile .nv3-search{width:100%;border:1.5px solid var(--av-dark);margin-bottom:10px}
   .nv3-mlink{display:block;width:100%;text-align:left;background:none;border:none;
     padding:12px 4px;font-size:.88rem;font-weight:600;color:#111;
     border-bottom:1px solid #eee;cursor:pointer}
-  .nv3-mlink.active{color:#3a9be8}
+  .nv3-mlink.active{color:var(--av-orange)}
 }
 `;
  
@@ -388,7 +415,6 @@ function Nav({ page, setPage, user, onLogout, onSearch }) {
   const navLinks = [
     ["store", "Home"],
     ["partners", "For Partners"],
-    ["redeem", "Redeem"],
     ["help", "Help"],
     ["contact", "Contact Us"],
     ["admin", "Admin"],
@@ -429,10 +455,12 @@ function Nav({ page, setPage, user, onLogout, onSearch }) {
  
       <div className="nv3-in">
         {/* Logo notch */}
-        <button className="nv3-logo" onClick={() => go("store")}>
-          <img src="/images/logo.png" alt="AfriVoucher" />
-          Afri<span>Voucher</span>
-        </button>
+      <button className="nv3-logo" onClick={() => go("store")} aria-label="AfriVoucher home">
+  <picture>
+    <source media="(max-width:900px)" srcSet={logoMobile} />
+    <img src={logoDesktop} alt="AfriVoucher" />
+  </picture>
+</button>
  
         {/* Top strip */}
         <div className="nv3-top">
@@ -1277,25 +1305,6 @@ function BottomNav({ page, setPage, user }) {
       ),
     },
     {
-      id: "redeem",
-      label: "Redeem",
-      icon: (
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z" />
-          <line x1="9" y1="12" x2="15" y2="12" />
-        </svg>
-      ),
-    },
-    {
       id: "partners",
       label: "Partners",
       icon: (
@@ -1510,7 +1519,7 @@ const openPartner = (partnerId) => {
   }, [db]);
 
   const guardedSetPage = (p) => {
-    const protected_ = ["redeem", "admin", "orders"];
+    const protected_ = ["admin", "orders"];
     if (protected_.includes(p) && !user) {
       setPage("auth");
       return;
@@ -1573,17 +1582,7 @@ const openPartner = (partnerId) => {
   if (onAuthSuccess) onAuthSuccess();
 }} />
       )}
-      {page === "redeem" &&
-        (user ? (
-          <RedeemPage user={user} />
-        ) : (
-          <AuthPage 
-           firebaseApp={firebaseApp}
-          onSuccess={() => {
-  guardedSetPage("redeem"); // or "admin" depending on which block
-  if (onAuthSuccess) onAuthSuccess();
-}} />
-        ))}
+     
       {page === "admin" &&
         (user ? (
           <AdminPage user={user} onLogout={handleLogout} />
