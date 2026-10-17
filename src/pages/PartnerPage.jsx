@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../shared/firebase"; // adjust path to your firebase config
-
+import { PartnerSEO } from "../components/Seo";
 // ─── Constants ─────────────────────────────────────────────────────────────────
 const ZAR_TO_USD = 16.53;
 const fmt = (n) =>
@@ -313,7 +313,15 @@ export default function PartnerPage({ partnerId, onBack, onOpenVoucher }) {
 
   return (
     <div style={{ maxWidth: 780, margin: "0 auto", paddingBottom: 64 }}>
-
+  <PartnerSEO
+        partner={{
+          id: p.id,
+          name: p.name,
+          city: p.city,
+          about: p.tagline || p.bio,
+          logoUrl: p.logoUrl || p.coverUrl,
+        }}
+      />
       {/* ── Back ── */}
       <div style={{ padding: "12px 16px 0" }}>
         <button onClick={onBack} style={backBtnStyle}>← Back</button>

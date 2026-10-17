@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { HeroV2 } from "./HeroV2";
+import { HomeSEO, VoucherSEO } from "../components/Seo";
 import {
   Flower2,
   Cake,
@@ -480,6 +481,7 @@ function ProductModal({ voucher: v, onClose, onBuy, onPartnerOpen }) {
       className="modal-overlay open"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
+      <VoucherSEO voucher={v} />
       <div className="modal-sheet">
         <div className="modal-inner">
           <div className="modal-gallery">
@@ -1068,11 +1070,10 @@ export default function StorePage({
   setPage,
   onCatSelect,
   onPartnerOpen,
+  onVoucherOpen,
   user,
 }) {
-  const [selectedVoucher, setSelectedVoucher] = useState(null);
-  const [drawerVoucher, setDrawerVoucher] = useState(null);
-  const [checkoutSuccess, setCheckoutSuccess] = useState(null);
+ 
   const [currentCat, setCurrentCat] = useState("All");
 const [sortVal, setSortVal] = useState("default");
 const [filteredResults, setFilteredResults] = useState([]);
@@ -1082,24 +1083,19 @@ const [filteredResults, setFilteredResults] = useState([]);
     onCatSelect?.(cat);
   };
 
-  const handleCheckout = async (form) => {
-    await new Promise((r) => setTimeout(r, 2000));
-    setCheckoutSuccess({
-      code: genCode(),
-      voucher: drawerVoucher,
-      recipientPhone: form.recipientPhone,
-    });
-  };
+  
 
   return (
+    
     <div className="avs-page">
       {/* Greeting */}
+      <HomeSEO />
      <HeroV2 vouchers={vouchers} onCatSelect={handleCatSelect} />
       {/* Category grid */}
      <AvoCatGrid onCatSelect={handleCatSelect} vouchers={vouchers} />
 
       {/* Flash deals */}
-     <AvoFlashDeals vouchers={vouchers} onOpen={setSelectedVoucher} />
+     <AvoFlashDeals vouchers={vouchers} onOpen={onVoucherOpen} />
 
       {/* Category filter tabs */}
      <div
@@ -1150,7 +1146,7 @@ const [filteredResults, setFilteredResults] = useState([]);
       filteredResults.map((v) => (
         <AvoVoucherCard 
         key={v.id} voucher={v} 
-        onOpen={setSelectedVoucher} 
+        onOpen={onVoucherOpen} 
         onPartnerOpen={onPartnerOpen}
         />
       ))
@@ -1163,33 +1159,7 @@ const [filteredResults, setFilteredResults] = useState([]);
 
       <div style={{ height: 32 }} />
 
-      {/* Modals */}
-      {selectedVoucher && (
-        <ProductModal
-          voucher={selectedVoucher}
-          onClose={() => setSelectedVoucher(null)}
-          onBuy={() => {
-            setDrawerVoucher(selectedVoucher);
-            setSelectedVoucher(null);
-          }}
-        />
-      )}
-      {drawerVoucher && !checkoutSuccess && (
-        <CheckoutDrawer
-          voucher={drawerVoucher}
-          onClose={() => setDrawerVoucher(null)}
-          onSuccess={handleCheckout}
-        />
-      )}
-      {checkoutSuccess && (
-        <SuccessDrawer
-          info={checkoutSuccess}
-          onClose={() => {
-            setCheckoutSuccess(null);
-            setDrawerVoucher(null);
-          }}
-        />
-      )}
+     
     </div>
   );
 }

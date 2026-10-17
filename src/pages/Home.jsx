@@ -1,5 +1,26 @@
 /* eslint-disable no-unused-vars */
-
+import {
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+  useLocation,
+  useParams,
+} from "react-router-dom";
+import { Helmet } from "react-helmet-async";
+import { HomeSEO, CategorySEO } from "../components/Seo";
+import VoucherPage from "./VoucherPage";
+import RedeemPage from "./RedeemPage";
+import {
+  pathForPage,
+  pageForPath,
+  categoryPath,
+  partnerPath,
+  voucherPath,
+  catFromSlug,
+  idFromSlug,
+} from "./paths";
+ 
 import { Link } from "react-router-dom";
 import logoMobile from "../images/logo-mobile.png";
 import logoDesktop from "../images/logo-desktop.png";
@@ -1857,39 +1878,149 @@ function ToastProvider({ children }) {
 // eslint-disable-next-line no-unused-vars
 const useToast = () => React.useContext(ToastContext);
 
+ 
+// ─── Small route helpers ──────────────────────────────────────────────────
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo({ top: 0 });
+  }, [pathname]);
+  return null;
+}
+ 
+function NotFound() {
+  return (
+    <main style={{ textAlign: "center", padding: "90px 16px" }}>
+      <Helmet>
+        <title>Page not found | AfriVoucher</title>
+        <meta name="robots" content="noindex" />
+      </Helmet>
+      <h1 style={{ fontSize: "2rem", marginBottom: 8 }}>Page not found</h1>
+      <p style={{ color: "#777", marginBottom: 20 }}>
+        The page you're looking for doesn't exist or has moved.
+      </p>
+      <Link to="/" style={{ fontWeight: 700, color: "#d98a35" }}>
+        ← Back to AfriVoucher
+      </Link>
+    </main>
+  );
+}
+ 
+// Waits for Firebase to finish checking the session before deciding,
+// so refreshing /orders or /admin doesn't bounce a logged-in user to /auth.
+function RequireAuth({ user, authReady, children }) {
+  const location = useLocation();
+  if (!authReady) {
+    return <div style={{ padding: 80, textAlign: "center" }}>Loading…</div>;
+  }
+  if (!user) {
+    return <Navigate to="/auth" replace state={{ from: location.pathname }} />;
+  }
+  return children;
+}
+ 
+function AuthRoute({ user, authReady, onDone }) {
+  const location = useLocation();
+  const from = location.state?.from || "/admin";
+  if (authReady && user) return <Navigate to={from} replace />;
+  return (
+    <AuthPage
+      firebaseApp={firebaseApp}
+      onSuccess={() => onDone(from)}
+    />
+  );
+}
+ 
+function CategoryRoute({ vouchers, loading, onBack, onCatSelect, onPartnerOpen }) {
+  const { catSlug } = useParams();
+  const cat = catFromSlug(catSlug, vouchers);
+ 
+  if (!cat) {
+    return loading ? (
+      <div style={{ padding: 80, textAlign: "center" }}>Loading…</div>
+    ) : (
+      <NotFound />
+    );
+  }
+ 
+  const inCat = vouchers.filter((v) => v.cat === cat);
+  return (
+    <>
+      <CategorySEO cat={cat} vouchers={inCat} />
+      <CategoryPage
+        cat={cat}
+        vouchers={vouchers}
+        loading={loading}
+        onBack={onBack}
+        onCatSelect={onCatSelect}
+        onPartnerOpen={onPartnerOpen}
+      />
+    </>
+  );
+}
+ 
+function PartnerRoute({ onBack, onOpenVoucher }) {
+  const { slug } = useParams();
+  return (
+    <PartnerPage
+      partnerId={idFromSlug(slug)}
+      onBack={onBack}
+      onOpenVoucher={onOpenVoucher}
+    />
+  );
+}
+ 
 // ─── App Root ─────────────────────────────────────────────────────────────
 export default function App({ db, onAuthSuccess }) {
-  const [page, setPage] = useState("store");
+  const navigate = useNavigate();
+  const location = useLocation();
+ 
   const [user, setUser] = useState(null);
+  const [authReady, setAuthReady] = useState(false);
   const [vouchers, setVouchers] = useState([]);
   const [loadingV, setLoadingV] = useState(true);
   const [searchQ, setSearchQ] = useState("");
-  const [activeCat, setActiveCat] = useState(null);
-  const [activePartnerId, setActivePartnerId] = useState(null);
-  const [selectedVoucher, setSelectedVoucher] = useState(null);
-
-  // Handler to navigate to a partner
-  const openPartner = (partnerId) => {
-    setActivePartnerId(partnerId);
-    setPage("partner");
-  };
   const [showScroll, setShowScroll] = useState(false);
+ 
+  // The old "page" id is now derived from the URL (used for nav highlighting)
+  const page = pageForPath(location.pathname);
+ 
+  // Bridge so Nav / Footer / BottomNav / Help etc. keep calling setPage("orders")
+  const setPage = (p) => navigate(pathForPage(p));
+ 
+  const openCategory = (cat) =>
+    navigate(!cat || cat === "All" ? "/" : categoryPath(cat));
+ 
+  const openVoucher = (v) => navigate(voucherPath(v));
+ 
+  const openPartner = (partnerId) => {
+    const name = vouchers.find((v) => v.partnerId === partnerId)?.partner;
+    navigate(partnerPath(partnerId, name));
+  };
+ 
+  // global CSS
   useEffect(() => {
     const style = document.createElement("style");
     style.textContent = CSS;
     document.head.appendChild(style);
     return () => document.head.removeChild(style);
   }, []);
+ 
   useEffect(() => {
     const handler = () => setShowScroll(window.scrollY > 400);
     window.addEventListener("scroll", handler);
     return () => window.removeEventListener("scroll", handler);
   }, []);
+ 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (u) => setUser(u || null));
+    const unsub = onAuthStateChanged(auth, (u) => {
+      setUser(u || null);
+      setAuthReady(true);
+    });
     return unsub;
   }, []);
-
+ 
+  // load vouchers (unchanged from your version)
   useEffect(() => {
     (async () => {
       try {
@@ -1932,22 +2063,23 @@ export default function App({ db, onAuthSuccess }) {
       }
     })();
   }, [db]);
-
-  const guardedSetPage = (p) => {
-    const protected_ = ["admin", "orders"];
-    if (protected_.includes(p) && !user) {
-      setPage("auth");
-      return;
-    }
-    setPage(p);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
+ 
   const handleLogout = async () => {
     await signOut(auth);
-    setPage("store");
+    navigate("/");
   };
-
+ 
+  const handleAuthDone = (from) => {
+    navigate(from || "/admin", { replace: true });
+    if (onAuthSuccess) onAuthSuccess();
+  };
+ 
+  // Typing in the search box from another page takes you to the home grid
+  const handleSearch = (q) => {
+    setSearchQ(q);
+    if (q.trim() && location.pathname !== "/") navigate("/");
+  };
+ 
   const displayedVouchers = searchQ.trim()
     ? vouchers.filter((v) =>
         [v.name, v.desc, v.cat, v.city, v.partner].some((f) =>
@@ -1955,89 +2087,124 @@ export default function App({ db, onAuthSuccess }) {
         ),
       )
     : vouchers;
-
+ 
   return (
     <>
+      <ScrollToTop />
       <AnnounceBannerV2 />
       <Nav
         page={page}
-        setPage={guardedSetPage}
+        setPage={setPage}
         user={user}
         onLogout={handleLogout}
-        onSearch={setSearchQ}
+        onSearch={handleSearch}
       />
-
-      {page === "store" && activeCat ? (
-        <CategoryPage
-          cat={activeCat}
-          vouchers={vouchers}
-          loading={loadingV}
-          onBack={() => setActiveCat(null)}
-          onCatSelect={setActiveCat}
-          onPartnerOpen={openPartner}
+ 
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <>
+              <HomeSEO />
+              <StorePage
+                vouchers={displayedVouchers}
+                loading={loadingV}
+                setPage={setPage}
+                onCatSelect={openCategory}
+                onVoucherOpen={openVoucher}
+                onPartnerOpen={openPartner}
+                user={user}
+              />
+            </>
+          }
         />
-      ) : page === "store" ? (
-        <StorePage
-          vouchers={displayedVouchers}
-          loading={loadingV}
-          setPage={guardedSetPage}
-          onCatSelect={setActiveCat}
-          user={user}
-          selectedVoucher={selectedVoucher}
-          setSelectedVoucher={setSelectedVoucher}
-          onPartnerOpen={(partnerId) => {
-            setActivePartnerId(partnerId);
-            setPage("partner");
-          }}
+ 
+        <Route
+          path="/category/:catSlug"
+          element={
+            <CategoryRoute
+              vouchers={vouchers}
+              loading={loadingV}
+              onBack={() => navigate("/")}
+              onCatSelect={openCategory}
+              onPartnerOpen={openPartner}
+            />
+          }
         />
-      ) : null}
-      {page === "auth" && (
-        <AuthPage
-          firebaseApp={firebaseApp}
-          onSuccess={() => {
-            guardedSetPage("admin");
-            if (onAuthSuccess) onAuthSuccess();
-          }}
+ 
+        <Route
+          path="/voucher/:slug"
+          element={
+            <VoucherPage
+              vouchers={vouchers}
+              loading={loadingV}
+              onPartnerOpen={openPartner}
+            />
+          }
         />
-      )}
-
-      {page === "admin" &&
-        (user ? (
-          <AdminPage user={user} onLogout={handleLogout} />
-        ) : (
-          <AuthPage
-            firebaseApp={firebaseApp}
-            onSuccess={() => {
-              guardedSetPage("admin");
-              if (onAuthSuccess) onAuthSuccess();
-            }}
-          />
-        ))}
-      {page === "help" && <HelpCentrePage setPage={guardedSetPage} />}
-      {page === "partners" && <PartnersPage />}
-      {page === "orders" && user && <OrdersPage user={user} />}
-      {page === "partner" && (
-        <PartnerPage
-          partnerId={activePartnerId}
-          onBack={() => setPage("store")}
-          onOpenVoucher={(v) => {
-            setPage("store");
-            setSelectedVoucher(v);
-          }}
+ 
+        <Route
+          path="/partner/:slug"
+          element={
+            <PartnerRoute
+              onBack={() => navigate("/")}
+              onOpenVoucher={openVoucher}
+            />
+          }
         />
-      )}
-      {page === "contact" && (
-        <ContactPage firebaseApp={firebaseApp} setPage={guardedSetPage} />
-      )}
-      <Footer setPage={guardedSetPage} />
+ 
+        <Route path="/partners" element={<PartnersPage />} />
+        <Route path="/help" element={<HelpCentrePage setPage={setPage} />} />
+        <Route
+          path="/contact"
+          element={<ContactPage firebaseApp={firebaseApp} setPage={setPage} />}
+        />
+        <Route path="/privacy" element={<PrivacyPage setPage={setPage} />} />
+        <Route path="/terms" element={<TermsPage setPage={setPage} />} />
+ 
+        <Route
+          path="/auth"
+          element={
+            <AuthRoute user={user} authReady={authReady} onDone={handleAuthDone} />
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <RequireAuth user={user} authReady={authReady}>
+              <AdminPage user={user} onLogout={handleLogout} />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/orders"
+          element={
+            <RequireAuth user={user} authReady={authReady}>
+              <OrdersPage user={user} />
+            </RequireAuth>
+          }
+        />
+    <Route
+     path="/redeem"
+     element={
+       <RequireAuth user={user} authReady={authReady}>
+         <RedeemPage user={user} />
+       </RequireAuth>
+     }
+   />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+ 
+      <Footer setPage={setPage} />
       <CookieConsent />
-      <BottomNav page={page} setPage={guardedSetPage} user={user} />
+      <BottomNav page={page} setPage={setPage} user={user} />
+ 
       {/* WhatsApp Float Button */}
-
       <a
         href="https://wa.me/263776109275"
         target="_blank"
         rel="noopener noreferrer"
+        aria-label="Chat on WhatsApp"
         style={{
           position: "fixed",
           bottom: "calc(90px + env(safe-area-inset-bottom))",
@@ -2071,3 +2238,4 @@ export default function App({ db, onAuthSuccess }) {
     </>
   );
 }
+ 

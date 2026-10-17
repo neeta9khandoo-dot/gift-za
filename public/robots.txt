@@ -1,3 +1,9 @@
-# https://www.robotstxt.org/robotstxt.html
 User-agent: *
-Disallow:
+Allow: /
+
+# Private areas
+Disallow: /admin
+Disallow: /auth
+Disallow: /orders
+
+Sitemap: https://afrivoucher.com/sitemap.xml

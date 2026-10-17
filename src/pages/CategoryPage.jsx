@@ -1,21 +1,5 @@
-// src/pages/CategoryPage.jsx
-// Category listing page, built from the same components and classes as StorePage.
-//
-// Usage:
-//   <CategoryPage
-//     cat={activeCat}
-//     vouchers={vouchers}
-//     loading={loadingV}
-//     onBack={() => setActiveCat(null)}
-//     onCatSelect={setActiveCat}
-//     onPartnerOpen={openPartner}
-//   />
-//
-// REQUIRES one addition at the bottom of StorePage.jsx (see notes):
-//   export { AvoVoucherCard, SkeletonVoucherCard, AvoTrustStrip,
-//            ProductModal, CheckoutDrawer, ZAR_TO_USD, fmt };
-
 import React, { useState, useEffect } from "react";
+import { CategorySEO } from "../components/Seo";
 import { AvoSearchBar, AvoEmptyState } from "./AvoSearch";
 import {
   AvoVoucherCard,
@@ -185,6 +169,7 @@ export default function CategoryPage({
   return (
     <div className="avs-page">
       {/* ── Category hero ── */}
+      <CategorySEO cat={cat} vouchers={vouchers.filter(v => v.cat === cat)} />
       <div
         style={{
           position: "relative",
