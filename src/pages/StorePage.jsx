@@ -137,14 +137,14 @@ const PROMO_SLIDES = [
 ];
 
 const CAT_TILES = [
-  { emoji: "☯", name: "Wellness",      cat: "Wellness",              img: "https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?w=200&q=80" },
-  { emoji: "⊕", name: "Traditional",   cat: "Traditional Restaurants", img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=200&q=80" },
-  { emoji: "♪", name: "Music",         cat: "Music",                 img: "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=200&q=80" },
-  { emoji: "✈", name: "Adventure",     cat: "Adventure",             img: "https://images.unsplash.com/photo-1601024445121-e5b82f020549?w=200&q=80" },
- { emoji: "✿", name: "Florists", cat: "Florists",                     img: "https://images.unsplash.com/photo-1455659817273-f96807779a8a?w=200&q=80"},
-  { emoji: "◈", name: "Dining & Wine", cat: "Dining & Wine",         img: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=200&q=80" },
-  { emoji: "✺", name: "Events",        cat: "Events",                img: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=200&q=80" },
-  { emoji: "◎", name: "Skills",        cat: "Skills",                img: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=200&q=80" },
+  { emoji: "☯", name: "Wellness",      cat: "Wellness",              img: "https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?w=900&h=400&fit=crop&q=80" },
+  { emoji: "⊕", name: "Traditional",   cat: "Traditional Restaurants", img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=900&h=400&fit=crop&q=80" },
+  { emoji: "♪", name: "Music",         cat: "Music",                 img: "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=900&h=400&fit=crop&q=80" },
+  { emoji: "✈", name: "Adventure",     cat: "Adventure",             img: "https://images.unsplash.com/photo-1601024445121-e5b82f020549?w=900&h=400&fit=crop&q=80" },
+ { emoji: "✿", name: "Florists", cat: "Florists",                     img: "https://images.unsplash.com/photo-1455659817273-f96807779a8a?w=900&h=400&fit=crop&q=80"},
+  { emoji: "◈", name: "Dining & Wine", cat: "Dining & Wine",         img: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=900&h=400&fit=crop&q=80" },
+  { emoji: "✺", name: "Events",        cat: "Events",                img: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=900&h=400&fit=crop&q=80" },
+  { emoji: "◎", name: "Skills",        cat: "Skills",                img: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=900&h=400&fit=crop&q=80" },
 ];
 
 const PERKS = [
