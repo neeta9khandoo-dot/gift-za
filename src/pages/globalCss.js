@@ -216,6 +216,9 @@ main {
 .admin-input:focus{border-color:var(--red)}
 footer{background:var(--black);color:rgba(255,255,255,.55);padding:48px 0 24px}
 .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px}
+.footer-payments{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.pay-logo{height:28px;width:auto;object-fit:contain;display:block;
+  padding:4px 8px;background:#fff;border-radius:6px}
 .footer-brand{font-family:var(--sans);font-size:1.4rem;font-weight:800;color:#fff;margin-bottom:10px;letter-spacing:-.5px}
 .footer-brand span{color:var(--red)}
 .footer-tagline{font-size:.8rem;line-height:1.7;margin-bottom:18px;max-width:260px}

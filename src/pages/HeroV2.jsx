@@ -81,64 +81,42 @@ const HERO_CSS = `
 .hv3-dot.on{background:var(--av-orange);width:20px;border-radius:4px}
 
 /* ── side promo card (matches the app icon) ── */
-.hv3-side{height:345px;border-radius:18px;overflow:hidden;
-  background:linear-gradient(145deg,var(--av-orange-light) 0%,var(--av-orange-deep) 100%);
-  text-align:center;padding:16px 18px 0;
+.hv3-side{
+  position:relative;height:345px;border-radius:18px;overflow:hidden;
+  padding:28px;box-sizing:border-box;
+  display:flex;flex-direction:column;justify-content:space-between;
+  text-align:left;color:#fff;
+  background:linear-gradient(150deg,#d4802c 0%,#b84a16 100%);
   box-shadow:0 10px 30px rgba(196,83,26,.3)}
-  .hv3-side {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-}
 
-.hv3-side-flag {
-  width: 160px;
-  max-width: 35%;
-  height: auto;
-  flex-shrink: 0;
-}
+.hv3-side-top{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.hv3-side-logo{height:34px;width:auto;max-width:60%;object-fit:contain}
+.hv3-side-flag{height:44px;width:auto;flex-shrink:0;
+  filter:drop-shadow(0 2px 6px rgba(0,0,0,.25))}
 
-.hv3-side-content {
-  flex: 1;
-  min-width: 0;
-}
+.hv3-side-body{min-width:0}
+.hv3-side-title{margin:0 0 12px;font-size:clamp(1.5rem,2.4vw,1.9rem);
+  line-height:1.15;font-weight:800;letter-spacing:-.4px;color:#fff}
+.hv3-side-offer{display:inline-block;margin:0 0 12px;padding:6px 12px;
+  border-radius:999px;background:#fff;color:var(--av-orange-deep);
+  font-size:.85rem;font-weight:700}
+.hv3-side-sub{margin:0;font-size:.95rem;line-height:1.5;
+  color:rgba(255,255,255,.92)}
 
-/* stack the flag above the text on phones */
-@media (max-width: 600px) {
-  .hv3-side {
-    flex-direction: column;
-    text-align: center;
-  }
-  .hv3-side-flag {
-    width: 120px;
-  }
-}
-.hv3-logo{background:var(--av-dark);color:#fff;font-weight:800;
-  font-size:.85rem;letter-spacing:.5px;padding:9px 16px;border-radius:8px;margin-bottom:22px}
-.hv3-side-title{font-size:1.2rem;line-height:1.7;color:#fff;margin:0;font-weight:500;
-  text-shadow:0 1px 8px rgba(0,0,0,.15)}
-.hv3-side-stage{position:relative;flex:1;width:100%;display:flex;
-  align-items:flex-end;justify-content:center;gap:6px;font-size:4.2rem;
-  padding-bottom:6px}
-.hv3-side-stage span:nth-child(2){font-size:5.4rem}
-.hv3-side-btn{position:absolute;top:24px;left:50%;transform:translateX(-50%);
-  background:var(--av-dark);color:#fff;border:none;border-radius:999px;padding:10px 20px;
-  font-size:.8rem;font-weight:700;cursor:pointer;z-index:2;white-space:nowrap}
-.hv3-side-btn:hover{background:var(--av-dark-2)}
+.hv3-side-btn{align-self:flex-start;border:none;border-radius:999px;
+  padding:12px 24px;background:var(--av-dark);color:#fff;
+  font-size:.85rem;font-weight:700;cursor:pointer;
+  transition:background .2s,transform .2s}
+.hv3-side-btn:hover{background:var(--av-dark-2);transform:translateY(-1px)}
+.hv3-side-btn:focus-visible{outline:2px solid #fff;outline-offset:3px}
 
 @media (max-width:900px){
-  .hv3{grid-template-columns:1fr;gap:16px}
-  .hv3-main{height:300px}
-  .hv3-copy{padding-left:56px;max-width:68%}
-  .hv3-side{height:290px}
+  .hv3-side{height:auto;min-height:290px;gap:20px}
 }
 @media (max-width:520px){
-  .hv3-main{height:260px}
-  .hv3-copy{padding-left:46px;max-width:72%}
-  .hv3-sub{font-size:.9rem;margin-bottom:14px}
-  .hv3-arrow{width:38px;height:38px;font-size:1.3rem}
-  .hv3-arrow.prev{left:6px}.hv3-arrow.next{right:6px}
-  .hv3-img{width:46%;opacity:.85}
+  .hv3-side{padding:22px}
+  .hv3-side-logo{height:28px}
+  .hv3-side-flag{height:36px}
 }
 `;
 
@@ -235,38 +213,30 @@ export function HeroV2({ vouchers = [], onSearch, onCatSelect }) {
         </div>
 
         {/* ── Right: promo card ── */}
-       <div className="hv3-side">
-  <img
-    className="hv3-side-flag"
-    src={flag}
-    alt="Zimbabwe flag"
-  />
-  <div className="hv3-side-content">
-    <img src={logo} alt="" />
-    <h2 className="hv3-side-title">
-      Treat Them from Afar – Get US$10
-      <br />
-      OFF Gift Vouchers over US$90
-    </h2>
-    <p className="hv3-side-sub">
-      You pay from abroad. They enjoy it in Zimbabwe.
-    </p>
-    <div className="hv3-side-stage">
-      <button
-        className="hv3-side-btn"
-        onClick={() => open("Traditional Restaurants")}
-      >
-        Send a Gift
-      </button>
-      <span title="Wellness"></span>
-      <span title="Traditional Restaurants"></span>
-      <span title="Music"></span>
-      <span title="Adventure"></span>
-      <span title="Florists"></span>
-      <span title="Stays"></span>
-    </div>
-  </div>
-</div>
+        {/* ── Right: promo card ── */}
+        <div className="hv3-side">
+          <div className="hv3-side-top">
+            <img className="hv3-side-logo" src={logo} alt="AfriVoucher" />
+            <img className="hv3-side-flag" src={flag} alt="Zimbabwe flag" />
+          </div>
+
+          <div className="hv3-side-body">
+            <h2 className="hv3-side-title">Treat them from afar</h2>
+            <span className="hv3-side-offer">
+              US$10 off vouchers over US$90
+            </span>
+            <p className="hv3-side-sub">
+              You pay from abroad. They enjoy it in Zimbabwe.
+            </p>
+          </div>
+
+          <button
+            className="hv3-side-btn"
+            onClick={() => open("Traditional Restaurants")}
+          >
+            Send a gift
+          </button>
+        </div>
       </section>
     </>
   );
