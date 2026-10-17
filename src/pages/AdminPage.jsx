@@ -1525,7 +1525,7 @@ export default function AdminPage({ user, onLogout }) {
     } finally {
       setLoading(false);
     }
-  }, [user]);
+  }, [user, setBizCategory]);
 
   useEffect(() => {
     load();
