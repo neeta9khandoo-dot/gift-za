@@ -7,7 +7,6 @@ import {
   AvoTrustStrip,
   ProductModal,
   CheckoutDrawer,
-  ZAR_TO_USD,
   fmt,
 } from "./StorePage";
 
