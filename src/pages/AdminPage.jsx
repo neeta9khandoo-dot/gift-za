@@ -1481,7 +1481,7 @@ export default function AdminPage({ user, onLogout }) {
   const [vouchers, setVouchers] = useState([]);
   const [sold, setSold] = useState([]);
   const [bizName, setBizName] = useState("Partner Dashboard");
-  const [bizCategory, setBizCategory] = useState("");
+  const [ setBizCategory] = useState("");
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("vouchers");
 
