@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import logoMobile from "../images/logo-mobile.png";
 import logoDesktop from "../images/logo-desktop.png";
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import CSS from './globalCss.js';
+import CSS from "./globalCss.js";
 import PartnerPage from "./PartnerPage.jsx";
 import CookieConsent from "../components/CookieConsent.jsx";
 import {
@@ -18,8 +18,13 @@ import {
   Sparkles,
 } from "lucide-react";
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid,
-  Tooltip, ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
 } from "recharts";
 import StorePage from "./StorePage";
 import { initializeApp } from "firebase/app";
@@ -42,7 +47,7 @@ import CategoryPage from "./CategoryPage";
 import AuthPage from "./AuthPage";
 import OrdersPage from "./OrdersPage";
 import PartnersPage from "./PartnersPage";
-import PrivacyPage from "./PrivacyPage"
+import PrivacyPage from "./PrivacyPage";
 import TermsPage from "./TermsPage";
 import Footer from "../components/Footer";
 import ContactPage from "./ContactPage";
@@ -103,7 +108,6 @@ const getCatIcon = (cat) =>
 
 // ─── Voucher Templates (seeded on new partner registration) ───────────────
 const VOUCHER_TEMPLATES = [
- 
   {
     name: "Masvingo Heritage Escape",
     category: "Stays",
@@ -228,67 +232,151 @@ async function seedUserVouchers(uid, businessName, email) {
 // COMPONENTS
 // ══════════════════════════════════════════════════════════════════════════
 const PROMO_SLIDES = [
-  { emoji:"🧖", bg:"linear-gradient(135deg,#1a2e1f,#0a1f12)", tag:"Wellness", name:"Couples Spa Day", price:"From US$109", cat:"Wellness" },
-  { emoji:"🍲", bg:"linear-gradient(135deg,#2e1a0e,#140a00)", tag:"Traditional", name:"Send Mum a Proper Meal", price:"From US$15", cat:"Traditional Restaurants" },
-  { emoji:"🎵", bg:"linear-gradient(135deg,#1a1a2e,#09071a)", tag:"Music", name:"Live Jazz Evening", price:"From US$47", cat:"Music" },
-  { emoji:"🪂", bg:"linear-gradient(135deg,#000d1a,#001a33)", tag:"Adventure", name:"Tandem Skydive", price:"From US$179", cat:"Adventure" },
-  { emoji:"🌸", bg:"linear-gradient(135deg,#160a10,#2e1a1f)", tag:"Florists", name:"Luxury Rose Arrangement", price:"From US$21", cat:"Florists" },
-  { emoji:"🏡", bg:"linear-gradient(135deg,#1a2e1f,#0e1f14)", tag:"Stays", name:"Ancient City Lodge", price:"From US$169", cat:"Stays" },
+  {
+    emoji: "🧖",
+    bg: "linear-gradient(135deg,#1a2e1f,#0a1f12)",
+    tag: "Wellness",
+    name: "Couples Spa Day",
+    price: "From US$109",
+    cat: "Wellness",
+  },
+  {
+    emoji: "🍲",
+    bg: "linear-gradient(135deg,#2e1a0e,#140a00)",
+    tag: "Traditional",
+    name: "Send Mum a Proper Meal",
+    price: "From US$15",
+    cat: "Traditional Restaurants",
+  },
+  {
+    emoji: "🎵",
+    bg: "linear-gradient(135deg,#1a1a2e,#09071a)",
+    tag: "Music",
+    name: "Live Jazz Evening",
+    price: "From US$47",
+    cat: "Music",
+  },
+  {
+    emoji: "🪂",
+    bg: "linear-gradient(135deg,#000d1a,#001a33)",
+    tag: "Adventure",
+    name: "Tandem Skydive",
+    price: "From US$179",
+    cat: "Adventure",
+  },
+  {
+    emoji: "🌸",
+    bg: "linear-gradient(135deg,#160a10,#2e1a1f)",
+    tag: "Florists",
+    name: "Luxury Rose Arrangement",
+    price: "From US$21",
+    cat: "Florists",
+  },
+  {
+    emoji: "🏡",
+    bg: "linear-gradient(135deg,#1a2e1f,#0e1f14)",
+    tag: "Stays",
+    name: "Ancient City Lodge",
+    price: "From US$169",
+    cat: "Stays",
+  },
 ];
 export function AnnounceBannerV2() {
   const [banners] = React.useState([
-    { icon: '🚀', text: '<strong>NEW:</strong> Traditional Restaurant vouchers now live — send mum lunch from anywhere', bg: '#1a1a1a', accent: '#ff6b35' },
-    { icon: '🎁', text: '<strong>FREE WhatsApp delivery</strong> on all vouchers · Instant, every time', bg: '#0a1628', accent: '#38bdf8' },
-    { icon: '🇿🇼', text: 'Supporting <strong>200+ Zimbabwean businesses</strong> · Weekly EFT payouts to partners', bg: '#0a1f12', accent: '#4ade80' },
+    {
+      icon: "🚀",
+      text: "<strong>NEW:</strong> Traditional Restaurant vouchers now live — send mum lunch from anywhere",
+      bg: "#1a1a1a",
+      accent: "#ff6b35",
+    },
+    {
+      icon: "🎁",
+      text: "<strong>FREE WhatsApp delivery</strong> on all vouchers · Instant, every time",
+      bg: "#0a1628",
+      accent: "#38bdf8",
+    },
+    {
+      icon: "🇿🇼",
+      text: "Supporting <strong>200+ Zimbabwean businesses</strong> · Weekly EFT payouts to partners",
+      bg: "#0a1f12",
+      accent: "#4ade80",
+    },
   ]);
   const [idx, setIdx] = React.useState(0);
- 
+
   React.useEffect(() => {
-    const t = setInterval(() => setIdx(i => (i + 1) % banners.length), 4000);
+    const t = setInterval(() => setIdx((i) => (i + 1) % banners.length), 4000);
     return () => clearInterval(t);
   }, [banners.length]);
- 
+
   const b = banners[idx];
- 
+
   return (
-    <div style={{
-      background: b.bg,
-      height: 40,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: 10,
-      transition: 'background .5s',
-      position: 'relative',
-      overflow: 'hidden',
-    }}>
+    <div
+      style={{
+        background: b.bg,
+        height: 40,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 10,
+        transition: "background .5s",
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
       {/* accent glow */}
-      <div style={{
-        position: 'absolute', left: '50%', top: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: 400, height: 40,
-        background: `radial-gradient(ellipse, ${b.accent}22 0%, transparent 70%)`,
-        pointerEvents: 'none',
-      }} />
-      <span style={{ fontSize: '1rem' }}>{b.icon}</span>
+      <div
+        style={{
+          position: "absolute",
+          left: "50%",
+          top: "50%",
+          transform: "translate(-50%, -50%)",
+          width: 400,
+          height: 40,
+          background: `radial-gradient(ellipse, ${b.accent}22 0%, transparent 70%)`,
+          pointerEvents: "none",
+        }}
+      />
+      <span style={{ fontSize: "1rem" }}>{b.icon}</span>
       <span
-        style={{ fontSize: '.76rem', color: 'rgba(255,255,255,.8)', fontWeight: 500, position: 'relative' }}
+        style={{
+          fontSize: ".76rem",
+          color: "rgba(255,255,255,.8)",
+          fontWeight: 500,
+          position: "relative",
+        }}
         dangerouslySetInnerHTML={{ __html: b.text }}
       />
       {/* Dots */}
-      <div style={{ display: 'flex', gap: 4, marginLeft: 12, position: 'relative' }}>
+      <div
+        style={{
+          display: "flex",
+          gap: 4,
+          marginLeft: 12,
+          position: "relative",
+        }}
+      >
         {banners.map((_, i) => (
-          <button key={i} onClick={() => setIdx(i)} style={{
-            width: i === idx ? 16 : 5, height: 5,
-            borderRadius: 3, border: 'none',
-            background: i === idx ? b.accent : 'rgba(255,255,255,.25)',
-            cursor: 'pointer', padding: 0, transition: 'all .3s',
-          }} />
+          <button
+            key={i}
+            onClick={() => setIdx(i)}
+            style={{
+              width: i === idx ? 16 : 5,
+              height: 5,
+              borderRadius: 3,
+              border: "none",
+              background: i === idx ? b.accent : "rgba(255,255,255,.25)",
+              cursor: "pointer",
+              padding: 0,
+              transition: "all .3s",
+            }}
+          />
         ))}
       </div>
     </div>
   );
-} 
+}
 
 const NAV_CSS = `
 :root{
@@ -373,7 +461,7 @@ const NAV_CSS = `
   .nv3-logo img{max-height:40px}
   .nv3-in{display:flex;align-items:center;justify-content:space-between;
     background:var(--av-dark);border-bottom:3px solid var(--av-orange);padding-right:12px}
-  .nv3-top{padding:0;height:auto;order:2;border-bottom:none, background:transparent}
+  .nv3-top{padding:0;height:auto;order:2;border-bottom:none; background:transparent}
   .nv3-social,.nv3-cart{display:none}
   .nv3-right{gap:12px}
   .nv3-bar{display:none}
@@ -387,12 +475,12 @@ const NAV_CSS = `
   .nv3-mlink.active{color:var(--av-orange)}
 }
 `;
- 
+
 function Nav({ page, setPage, user, onLogout, onSearch }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const userRef = useRef(null);
- 
+
   useEffect(() => {
     const onDown = (e) => {
       if (userRef.current && !userRef.current.contains(e.target)) {
@@ -402,7 +490,7 @@ function Nav({ page, setPage, user, onLogout, onSearch }) {
     document.addEventListener("mousedown", onDown);
     return () => document.removeEventListener("mousedown", onDown);
   }, []);
- 
+
   const initials = user
     ? (user.displayName || user.email || "U")
         .split(" ")
@@ -411,7 +499,7 @@ function Nav({ page, setPage, user, onLogout, onSearch }) {
         .substring(0, 2)
         .toUpperCase()
     : "";
- 
+
   const navLinks = [
     ["store", "Home"],
     ["partners", "For Partners"],
@@ -419,13 +507,13 @@ function Nav({ page, setPage, user, onLogout, onSearch }) {
     ["contact", "Contact Us"],
     ["admin", "Admin"],
   ];
- 
+
   const go = (p) => {
     setPage(p);
     setMobileOpen(false);
     setDropdownOpen(false);
   };
- 
+
   const SearchPill = () => (
     <div className="nv3-search">
       <input
@@ -433,14 +521,21 @@ function Nav({ page, setPage, user, onLogout, onSearch }) {
         onChange={(e) => onSearch(e.target.value)}
       />
       <button aria-label="Search">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+        >
           <circle cx="11" cy="11" r="8" />
           <path d="m21 21-4.35-4.35" />
         </svg>
       </button>
     </div>
   );
- 
+
   const menuItems = [
     ["profile", "ti-user", "My Profile"],
     ["favourites", "ti-heart", "Favourites"],
@@ -448,49 +543,96 @@ function Nav({ page, setPage, user, onLogout, onSearch }) {
     ["notifications", "ti-bell", "Notifications"],
     ["settings", "ti-settings", "Settings"],
   ];
- 
+
   return (
     <nav className="nv3">
       <style>{NAV_CSS}</style>
- 
+
       <div className="nv3-in">
         {/* Logo notch */}
-      <button className="nv3-logo" onClick={() => go("store")} aria-label="AfriVoucher home">
-  <picture>
-    <source media="(max-width:900px)" srcSet={logoMobile} />
-    <img src={logoDesktop} alt="AfriVoucher" />
-  </picture>
-</button>
- 
+        <button
+          className="nv3-logo"
+          onClick={() => go("store")}
+          aria-label="AfriVoucher home"
+        >
+          <picture>
+            <source media="(max-width:900px)" srcSet={logoMobile} />
+            <img src={logoDesktop} alt="AfriVoucher" />
+          </picture>
+        </button>
+
         {/* Top strip */}
         <div className="nv3-top">
           <div className="nv3-social">
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <a
+              href="https://instagram.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
                 <rect x="3" y="3" width="18" height="18" rx="5" />
                 <circle cx="12" cy="12" r="4" />
                 <circle cx="17.5" cy="6.5" r="1" fill="currentColor" />
               </svg>
             </a>
-            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <a
+              href="https://facebook.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Facebook"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
                 <path d="M14 8V6.5c0-.7.3-1 1-1h2V2h-3c-3 0-4.5 1.8-4.5 4.4V8H7v3.5h2.5V22H14V11.5h2.8L17.3 8z" />
               </svg>
             </a>
-            <a href="https://wa.me/263776109275" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <a
+              href="https://wa.me/263776109275"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="WhatsApp"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
                 <path d="M3 21l1.6-4.8A8.5 8.5 0 1 1 8 19.5z" />
               </svg>
             </a>
           </div>
- 
+
           <div className="nv3-right">
-            <button className="nv3-cart" onClick={() => go("orders")} aria-label="My orders">
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
+            <button
+              className="nv3-cart"
+              onClick={() => go("orders")}
+              aria-label="My orders"
+            >
+              <svg
+                width="26"
+                height="26"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
                 <path d="M7 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM1 2v2h2l3.6 7.6-1.4 2.4A2 2 0 0 0 7 17h12v-2H7.4l1.1-2h7.5a2 2 0 0 0 1.7-1l3.6-6.5A1 1 0 0 0 20.4 4H5.2l-.9-2z" />
               </svg>
             </button>
- 
+
             {user ? (
               <div className="nv3-user" ref={userRef}>
                 <button
@@ -502,20 +644,33 @@ function Nav({ page, setPage, user, onLogout, onSearch }) {
                   <span className="nv3-avatar">{initials}</span>
                   {user.displayName || user.email?.split("@")[0]}
                 </button>
-                <div className={`nv3-dd${dropdownOpen ? " open" : ""}`} role="menu">
+                <div
+                  className={`nv3-dd${dropdownOpen ? " open" : ""}`}
+                  role="menu"
+                >
                   <div className="nv3-dd-head">
-                    <div className="nv3-dd-name">{user.displayName || "My Account"}</div>
+                    <div className="nv3-dd-name">
+                      {user.displayName || "My Account"}
+                    </div>
                     <div className="nv3-dd-email">{user.email}</div>
                   </div>
                   {menuItems.map(([p, icon, label]) => (
-                    <button key={p} className="nv3-dd-item" role="menuitem" onClick={() => go(p)}>
+                    <button
+                      key={p}
+                      className="nv3-dd-item"
+                      role="menuitem"
+                      onClick={() => go(p)}
+                    >
                       <i className={`ti ${icon}`} aria-hidden="true" /> {label}
                     </button>
                   ))}
                   <button
                     className="nv3-dd-item danger"
                     role="menuitem"
-                    onClick={() => { onLogout(); setDropdownOpen(false); }}
+                    onClick={() => {
+                      onLogout();
+                      setDropdownOpen(false);
+                    }}
                   >
                     <i className="ti ti-logout" aria-hidden="true" /> Sign Out
                   </button>
@@ -523,7 +678,14 @@ function Nav({ page, setPage, user, onLogout, onSearch }) {
               </div>
             ) : (
               <button className="nv3-login" onClick={() => go("auth")}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                >
                   <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3" />
                 </svg>
                 Login
@@ -531,16 +693,18 @@ function Nav({ page, setPage, user, onLogout, onSearch }) {
             )}
           </div>
         </div>
- 
+
         {/* Hamburger (mobile only) */}
         <button
           className="nv3-burger"
           onClick={() => setMobileOpen((o) => !o)}
           aria-label="Menu"
         >
-          <span /><span /><span />
+          <span />
+          <span />
+          <span />
         </button>
- 
+
         {/* Blue link bar (desktop) */}
         <div className="nv3-bar">
           <div className="nv3-links">
@@ -557,7 +721,7 @@ function Nav({ page, setPage, user, onLogout, onSearch }) {
           <SearchPill />
         </div>
       </div>
- 
+
       {/* Mobile menu */}
       <div className={`nv3-mobile${mobileOpen ? " open" : ""}`}>
         <SearchPill />
@@ -570,17 +734,26 @@ function Nav({ page, setPage, user, onLogout, onSearch }) {
             {label}
           </button>
         ))}
-        <button className="nv3-mlink" onClick={() => go("orders")}>My Orders</button>
+        <button className="nv3-mlink" onClick={() => go("orders")}>
+          My Orders
+        </button>
         {user ? (
           <button
             className="nv3-mlink"
             style={{ color: "#dc2626" }}
-            onClick={() => { onLogout(); setMobileOpen(false); }}
+            onClick={() => {
+              onLogout();
+              setMobileOpen(false);
+            }}
           >
             Sign Out
           </button>
         ) : (
-          <button className="nv3-mlink" style={{ color: "#f0a030" }} onClick={() => go("auth")}>
+          <button
+            className="nv3-mlink"
+            style={{ color: "#f0a030" }}
+            onClick={() => go("auth")}
+          >
             Login
           </button>
         )}
@@ -609,24 +782,28 @@ function VoucherCard({ voucher, onOpen }) {
   const imgSrc = voucher.imageUrl || voucher.img;
 
   const catBg = {
-    Wellness:                "linear-gradient(145deg,#e8f5ee,#c8e8d8)",
-    Adventure:               "linear-gradient(145deg,#e0ecf8,#c0d8f0)",
-    Music:                   "linear-gradient(145deg,#eeebf8,#d8d0f0)",
-    Events:                  "linear-gradient(145deg,#f8e8f0,#f0c8dc)",
-    Florists:                "linear-gradient(145deg,#fdf0e8,#f8dcc8)",
-    Beauty:                  "linear-gradient(145deg,#fce8f4,#f4c8e4)",
-    "Dining & Wine":         "linear-gradient(145deg,#fdf4e0,#f8e4b8)",
-    "Traditional Restaurants":"linear-gradient(145deg,#faf0e0,#f0d8a8)",
-    Stays:                   "linear-gradient(145deg,#e8f4ec,#c8dcc8)",
-    Skills:                  "linear-gradient(145deg,#e8f0fc,#c8d8f8)",
+    Wellness: "linear-gradient(145deg,#e8f5ee,#c8e8d8)",
+    Adventure: "linear-gradient(145deg,#e0ecf8,#c0d8f0)",
+    Music: "linear-gradient(145deg,#eeebf8,#d8d0f0)",
+    Events: "linear-gradient(145deg,#f8e8f0,#f0c8dc)",
+    Florists: "linear-gradient(145deg,#fdf0e8,#f8dcc8)",
+    Beauty: "linear-gradient(145deg,#fce8f4,#f4c8e4)",
+    "Dining & Wine": "linear-gradient(145deg,#fdf4e0,#f8e4b8)",
+    "Traditional Restaurants": "linear-gradient(145deg,#faf0e0,#f0d8a8)",
+    Stays: "linear-gradient(145deg,#e8f4ec,#c8dcc8)",
+    Skills: "linear-gradient(145deg,#e8f0fc,#c8d8f8)",
   };
 
   const catBadgeClass =
-    voucher.cat === "Music"                  ? "cbadge cbadge-music"
-    : voucher.cat === "Events"               ? "cbadge cbadge-events"
-    : voucher.cat === "Traditional Restaurants" ? "cbadge cbadge-trad"
-    : voucher.cat === "Florists"             ? "cbadge cbadge-florist"
-    : "cbadge cbadge-pop";
+    voucher.cat === "Music"
+      ? "cbadge cbadge-music"
+      : voucher.cat === "Events"
+        ? "cbadge cbadge-events"
+        : voucher.cat === "Traditional Restaurants"
+          ? "cbadge cbadge-trad"
+          : voucher.cat === "Florists"
+            ? "cbadge cbadge-florist"
+            : "cbadge cbadge-pop";
 
   return (
     <div className="card" onClick={() => onOpen(voucher)}>
@@ -639,7 +816,12 @@ function VoucherCard({ voucher, onOpen }) {
             className="card-img-placeholder"
             style={{ background: catBg[voucher.cat] || "var(--bg2)" }}
           >
-            <span style={{ fontSize: "3rem", filter: "drop-shadow(0 2px 6px rgba(0,0,0,.12))" }}>
+            <span
+              style={{
+                fontSize: "3rem",
+                filter: "drop-shadow(0 2px 6px rgba(0,0,0,.12))",
+              }}
+            >
               {getCatIcon(voucher.cat)}
             </span>
           </div>
@@ -663,20 +845,35 @@ function VoucherCard({ voucher, onOpen }) {
         <div className="card-footer">
           <div>
             <div className="card-price-val">
-              <small>US$</small>{(Number(voucher.price) / ZAR_TO_USD).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              <small>US$</small>
+              {(Number(voucher.price) / ZAR_TO_USD).toLocaleString("en-US", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
             </div>
             {voucher.rating > 0 ? (
               <div className="card-rating">
                 <span className="star">★</span> {voucher.rating}
               </div>
             ) : (
-              <div style={{ fontSize: ".6rem", color: "var(--green)",
-                fontWeight: 700, marginTop: 2 }}>New ✦</div>
+              <div
+                style={{
+                  fontSize: ".6rem",
+                  color: "var(--green)",
+                  fontWeight: 700,
+                  marginTop: 2,
+                }}
+              >
+                New ✦
+              </div>
             )}
           </div>
           <button
             className="card-add-btn"
-            onClick={e => { e.stopPropagation(); onOpen(voucher); }}
+            onClick={(e) => {
+              e.stopPropagation();
+              onOpen(voucher);
+            }}
             aria-label={`Buy ${voucher.name}`}
           >
             +
@@ -691,18 +888,18 @@ function HeroBurst({ cards }) {
 
   // Re-trigger the animation every 6 seconds with a new set of cards
   useEffect(() => {
-    const t = setInterval(() => setKey(k => k + 1), 6000);
+    const t = setInterval(() => setKey((k) => k + 1), 6000);
     return () => clearInterval(t);
   }, []);
 
   // 6 positions radiating out from centre: top-left, top, top-right, bottom-left, bottom, bottom-right
   const positions = [
-    { tx0: "0",    ty0: "0",    tx: "-240px", ty: "-160px", delay: "0s"    }, // top-left
-    { tx0: "0",    ty0: "0",    tx: "0px",    ty: "-200px", delay: "0.1s"  }, // top
-    { tx0: "0",    ty0: "0",    tx: "240px",  ty: "-160px", delay: "0.2s"  }, // top-right
-    { tx0: "0",    ty0: "0",    tx: "-240px", ty: "140px",  delay: "0.15s" }, // bottom-left
-    { tx0: "0",    ty0: "0",    tx: "0px",    ty: "180px",  delay: "0.25s" }, // bottom
-    { tx0: "0",    ty0: "0",    tx: "240px",  ty: "140px",  delay: "0.3s"  }, // bottom-right
+    { tx0: "0", ty0: "0", tx: "-240px", ty: "-160px", delay: "0s" }, // top-left
+    { tx0: "0", ty0: "0", tx: "0px", ty: "-200px", delay: "0.1s" }, // top
+    { tx0: "0", ty0: "0", tx: "240px", ty: "-160px", delay: "0.2s" }, // top-right
+    { tx0: "0", ty0: "0", tx: "-240px", ty: "140px", delay: "0.15s" }, // bottom-left
+    { tx0: "0", ty0: "0", tx: "0px", ty: "180px", delay: "0.25s" }, // bottom
+    { tx0: "0", ty0: "0", tx: "240px", ty: "140px", delay: "0.3s" }, // bottom-right
   ];
 
   // Pick 6 cards, cycling through
@@ -728,7 +925,11 @@ function HeroBurst({ cards }) {
             }}
           >
             {card.img ? (
-              <img src={card.img} alt={card.name} className="hero-burst-card-img" />
+              <img
+                src={card.img}
+                alt={card.name}
+                className="hero-burst-card-img"
+              />
             ) : (
               <div className="hero-burst-card-placeholder">{card.emoji}</div>
             )}
@@ -744,15 +945,15 @@ function HeroBurst({ cards }) {
   );
 }
 
- const PERKS = [
-  { icon:"📱", label:"WhatsApp Delivery" },
-  { icon:"🔒", label:"PayFast Secure" },
-  { icon:"✅", label:"Verified Partners" },
-  { icon:"🔄", label:"Flexible Booking" },
-  { icon:"🎁", label:"Custom Messages" },
-  { icon:"⭐", label:"4.9 · 2,800 Reviews" },
+const PERKS = [
+  { icon: "📱", label: "WhatsApp Delivery" },
+  { icon: "🔒", label: "PayFast Secure" },
+  { icon: "✅", label: "Verified Partners" },
+  { icon: "🔄", label: "Flexible Booking" },
+  { icon: "🎁", label: "Custom Messages" },
+  { icon: "⭐", label: "4.9 · 2,800 Reviews" },
 ];
- 
+
 function AvoFeatureStrip() {
   return (
     <div className="avs-feature-strip">
@@ -760,11 +961,13 @@ function AvoFeatureStrip() {
         <div className="avs-feature-icon">🎁</div>
         <div>
           <div className="avs-feature-title">AfriVoucher perks</div>
-          <div className="avs-feature-sub">Instant WhatsApp delivery · Weekly EFT payouts · 200+ ZIM partners</div>
+          <div className="avs-feature-sub">
+            Instant WhatsApp delivery · Weekly EFT payouts · 200+ ZIM partners
+          </div>
         </div>
       </div>
       <div className="avs-pills">
-        {PERKS.map(p => (
+        {PERKS.map((p) => (
           <div key={p.label} className="avs-pill">
             <span className="avs-pill-icon">{p.icon}</span>
             {p.label}
@@ -774,20 +977,20 @@ function AvoFeatureStrip() {
     </div>
   );
 }
- const CAT_TILES = [
-  { emoji:"🧖", name:"Wellness", cat:"Wellness" },
-  { emoji:"🍲", name:"Traditional", cat:"Traditional Restaurants" },
-  { emoji:"🎵", name:"Music", cat:"Music" },
-  { emoji:"🪂", name:"Adventure", cat:"Adventure" },
-  { emoji:"🌸", name:"Florists", cat:"Florists" },
-  { emoji:"🍷", name:"Dining & Wine", cat:"Dining & Wine" },
-  { emoji:"🎪", name:"Events", cat:"Events" },
-  { emoji:"📚", name:"Skills", cat:"Skills" },
+const CAT_TILES = [
+  { emoji: "🧖", name: "Wellness", cat: "Wellness" },
+  { emoji: "🍲", name: "Traditional", cat: "Traditional Restaurants" },
+  { emoji: "🎵", name: "Music", cat: "Music" },
+  { emoji: "🪂", name: "Adventure", cat: "Adventure" },
+  { emoji: "🌸", name: "Florists", cat: "Florists" },
+  { emoji: "🍷", name: "Dining & Wine", cat: "Dining & Wine" },
+  { emoji: "🎪", name: "Events", cat: "Events" },
+  { emoji: "📚", name: "Skills", cat: "Skills" },
 ];
-  
+
 export function FlashDeals({ vouchers = [], onOpen }) {
   const [timeLeft, setTimeLeft] = React.useState({ h: 0, m: 0, s: 0 });
- 
+
   // Countdown to midnight tonight
   React.useEffect(() => {
     const tick = () => {
@@ -805,21 +1008,93 @@ export function FlashDeals({ vouchers = [], onOpen }) {
     const t = setInterval(tick, 1000);
     return () => clearInterval(t);
   }, []);
- 
-  const pad = n => String(n).padStart(2, '0');
- 
+
+  const pad = (n) => String(n).padStart(2, "0");
+
   // Flash deal data — mix real vouchers with curated specials
   const FLASH = [
-    { name: "60-Min Massage", emoji: "🧖", originalPrice: 750, price: 550, off: 27, stock: 4, total: 10, cat: "Wellness" },
-    { name: "Wine Tasting for Two", emoji: "🍷", originalPrice: 850, price: 620, off: 27, stock: 7, total: 15, cat: "Dining & Wine" },
-    { name: "Birthday Bloom Bouquet", emoji: "🌸", originalPrice: 450, price: 350, off: 22, stock: 3, total: 8, cat: "Florists" },
-    { name: "Concert Ticket Voucher", emoji: "🎵", originalPrice: 600, price: 450, off: 25, stock: 5, total: 12, cat: "Music" },
-    { name: "Tandem Skydive", emoji: "🪂", originalPrice: 3200, price: 2950, off: 8, stock: 2, total: 5, cat: "Adventure" },
-    { name: "Kids Party Pack", emoji: "🎪", originalPrice: 1400, price: 1200, off: 14, stock: 6, total: 10, cat: "Events" },
-    { name: "Gel Mani + Spa Pedi", emoji: "💅", originalPrice: 580, price: 480, off: 17, stock: 9, total: 20, cat: "Beauty" },
-    { name: "Sadza & Dovi Dinner", emoji: "🍲", originalPrice: 420, price: 350, off: 17, stock: 8, total: 15, cat: "Traditional Restaurants" },
+    {
+      name: "60-Min Massage",
+      emoji: "🧖",
+      originalPrice: 750,
+      price: 550,
+      off: 27,
+      stock: 4,
+      total: 10,
+      cat: "Wellness",
+    },
+    {
+      name: "Wine Tasting for Two",
+      emoji: "🍷",
+      originalPrice: 850,
+      price: 620,
+      off: 27,
+      stock: 7,
+      total: 15,
+      cat: "Dining & Wine",
+    },
+    {
+      name: "Birthday Bloom Bouquet",
+      emoji: "🌸",
+      originalPrice: 450,
+      price: 350,
+      off: 22,
+      stock: 3,
+      total: 8,
+      cat: "Florists",
+    },
+    {
+      name: "Concert Ticket Voucher",
+      emoji: "🎵",
+      originalPrice: 600,
+      price: 450,
+      off: 25,
+      stock: 5,
+      total: 12,
+      cat: "Music",
+    },
+    {
+      name: "Tandem Skydive",
+      emoji: "🪂",
+      originalPrice: 3200,
+      price: 2950,
+      off: 8,
+      stock: 2,
+      total: 5,
+      cat: "Adventure",
+    },
+    {
+      name: "Kids Party Pack",
+      emoji: "🎪",
+      originalPrice: 1400,
+      price: 1200,
+      off: 14,
+      stock: 6,
+      total: 10,
+      cat: "Events",
+    },
+    {
+      name: "Gel Mani + Spa Pedi",
+      emoji: "💅",
+      originalPrice: 580,
+      price: 480,
+      off: 17,
+      stock: 9,
+      total: 20,
+      cat: "Beauty",
+    },
+    {
+      name: "Sadza & Dovi Dinner",
+      emoji: "🍲",
+      originalPrice: 420,
+      price: 350,
+      off: 17,
+      stock: 8,
+      total: 15,
+      cat: "Traditional Restaurants",
+    },
   ];
- 
+
   return (
     <section className="flash-deals-section">
       <div className="flash-header">
@@ -843,26 +1118,45 @@ export function FlashDeals({ vouchers = [], onOpen }) {
             className="flash-deal-card"
             onClick={() => {
               // Try to match to a real voucher, else pass the deal object
-              const match = vouchers.find(v =>
-                v.cat === deal.cat && v.price <= deal.price * 1.1
+              const match = vouchers.find(
+                (v) => v.cat === deal.cat && v.price <= deal.price * 1.1,
               );
-              if (onOpen) onOpen(match || { ...deal, id: 'flash_' + i, partner: 'AfriVoucher', city: 'Zimbabwe', desc: deal.name });
+              if (onOpen)
+                onOpen(
+                  match || {
+                    ...deal,
+                    id: "flash_" + i,
+                    partner: "AfriVoucher",
+                    city: "Zimbabwe",
+                    desc: deal.name,
+                  },
+                );
             }}
           >
             <div className="flash-deal-img">
-              <span style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,.15))' }}>{deal.emoji}</span>
+              <span
+                style={{ filter: "drop-shadow(0 2px 8px rgba(0,0,0,.15))" }}
+              >
+                {deal.emoji}
+              </span>
               <span className="flash-off-badge">-{deal.off}%</span>
             </div>
             <div className="flash-deal-body">
               <div className="flash-deal-name">{deal.name}</div>
               <div className="flash-price-row">
-                <span className="flash-price-now">US${(deal.price / ZAR_TO_USD).toFixed(2)}</span>
-<span className="flash-price-was">US${(deal.originalPrice / ZAR_TO_USD).toFixed(2)}</span>
+                <span className="flash-price-now">
+                  US${(deal.price / ZAR_TO_USD).toFixed(2)}
+                </span>
+                <span className="flash-price-was">
+                  US${(deal.originalPrice / ZAR_TO_USD).toFixed(2)}
+                </span>
               </div>
               <div className="flash-stock-bar">
                 <div
                   className="flash-stock-fill"
-                  style={{ width: `${Math.round((deal.stock / deal.total) * 100)}%` }}
+                  style={{
+                    width: `${Math.round((deal.stock / deal.total) * 100)}%`,
+                  }}
                 />
               </div>
               <div className="flash-stock-lbl">
@@ -908,25 +1202,25 @@ const SLIDES = [
 export function HeroV2({ vouchers = [], onSearch, onCatSelect }) {
   const [i, setI] = useState(0);
   const [paused, setPaused] = useState(false);
- 
+
   const go = useCallback(
     (dir) => setI((c) => (c + dir + SLIDES.length) % SLIDES.length),
-    []
+    [],
   );
- 
+
   useEffect(() => {
     if (paused) return;
     const t = setInterval(() => go(1), 5500);
     return () => clearInterval(t);
   }, [paused, go]);
- 
+
   // Navigate to a category if the parent supplies a handler,
   // otherwise fall back to the search handler.
   const open = (cat) => {
     if (onCatSelect) onCatSelect(cat);
     else if (onSearch) onSearch(cat);
   };
- 
+
   return (
     <>
       <style>{HERO_CSS}</style>
@@ -942,7 +1236,11 @@ export function HeroV2({ vouchers = [], onSearch, onCatSelect }) {
             style={{ transform: `translateX(-${i * 100}%)` }}
           >
             {SLIDES.map((s) => (
-              <div key={s.title} className="hv3-slide" onClick={() => open(s.cat)}>
+              <div
+                key={s.title}
+                className="hv3-slide"
+                onClick={() => open(s.cat)}
+              >
                 <div className="hv3-copy">
                   <h1 className="hv3-title">{s.title}</h1>
                   <p className="hv3-sub">{s.sub}</p>
@@ -956,18 +1254,31 @@ export function HeroV2({ vouchers = [], onSearch, onCatSelect }) {
                     {s.cta} ›
                   </button>
                 </div>
-                <img className="hv3-img" src={s.img} alt={s.title} loading="lazy" />
+                <img
+                  className="hv3-img"
+                  src={s.img}
+                  alt={s.title}
+                  loading="lazy"
+                />
               </div>
             ))}
           </div>
- 
-          <button className="hv3-arrow prev" onClick={() => go(-1)} aria-label="Previous">
+
+          <button
+            className="hv3-arrow prev"
+            onClick={() => go(-1)}
+            aria-label="Previous"
+          >
             ‹
           </button>
-          <button className="hv3-arrow next" onClick={() => go(1)} aria-label="Next">
+          <button
+            className="hv3-arrow next"
+            onClick={() => go(1)}
+            aria-label="Next"
+          >
             ›
           </button>
- 
+
           <div className="hv3-dots">
             {SLIDES.map((_, d) => (
               <button
@@ -979,7 +1290,7 @@ export function HeroV2({ vouchers = [], onSearch, onCatSelect }) {
             ))}
           </div>
         </div>
- 
+
         {/* ── Right: promo card ── */}
         <div className="hv3-side">
           <div className="hv3-logo">AfriVoucher</div>
@@ -989,7 +1300,10 @@ export function HeroV2({ vouchers = [], onSearch, onCatSelect }) {
             OFF on Orders over US$90
           </h2>
           <div className="hv3-side-stage">
-            <button className="hv3-side-btn" onClick={() => open("Dining & Wine")}>
+            <button
+              className="hv3-side-btn"
+              onClick={() => open("Dining & Wine")}
+            >
               Shop Now
             </button>
             <span>🧖</span>
@@ -1001,15 +1315,78 @@ export function HeroV2({ vouchers = [], onSearch, onCatSelect }) {
     </>
   );
 }
- 
+
 const FLASH_DATA = [
-  { name:"60-Min Massage", emoji:"🧖", price:550, orig:750, off:27, stock:4, total:10, cat:"Wellness" },
-  { name:"Wine Tasting for Two", emoji:"🍷", price:620, orig:850, off:27, stock:7, total:15, cat:"Dining & Wine" },
-  { name:"Birthday Bloom Bouquet", emoji:"🌸", price:350, orig:450, off:22, stock:3, total:8, cat:"Florists" },
-  { name:"Concert Ticket Voucher", emoji:"🎵", price:450, orig:600, off:25, stock:5, total:12, cat:"Music" },
-  { name:"Luxury Pamper Package", emoji:"💅", price:480, orig:580, off:17, stock:9, total:20, cat:"Beauty" },
-  { name:"Sadza & Dovi Dinner", emoji:"🍲", price:350, orig:420, off:17, stock:8, total:15, cat:"Traditional Restaurants" },
-  { name:"Kids Party Pack", emoji:"🎪", price:1200, orig:1400, off:14, stock:6, total:10, cat:"Events" },
+  {
+    name: "60-Min Massage",
+    emoji: "🧖",
+    price: 550,
+    orig: 750,
+    off: 27,
+    stock: 4,
+    total: 10,
+    cat: "Wellness",
+  },
+  {
+    name: "Wine Tasting for Two",
+    emoji: "🍷",
+    price: 620,
+    orig: 850,
+    off: 27,
+    stock: 7,
+    total: 15,
+    cat: "Dining & Wine",
+  },
+  {
+    name: "Birthday Bloom Bouquet",
+    emoji: "🌸",
+    price: 350,
+    orig: 450,
+    off: 22,
+    stock: 3,
+    total: 8,
+    cat: "Florists",
+  },
+  {
+    name: "Concert Ticket Voucher",
+    emoji: "🎵",
+    price: 450,
+    orig: 600,
+    off: 25,
+    stock: 5,
+    total: 12,
+    cat: "Music",
+  },
+  {
+    name: "Luxury Pamper Package",
+    emoji: "💅",
+    price: 480,
+    orig: 580,
+    off: 17,
+    stock: 9,
+    total: 20,
+    cat: "Beauty",
+  },
+  {
+    name: "Sadza & Dovi Dinner",
+    emoji: "🍲",
+    price: 350,
+    orig: 420,
+    off: 17,
+    stock: 8,
+    total: 15,
+    cat: "Traditional Restaurants",
+  },
+  {
+    name: "Kids Party Pack",
+    emoji: "🎪",
+    price: 1200,
+    orig: 1400,
+    off: 14,
+    stock: 6,
+    total: 10,
+    cat: "Events",
+  },
 ];
 // ─── Newsletter section ───────────────────────────────────────────────────
 function NewsletterSection() {
@@ -1086,8 +1463,8 @@ function PromoBanner({ onCatSelect, vouchers = [] }) {
   const intervalRef = React.useRef(null);
   const progressRef = React.useRef(null);
   const INTERVAL = 5500; // ms per slide
-  const TICK = 50;       // progress bar update interval
- 
+  const TICK = 50; // progress bar update interval
+
   const SLIDES = [
     {
       eyebrow: "🔥 This Weekend Only",
@@ -1160,12 +1537,15 @@ function PromoBanner({ onCatSelect, vouchers = [] }) {
       emoji: "🌸",
     },
   ];
- 
-  const go = React.useCallback((dir) => {
-    setCurrent(c => (c + dir + SLIDES.length) % SLIDES.length);
-    setProgress(0);
-  }, [SLIDES.length]);
- 
+
+  const go = React.useCallback(
+    (dir) => {
+      setCurrent((c) => (c + dir + SLIDES.length) % SLIDES.length);
+      setProgress(0);
+    },
+    [SLIDES.length],
+  );
+
   // Auto-advance + progress bar
   React.useEffect(() => {
     if (paused) {
@@ -1173,24 +1553,24 @@ function PromoBanner({ onCatSelect, vouchers = [] }) {
       clearInterval(progressRef.current);
       return;
     }
-    let elapsed = progress * INTERVAL / 100;
+    let elapsed = (progress * INTERVAL) / 100;
     progressRef.current = setInterval(() => {
       elapsed += TICK;
       setProgress(Math.min((elapsed / INTERVAL) * 100, 100));
     }, TICK);
     intervalRef.current = setTimeout(() => {
-      setCurrent(c => (c + 1) % SLIDES.length);
+      setCurrent((c) => (c + 1) % SLIDES.length);
       setProgress(0);
     }, INTERVAL - elapsed);
     return () => {
       clearInterval(progressRef.current);
       clearTimeout(intervalRef.current);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [current, paused]);
- 
+
   const slide = SLIDES[current];
- 
+
   return (
     <div
       className="promo-strip"
@@ -1211,7 +1591,11 @@ function PromoBanner({ onCatSelect, vouchers = [] }) {
             {/* Left: copy */}
             <div
               className="promo-slide-left"
-              style={{ '--slide-bg': s.bgColor, background: s.bgColor, color: s.textColor }}
+              style={{
+                "--slide-bg": s.bgColor,
+                background: s.bgColor,
+                color: s.textColor,
+              }}
             >
               <div className="promo-eyebrow" style={{ color: s.accentColor }}>
                 {s.eyebrow}
@@ -1225,15 +1609,21 @@ function PromoBanner({ onCatSelect, vouchers = [] }) {
               <div className="promo-cta-row">
                 <button
                   className="promo-btn-primary"
-                  style={{ color: s.btnColor, boxShadow: `0 4px 18px ${s.accentColor}40` }}
-                  onClick={e => { e.stopPropagation(); onCatSelect && onCatSelect(s.cat); }}
+                  style={{
+                    color: s.btnColor,
+                    boxShadow: `0 4px 18px ${s.accentColor}40`,
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onCatSelect && onCatSelect(s.cat);
+                  }}
                 >
                   {s.btnText} →
                 </button>
                 <button
                   className="promo-btn-ghost"
                   style={{ color: `${s.textColor}70` }}
-                  onClick={e => e.stopPropagation()}
+                  onClick={(e) => e.stopPropagation()}
                 >
                   Learn more
                 </button>
@@ -1241,42 +1631,67 @@ function PromoBanner({ onCatSelect, vouchers = [] }) {
             </div>
             {/* Right: image */}
             <div className="promo-slide-right">
-              {s.img
-                ? <img src={s.img} alt={s.headline} loading="lazy" />
-                : (
-                  <div style={{ width: '100%', height: '100%', background: s.bgColor,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: '6rem' }}>
-                    {s.emoji}
-                  </div>
-                )
-              }
+              {s.img ? (
+                <img src={s.img} alt={s.headline} loading="lazy" />
+              ) : (
+                <div
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    background: s.bgColor,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "6rem",
+                  }}
+                >
+                  {s.emoji}
+                </div>
+              )}
               <div className="promo-price-badge">{s.priceBadge}</div>
             </div>
           </div>
         ))}
       </div>
- 
+
       {/* Arrows */}
-      <button className="promo-arrow prev" onClick={() => go(-1)} aria-label="Previous">‹</button>
-      <button className="promo-arrow next" onClick={() => go(1)} aria-label="Next">›</button>
- 
+      <button
+        className="promo-arrow prev"
+        onClick={() => go(-1)}
+        aria-label="Previous"
+      >
+        ‹
+      </button>
+      <button
+        className="promo-arrow next"
+        onClick={() => go(1)}
+        aria-label="Next"
+      >
+        ›
+      </button>
+
       {/* Dots */}
       <div className="promo-dots">
         {SLIDES.map((_, i) => (
           <button
             key={i}
-            className={`promo-dot${i === current ? ' active' : ''}`}
-            onClick={() => { setCurrent(i); setProgress(0); }}
+            className={`promo-dot${i === current ? " active" : ""}`}
+            onClick={() => {
+              setCurrent(i);
+              setProgress(0);
+            }}
             aria-label={`Slide ${i + 1}`}
           />
         ))}
       </div>
- 
+
       {/* Progress bar */}
       <div
         className="promo-progress"
-        style={{ width: `${progress}%`, transitionDuration: paused ? '0ms' : `${TICK}ms` }}
+        style={{
+          width: `${progress}%`,
+          transitionDuration: paused ? "0ms" : `${TICK}ms`,
+        }}
       />
     </div>
   );
@@ -1450,14 +1865,14 @@ export default function App({ db, onAuthSuccess }) {
   const [loadingV, setLoadingV] = useState(true);
   const [searchQ, setSearchQ] = useState("");
   const [activeCat, setActiveCat] = useState(null);
-const [activePartnerId, setActivePartnerId] = useState(null);
- const [selectedVoucher, setSelectedVoucher] = useState(null);
- 
-// Handler to navigate to a partner
-const openPartner = (partnerId) => {
-  setActivePartnerId(partnerId);
-  setPage("partner");
-};
+  const [activePartnerId, setActivePartnerId] = useState(null);
+  const [selectedVoucher, setSelectedVoucher] = useState(null);
+
+  // Handler to navigate to a partner
+  const openPartner = (partnerId) => {
+    setActivePartnerId(partnerId);
+    setPage("partner");
+  };
   const [showScroll, setShowScroll] = useState(false);
   useEffect(() => {
     const style = document.createElement("style");
@@ -1481,34 +1896,34 @@ const openPartner = (partnerId) => {
         const snap = await getDocs(
           query(collection(db, "all_vouchers"), orderBy("createdAt", "desc")),
         );
-       const data = snap.docs.map((d) => {
-  const v = d.data();
-  return {
-    id: "fb_" + d.id,
-    cat: v.category || "Other",
-    name: v.name || "Unnamed Voucher",
-    partner: v.businessName || "Partner",
-    partnerId: v.partnerUid || v.uid || "",
-    city: v.city || v.businessCity || v.location || "Zimbabwe",
-    price: v.price || 0,
-    comm: 0,
-    rating: 0,
-    reviews: 0,
-    tags: [],
-    icon: getCatIcon(v.category),
-    img: v.imageUrl || "",
-    imageUrl: v.imageUrl || "",
-    desc: v.desc || "",
-    includes: Array.isArray(v.includes) ? v.includes : [],
-    expiry: v.validMonths ? v.validMonths + " months" : "12 months",
-    validMonths: v.validMonths || 12,
-    expiryDate: v.expiryDate || "",
-    createdAt: v.createdAt?.toDate?.().toISOString() || "",
-    source: "firebase",
-    uid: v.partnerUid || v.uid || "",
-    firestoreId: d.id,
-  };
-});
+        const data = snap.docs.map((d) => {
+          const v = d.data();
+          return {
+            id: "fb_" + d.id,
+            cat: v.category || "Other",
+            name: v.name || "Unnamed Voucher",
+            partner: v.businessName || "Partner",
+            partnerId: v.partnerUid || v.uid || "",
+            city: v.city || v.businessCity || v.location || "Zimbabwe",
+            price: v.price || 0,
+            comm: 0,
+            rating: 0,
+            reviews: 0,
+            tags: [],
+            icon: getCatIcon(v.category),
+            img: v.imageUrl || "",
+            imageUrl: v.imageUrl || "",
+            desc: v.desc || "",
+            includes: Array.isArray(v.includes) ? v.includes : [],
+            expiry: v.validMonths ? v.validMonths + " months" : "12 months",
+            validMonths: v.validMonths || 12,
+            expiryDate: v.expiryDate || "",
+            createdAt: v.createdAt?.toDate?.().toISOString() || "",
+            source: "firebase",
+            uid: v.partnerUid || v.uid || "",
+            firestoreId: d.id,
+          };
+        });
         setVouchers(data);
       } catch (e) {
         console.warn("Could not load vouchers:", e.message);
@@ -1555,9 +1970,11 @@ const openPartner = (partnerId) => {
       {page === "store" && activeCat ? (
         <CategoryPage
           cat={activeCat}
-          vouchers={displayedVouchers}
+          vouchers={vouchers}
+          loading={loadingV}
           onBack={() => setActiveCat(null)}
-          onOpenVoucher={(v) => {}}
+          onCatSelect={setActiveCat}
+          onPartnerOpen={openPartner}
         />
       ) : page === "store" ? (
         <StorePage
@@ -1565,51 +1982,53 @@ const openPartner = (partnerId) => {
           loading={loadingV}
           setPage={guardedSetPage}
           onCatSelect={setActiveCat}
-          user={user} 
+          user={user}
           selectedVoucher={selectedVoucher}
-  setSelectedVoucher={setSelectedVoucher}
-   onPartnerOpen={(partnerId) => {
-    setActivePartnerId(partnerId);
-    setPage("partner");
-  }}
+          setSelectedVoucher={setSelectedVoucher}
+          onPartnerOpen={(partnerId) => {
+            setActivePartnerId(partnerId);
+            setPage("partner");
+          }}
         />
       ) : null}
       {page === "auth" && (
-        <AuthPage 
-         firebaseApp={firebaseApp}
-        onSuccess={() => {
-  guardedSetPage("admin");
-  if (onAuthSuccess) onAuthSuccess();
-}} />
+        <AuthPage
+          firebaseApp={firebaseApp}
+          onSuccess={() => {
+            guardedSetPage("admin");
+            if (onAuthSuccess) onAuthSuccess();
+          }}
+        />
       )}
-     
+
       {page === "admin" &&
         (user ? (
           <AdminPage user={user} onLogout={handleLogout} />
         ) : (
-          <AuthPage 
-           firebaseApp={firebaseApp}
-          onSuccess={() => {
-  guardedSetPage("admin");
-  if (onAuthSuccess) onAuthSuccess();
-}} />
+          <AuthPage
+            firebaseApp={firebaseApp}
+            onSuccess={() => {
+              guardedSetPage("admin");
+              if (onAuthSuccess) onAuthSuccess();
+            }}
+          />
         ))}
-        {page === "help" && <HelpCentrePage setPage={guardedSetPage} />}
+      {page === "help" && <HelpCentrePage setPage={guardedSetPage} />}
       {page === "partners" && <PartnersPage />}
-{page === "orders" && user && <OrdersPage user={user} />}
-{page === "partner" && (
-  <PartnerPage
-    partnerId={activePartnerId}
-    onBack={() => setPage("store")}
-    onOpenVoucher={(v) => {
-      setPage("store");       
-      setSelectedVoucher(v);  
-    }}
-  />
-)}
-{page === "contact" && (
-  <ContactPage firebaseApp={firebaseApp} setPage={guardedSetPage} />
-)}
+      {page === "orders" && user && <OrdersPage user={user} />}
+      {page === "partner" && (
+        <PartnerPage
+          partnerId={activePartnerId}
+          onBack={() => setPage("store")}
+          onOpenVoucher={(v) => {
+            setPage("store");
+            setSelectedVoucher(v);
+          }}
+        />
+      )}
+      {page === "contact" && (
+        <ContactPage firebaseApp={firebaseApp} setPage={guardedSetPage} />
+      )}
       <Footer setPage={guardedSetPage} />
       <CookieConsent />
       <BottomNav page={page} setPage={guardedSetPage} user={user} />

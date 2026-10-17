@@ -1193,3 +1193,4 @@ const [filteredResults, setFilteredResults] = useState([]);
     </div>
   );
 }
+export { AvoVoucherCard, SkeletonVoucherCard, AvoTrustStrip, ProductModal, CheckoutDrawer, ZAR_TO_USD, fmt };
