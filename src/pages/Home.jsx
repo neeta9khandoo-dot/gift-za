@@ -113,6 +113,71 @@ const VOUCHER_TEMPLATES = [
   },
 ];
 
+const HERO_CSS = `
+.hv3{max-width:1200px;margin:0 auto;padding:20px 16px 8px;display:grid;
+  grid-template-columns:2fr 1fr;gap:24px}
+.hv3-main{position:relative;height:345px;border-radius:18px;overflow:hidden;
+  background:#8ec5ea;
+  background-image:radial-gradient(circle at 20% 20%,rgba(255,255,255,.18) 0 2px,transparent 3px),
+                   radial-gradient(circle at 70% 60%,rgba(255,255,255,.14) 0 2px,transparent 3px);
+  background-size:46px 46px}
+.hv3-track{display:flex;height:100%;transition:transform .6s cubic-bezier(.4,0,.2,1)}
+.hv3-slide{flex:0 0 100%;position:relative;display:flex;align-items:center;cursor:pointer}
+.hv3-copy{position:relative;z-index:2;padding:0 0 0 56px;max-width:60%}
+.hv3-title{font-size:clamp(1.8rem,4.2vw,3rem);font-weight:800;line-height:1.1;
+  color:#000;margin:0 0 12px;letter-spacing:-.5px}
+.hv3-sub{font-size:1.15rem;color:#111;margin:0 0 22px;font-weight:300}
+.hv3-cta{background:none;border:none;padding:0;font-weight:800;font-size:.78rem;
+  letter-spacing:.5px;color:#000;cursor:pointer}
+.hv3-cta:hover{text-decoration:underline}
+.hv3-img{position:absolute;right:0;bottom:0;height:100%;width:42%;
+  object-fit:cover;object-position:center top;
+  -webkit-mask-image:linear-gradient(to right,transparent 0,#000 28%);
+  mask-image:linear-gradient(to right,transparent 0,#000 28%)}
+.hv3-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:5;
+  width:50px;height:50px;border-radius:50%;border:none;background:#fff;
+  box-shadow:0 4px 14px rgba(0,0,0,.18);font-size:1.6rem;font-weight:700;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  line-height:1;padding:0 0 3px}
+.hv3-arrow.prev{left:12px;color:#000}
+.hv3-arrow.next{right:12px;color:#f0a030}
+.hv3-arrow:hover{transform:translateY(-50%) scale(1.08)}
+.hv3-dots{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);
+  display:flex;gap:6px;z-index:5}
+.hv3-dot{width:7px;height:7px;border-radius:50%;border:none;padding:0;
+  background:rgba(255,255,255,.7);cursor:pointer;transition:all .3s}
+.hv3-dot.on{background:#3a9be8;width:20px;border-radius:4px}
+ 
+.hv3-side{position:relative;height:345px;border-radius:18px;overflow:hidden;
+  background:#c4e0f5;display:flex;flex-direction:column;align-items:center;
+  text-align:center;padding:16px 18px 0}
+.hv3-logo{background:#4aa59a;color:#fff;font-style:italic;font-weight:700;
+  font-size:.85rem;padding:9px 16px;border-radius:6px;margin-bottom:22px}
+.hv3-side-title{font-size:1.2rem;line-height:1.7;color:#111;margin:0;font-weight:400}
+.hv3-side-stage{position:relative;flex:1;width:100%;display:flex;
+  align-items:flex-end;justify-content:center;gap:6px;font-size:4.2rem;
+  padding-bottom:6px}
+.hv3-side-stage span:nth-child(2){font-size:5.4rem}
+.hv3-side-btn{position:absolute;top:14px;left:50%;transform:translateX(-50%);
+  background:#000;color:#fff;border:none;border-radius:10px;padding:10px 18px;
+  font-size:.8rem;font-weight:700;cursor:pointer;z-index:2;white-space:nowrap}
+.hv3-side-btn:hover{background:#222}
+ 
+@media (max-width:900px){
+  .hv3{grid-template-columns:1fr;gap:16px}
+  .hv3-main{height:300px}
+  .hv3-copy{padding-left:56px;max-width:68%}
+  .hv3-side{height:290px}
+}
+@media (max-width:520px){
+  .hv3-main{height:260px}
+  .hv3-copy{padding-left:46px;max-width:72%}
+  .hv3-sub{font-size:.9rem;margin-bottom:14px}
+  .hv3-arrow{width:38px;height:38px;font-size:1.3rem}
+  .hv3-arrow.prev{left:6px}.hv3-arrow.next{right:6px}
+  .hv3-img{width:46%;opacity:.85}
+}
+`;
 async function seedUserVouchers(uid, businessName, email) {
   const userVouchersRef = collection(db, "users", uid, "vouchers");
   const batch = writeBatch(db);
@@ -755,98 +820,133 @@ export function FlashDeals({ vouchers = [], onOpen }) {
     </section>
   );
 }
- export function HeroV2({ vouchers = [], onSearch }) {
-  const [query, setQuery] = React.useState('');
+const SLIDES = [
+  {
+    title: "Get Flat 30% off",
+    sub: "AfriVoucher is the best way to gift an experience.",
+    cta: "SHOP NOW",
+    cat: "Wellness",
+    img: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=700&q=80",
+  },
+  {
+    title: "Send Mum a Proper Meal",
+    sub: "Gift a traditional lunch, delivered to WhatsApp instantly.",
+    cta: "BROWSE TRADITIONAL",
+    cat: "Traditional Restaurants",
+    img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=700&q=80",
+  },
+  {
+    title: "Gift a Night to Remember",
+    sub: "Live jazz evenings, studio sessions and concert vouchers.",
+    cta: "SEE MUSIC",
+    cat: "Music",
+    img: "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=700&q=80",
+  },
+  {
+    title: "15,000ft. One Jump.",
+    sub: "Tandem skydives and adventures for the one who has everything.",
+    cta: "VIEW ADVENTURES",
+    cat: "Adventure",
+    img: "https://images.unsplash.com/photo-1601024445121-e5b82f020549?w=700&q=80",
+  },
+];
+export function HeroV2({ vouchers = [], onSearch, onCatSelect }) {
+  const [i, setI] = useState(0);
+  const [paused, setPaused] = useState(false);
  
-  const TICKER_ITEMS = [
-"🧖 Couples Spa Day — US$109",
-"🪂 Tandem Skydive — US$179",
-"🍲 Sunday Lunch for Two — US$25",
-"🎵 Live Jazz Evening — US$47",
-"🌸 Luxury Rose Arrangement — US$41",
-"🏡 Ancient City Lodge Stay — US$169",
-"💅 Bridal Glow Package — US$118",
-"🎪 Birthday Bundle — US$112",
-  ];
-  // Duplicate for seamless loop
-  const allTickers = [...TICKER_ITEMS, ...TICKER_ITEMS];
+  const go = useCallback(
+    (dir) => setI((c) => (c + dir + SLIDES.length) % SLIDES.length),
+    []
+  );
  
-  const handleSearch = () => onSearch && onSearch(query);
+  useEffect(() => {
+    if (paused) return;
+    const t = setInterval(() => go(1), 5500);
+    return () => clearInterval(t);
+  }, [paused, go]);
+ 
+  // Navigate to a category if the parent supplies a handler,
+  // otherwise fall back to the search handler.
+  const open = (cat) => {
+    if (onCatSelect) onCatSelect(cat);
+    else if (onSearch) onSearch(cat);
+  };
  
   return (
-    <div className="hero-v2">
-      <div className="hero-v2-bg" />
-      <div className="hero-v2-pattern" />
-      <div className="hero-v2-inner">
-        <div className="hero-v2-left">
-          <div className="hero-v2-eyebrow">
-            <span className="hero-v2-eyebrow-dot" />
-            Live now · Zimbabwe's gift experience platform
-          </div>
-          <h1 className="hero-v2-title">
-            Give them an experience<br />
-            they'll never <em>forget.</em>
-          </h1>
-          <p className="hero-v2-sub">
-            200+ curated Zimbabwean experiences — spas, live music, traditional meals,
-            adventures and more. Pay once, delivered to WhatsApp instantly.
-          </p>
-          <div className="hero-v2-search">
-            <input
-              type="text"
-              placeholder="Spa day, safari, live jazz, send mum lunch…"
-              value={query}
-              onChange={e => setQuery(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && handleSearch()}
-            />
-            <button className="hero-v2-search-btn" onClick={handleSearch}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-              </svg>
-              Search
-            </button>
-          </div>
-          <div className="hero-v2-trust">
-            {[
-              ['⭐', '4.9', '/ 2,800+ reviews'],
-              ['📱', 'Instant', 'WhatsApp delivery'],
-              ['🔒', 'PayFast', 'secure checkout'],
-              ['✅', 'Verified', 'ZIM partners'],
-            ].map(([icon, val, lbl]) => (
-              <div key={lbl} className="hero-v2-trust-item">
-                {icon} <strong>{val}</strong> {lbl}
+    <>
+      <style>{HERO_CSS}</style>
+      <section className="hv3">
+        {/* ── Left: main slider ── */}
+        <div
+          className="hv3-main"
+          onMouseEnter={() => setPaused(true)}
+          onMouseLeave={() => setPaused(false)}
+        >
+          <div
+            className="hv3-track"
+            style={{ transform: `translateX(-${i * 100}%)` }}
+          >
+            {SLIDES.map((s) => (
+              <div key={s.title} className="hv3-slide" onClick={() => open(s.cat)}>
+                <div className="hv3-copy">
+                  <h1 className="hv3-title">{s.title}</h1>
+                  <p className="hv3-sub">{s.sub}</p>
+                  <button
+                    className="hv3-cta"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      open(s.cat);
+                    }}
+                  >
+                    {s.cta} ›
+                  </button>
+                </div>
+                <img className="hv3-img" src={s.img} alt={s.title} loading="lazy" />
               </div>
             ))}
           </div>
+ 
+          <button className="hv3-arrow prev" onClick={() => go(-1)} aria-label="Previous">
+            ‹
+          </button>
+          <button className="hv3-arrow next" onClick={() => go(1)} aria-label="Next">
+            ›
+          </button>
+ 
+          <div className="hv3-dots">
+            {SLIDES.map((_, d) => (
+              <button
+                key={d}
+                className={`hv3-dot${d === i ? " on" : ""}`}
+                onClick={() => setI(d)}
+                aria-label={`Slide ${d + 1}`}
+              />
+            ))}
+          </div>
         </div>
-        {/* Right: floating stat cards */}
-        <div className="hero-v2-stats">
-          {[
-            { val: vouchers.length || '200+', lbl: 'Experiences' },
-            { val: '2.8k+', lbl: 'Vouchers Sold' },
-           { val: 'US$33', lbl: 'From' },
-          ].map(s => (
-            <div key={s.lbl} className="hero-stat-card">
-              <div className="hero-stat-val">{s.val}</div>
-              <div className="hero-stat-lbl">{s.lbl}</div>
-            </div>
-          ))}
+ 
+        {/* ── Right: promo card ── */}
+        <div className="hv3-side">
+          <div className="hv3-logo">AfriVoucher</div>
+          <h2 className="hv3-side-title">
+            Gift Offer – Get US$10
+            <br />
+            OFF on Orders over US$90
+          </h2>
+          <div className="hv3-side-stage">
+            <button className="hv3-side-btn" onClick={() => open("Dining & Wine")}>
+              Shop Now
+            </button>
+            <span>🧖</span>
+            <span>🍷</span>
+            <span>🎵</span>
+          </div>
         </div>
-      </div>
-      {/* Scrolling ticker */}
-      <div className="hero-ticker">
-        <div className="hero-ticker-track">
-          {allTickers.map((item, i) => (
-            <React.Fragment key={i}>
-              <span className="hero-ticker-item">{item}</span>
-              <span className="hero-ticker-sep">·</span>
-            </React.Fragment>
-          ))}
-        </div>
-      </div>
-    </div>
+      </section>
+    </>
   );
 }
+ 
 const FLASH_DATA = [
   { name:"60-Min Massage", emoji:"🧖", price:550, orig:750, off:27, stock:4, total:10, cat:"Wellness" },
   { name:"Wine Tasting for Two", emoji:"🍷", price:620, orig:850, off:27, stock:7, total:15, cat:"Dining & Wine" },
@@ -1365,6 +1465,9 @@ const openPartner = (partnerId) => {
     desc: v.desc || "",
     includes: Array.isArray(v.includes) ? v.includes : [],
     expiry: v.validMonths ? v.validMonths + " months" : "12 months",
+    validMonths: v.validMonths || 12,
+    expiryDate: v.expiryDate || "",
+    createdAt: v.createdAt?.toDate?.().toISOString() || "",
     source: "firebase",
     uid: v.partnerUid || v.uid || "",
     firestoreId: d.id,

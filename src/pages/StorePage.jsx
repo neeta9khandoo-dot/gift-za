@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { HeroV2 } from "./HeroV2";
 import {
   Flower2,
   Cake,
@@ -154,7 +155,53 @@ const PERKS = [
   { icon: "◆", label: "Custom Messages" },
   { icon: "★", label: "4.9 · 2,800 Reviews" },
 ];
-
+const CAT_BLURBS = {
+  Wellness: "Spa days, massages & pamper packages",
+  "Traditional Restaurants": "Send a proper home-cooked meal",
+  Music: "Live jazz, concerts & studio sessions",
+  Adventure: "Skydives, safaris & adrenaline gifts",
+  Florists: "Fresh bouquets & luxury arrangements",
+  "Dining & Wine": "Wine tastings & fine dining for two",
+  Events: "Parties, functions & celebrations",
+  Skills: "Workshops, classes & learning gifts",
+};
+ 
+const CAT_CARD_CSS = `
+.cc-wrap{max-width:1200px;margin:0 auto;padding:36px 16px 12px}
+.cc-head{text-align:center;margin-bottom:26px}
+.cc-title{font-size:1.9rem;font-weight:800;letter-spacing:1px;margin:0;color:#111}
+.cc-sub{font-size:.8rem;color:#444;margin:4px 0 0}
+.cc-row{display:flex;gap:24px;overflow-x:auto;scroll-snap-type:x mandatory;
+  padding:6px 4px 28px;scrollbar-width:none}
+.cc-row::-webkit-scrollbar{display:none}
+.cc-card{flex:0 0 calc((100% - 48px) / 3);scroll-snap-align:start;background:#fff;
+  box-shadow:0 8px 30px rgba(0,0,0,.10);cursor:pointer;
+  transition:transform .25s,box-shadow .25s}
+.cc-card:hover{transform:translateY(-4px);box-shadow:0 14px 36px rgba(0,0,0,.16)}
+.cc-img{position:relative;height:168px;overflow:hidden;background:#e8eef4}
+.cc-img img{width:100%;height:100%;object-fit:cover;display:block}
+.cc-tag{position:absolute;top:0;left:0;background:#fff;color:#111;
+  font-size:.82rem;font-weight:500;padding:12px 20px 14px;
+  border-radius:0 0 22px 0}
+.cc-body{padding:18px 24px 20px}
+.cc-name{font-size:1rem;font-weight:700;letter-spacing:.8px;line-height:1.5;
+  color:#111;margin:0 0 14px;min-height:3em}
+.cc-meta{font-size:.72rem;color:#222;margin-bottom:16px}
+.cc-meta b{color:#e11d1d;font-weight:500}
+.cc-btn{display:flex;margin:0 auto;width:max-content;border:none;padding:0;
+  cursor:pointer;background:none}
+.cc-btn-icon{background:#f0a030;color:#fff;width:43px;height:42px;
+  display:flex;align-items:center;justify-content:center;font-size:1.1rem}
+.cc-btn-label{background:#3a9be8;color:#fff;font-weight:700;font-size:.78rem;
+  padding:0 24px;height:42px;display:flex;align-items:center;letter-spacing:.3px}
+.cc-card:hover .cc-btn-label{background:#2b86d1}
+@media (max-width:900px){.cc-card{flex-basis:calc((100% - 24px) / 2)}}
+@media (max-width:560px){
+  .cc-card{flex-basis:82%}
+  .cc-title{font-size:1.5rem}
+}
+`;
+ 
 const ALL_CATS = [
   "All",
   "Wellness",
@@ -350,208 +397,157 @@ function AvoFeatureStrip() {
     </div>
   );
 }
-function AvoCatGrid({ onCatSelect }) {
-  const scrollRef = React.useRef(null);
-  const [activeIdx, setActiveIdx] = React.useState(0);
 
-  React.useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    let paused = false;
-    const tick = setInterval(() => {
-      if (paused) return;
-      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 2) {
-        el.scrollLeft = 0;
-      } else {
-        el.scrollLeft += 1;
-      }
-    }, 12);
-    const pause = () => { paused = true; };
-    const resume = () => { paused = false; };
-    el.addEventListener("mouseenter", pause);
-    el.addEventListener("mouseleave", resume);
-    el.addEventListener("touchstart", pause);
-    return () => {
-      clearInterval(tick);
-      el.removeEventListener("mouseenter", pause);
-      el.removeEventListener("mouseleave", resume);
-      el.removeEventListener("touchstart", pause);
-    };
-  }, []);
-
-  const handleScroll = () => {
-    const el = scrollRef.current;
-    if (!el) return;
-    const cardWidth = 110;
-    const idx = Math.round(el.scrollLeft / cardWidth) % CAT_TILES.length;
-    setActiveIdx(idx);
-  };
-
-  const scrollTo = (i) => {
-    const el = scrollRef.current;
-    if (!el) return;
-    el.scrollTo({ left: i * 110, behavior: "smooth" });
-    setActiveIdx(i);
-  };
-
+function AvoCatGrid({ onCatSelect, vouchers = [] }) {
+  const countFor = (cat) => vouchers.filter((v) => v.cat === cat).length;
+ 
   return (
-    <div className="avs-section">
-      <div className="avs-section-head">
-        <span className="avs-section-title">Browse by category</span>
-      </div>
-
-      <div className="avs-cat-scroll" ref={scrollRef} onScroll={handleScroll}>
-        {[...CAT_TILES, ...CAT_TILES].map((t, i) => (
-          <div key={i} className="avs-cat-circle" onClick={() => onCatSelect(t.cat)}>
-            <div className="avs-cat-circle-inner">
-              <img src={t.img} alt={t.name} loading="lazy" />
-            </div>
-            <div className="avs-cat-circle-name">{t.name}</div>
-          </div>
-        ))}
-      </div>
-
-      <div className="avs-cat-dots">
-        {CAT_TILES.map((_, i) => (
-          <button
-            key={i}
-            className={`avs-cat-dot${activeIdx === i ? " active" : ""}`}
-            onClick={() => scrollTo(i)}
-            aria-label={`Category ${i + 1}`}
-          />
-        ))}
-      </div>
-    </div>
+    <>
+      <style>{CAT_CARD_CSS}</style>
+      <section className="cc-wrap">
+        <div className="cc-head">
+          <h2 className="cc-title">Browse by Category</h2>
+          <p className="cc-sub">Find the perfect experience for every occasion</p>
+        </div>
+ 
+        <div className="cc-row">
+          {CAT_TILES.map((t) => {
+            const n = countFor(t.cat);
+            return (
+              <div key={t.cat} className="cc-card" onClick={() => onCatSelect(t.cat)}>
+                <div className="cc-img">
+                  <img src={t.img} alt={t.name} loading="lazy" />
+                  <span className="cc-tag">{t.name}</span>
+                </div>
+                <div className="cc-body">
+                  <h3 className="cc-name">{CAT_BLURBS[t.cat] || t.name}</h3>
+                  <div className="cc-meta">
+                    <b>{n > 0 ? `${n} available` : "New experiences"}</b>
+                    {" · "}WhatsApp delivery
+                  </div>
+                  <button
+                    className="cc-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onCatSelect(t.cat);
+                    }}
+                  >
+                    <span className="cc-btn-icon">→</span>
+                    <span className="cc-btn-label">Browse Now</span>
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+    </>
   );
 }
 
-function AvoFlashDeals({ onOpen }) {
-  const [time, setTime] = React.useState({ h: 0, m: 0, s: 0 });
-
-  React.useEffect(() => {
-    const tick = () => {
-      const now = new Date(),
-        midnight = new Date();
-      midnight.setHours(24, 0, 0, 0);
-      const diff = Math.max(0, Math.floor((midnight - now) / 1000));
-      setTime({
-        h: Math.floor(diff / 3600),
-        m: Math.floor((diff % 3600) / 60),
-        s: diff % 60,
-      });
-    };
-    tick();
-    const t = setInterval(tick, 1000);
-    return () => clearInterval(t);
-  }, []);
-
-  const pad = (n) => String(n).padStart(2, "0");
-
+const getExpiryDate = (v) => {
+  if (v.expiryDate) {
+    const d = new Date(v.expiryDate);
+    if (!isNaN(d)) return d;
+  }
+  if (v.createdAt && v.validMonths) {
+    const d = new Date(v.createdAt);
+    if (!isNaN(d)) {
+      d.setMonth(d.getMonth() + Number(v.validMonths));
+      return d;
+    }
+  }
+  return null;
+};
+ 
+const daysUntil = (date) =>
+  Math.ceil((date.getTime() - Date.now()) / 86400000);
+ 
+function AvoFlashDeals({ vouchers = [], onOpen }) {
+  const expiring = React.useMemo(
+    () =>
+      vouchers
+        .map((v) => {
+          const exp = getExpiryDate(v);
+          return exp ? { v, exp, days: daysUntil(exp) } : null;
+        })
+        .filter((x) => x && x.days >= 0) // hide already-expired
+        .sort((a, b) => a.exp - b.exp)   // soonest first
+        .slice(0, 10),
+    [vouchers]
+  );
+ 
+  if (expiring.length === 0) return null;
+ 
+  const badge = (days) => {
+    if (days <= 7) return { bg: "#dc2626", label: days <= 1 ? "Last day" : `${days} days left` };
+    if (days <= 30) return { bg: "#f59e0b", label: `${days} days left` };
+    return { bg: "#16a34a", label: `${days} days left` };
+  };
+ 
   return (
     <div className="avs-section">
       <div className="avs-section-head">
         <span className="avs-section-title">
-           <span style={{ marginRight: 5, fontWeight: 900 }}>✦</span>Flash Deals
+          <span style={{ marginRight: 5, fontWeight: 900 }}>✦</span>
+          Expiring Soon
         </span>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 5,
-            fontSize: ".7rem",
-            color: "#888",
-            fontWeight: 600,
-          }}
-        >
-          Ends in
-          {[pad(time.h), pad(time.m), pad(time.s)].map((v, i) => (
-            <React.Fragment key={i}>
-              <span
-                style={{
-                  background: "#111",
-                  color: "#fff",
-                  padding: "3px 7px",
-                  borderRadius: 5,
-                  fontVariantNumeric: "tabular-nums",
-                  fontWeight: 800,
-                  fontSize: ".72rem",
-                }}
-              >
-                {v}
-              </span>
-              {i < 2 && (
-                <span
-                  style={{ color: "var(--green-primary)", fontWeight: 800 }}
-                >
-                  :
-                </span>
-              )}
-            </React.Fragment>
-          ))}
-        </div>
+        <span style={{ fontSize: ".7rem", color: "#888", fontWeight: 600 }}>
+          Grab them before they go
+        </span>
       </div>
+ 
       <div className="avs-hscroll">
-        {FLASH_DATA.map((d, i) => (
-          <div
-            key={i}
-            className="avs-deal-card"
-            onClick={() =>
-              onOpen?.({
-                name: d.name,
-                cat: d.cat,
-                price: d.price,
-                desc: d.name,
-                partner: "AfriVoucher",
-                city: "Zimbabwe",
-              })
-            }
-          >
-            <div className="avs-deal-img">
-  {d.img ? (
-    <img
-      src={d.img}
-      alt={d.name}
-      loading="lazy"
-      style={{
-        width: "100%",
-        height: "100%",
-        objectFit: "cover",
-        position: "absolute",
-        inset: 0,
-      }}
-    />
-  ) : (
-    <span style={{ fontSize: "2rem", position: "relative", zIndex: 1 }}>
-      {d.emoji}
-    </span>
-  )}
-  <span className="avs-off-badge">-{d.off}%</span>
-</div>
-            <div className="avs-deal-body">
-              <div className="avs-deal-name">{d.name}</div>
-              <div className="avs-price-row">
-                <span className="avs-price-now">
-                  US${(d.price / ZAR_TO_USD).toFixed(2)}
-                </span>
-                <span className="avs-price-was">
-                  US${(d.orig / ZAR_TO_USD).toFixed(2)}
+        {expiring.map(({ v, exp, days }) => {
+          const b = badge(days);
+          const img = v.imageUrl || v.img;
+          return (
+            <div key={v.id} className="avs-deal-card" onClick={() => onOpen?.(v)}>
+              <div className="avs-deal-img">
+                {img ? (
+                  <img
+                    src={img}
+                    alt={v.name}
+                    loading="lazy"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      position: "absolute",
+                      inset: 0,
+                    }}
+                  />
+                ) : (
+                  <span style={{ fontSize: "2rem", position: "relative", zIndex: 1 }}>
+                    {getCatIcon(v.cat)}
+                  </span>
+                )}
+                <span className="avs-off-badge" style={{ background: b.bg, color: "#fff" }}>
+                  {b.label}
                 </span>
               </div>
-              <div className="avs-stock-bar">
-                <div
-                  className="avs-stock-fill"
-                  style={{ width: `${Math.round((d.stock / d.total) * 100)}%` }}
-                />
+ 
+              <div className="avs-deal-body">
+                <div className="avs-deal-name">{v.name}</div>
+                <div className="avs-price-row">
+                  <span className="avs-price-now">{fmt(v.price)}</span>
+                </div>
+                <div className="avs-stock-lbl" style={{ color: b.bg, fontWeight: 600 }}>
+                  Expires{" "}
+                  {exp.toLocaleDateString("en-GB", {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                  })}
+                </div>
               </div>
-              <div className="avs-stock-lbl">{d.stock} left at this price</div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
 }
-
 function AvoTrustStrip() {
  const items = [
   { icon: "◉", text: "Instant WhatsApp delivery" },
@@ -1340,19 +1336,12 @@ const [filteredResults, setFilteredResults] = useState([]);
   return (
     <div className="avs-page">
       {/* Greeting */}
-      <AvoGreeting user={user} voucherCount={0} />
-
-      {/* Promotions row */}
-      <AvoPromoRow onCatSelect={handleCatSelect} />
-
-      {/* Perks strip */}
-      <AvoFeatureStrip />
-
+     <HeroV2 vouchers={vouchers} onCatSelect={handleCatSelect} />
       {/* Category grid */}
-      <AvoCatGrid onCatSelect={handleCatSelect} />
+     <AvoCatGrid onCatSelect={handleCatSelect} vouchers={vouchers} />
 
       {/* Flash deals */}
-      <AvoFlashDeals onOpen={setSelectedVoucher} />
+     <AvoFlashDeals vouchers={vouchers} onOpen={setSelectedVoucher} />
 
       {/* Category filter tabs */}
       <div
