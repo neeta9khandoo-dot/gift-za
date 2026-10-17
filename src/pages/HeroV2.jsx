@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import flag from "../images/pngegg.png";
 import logo from "../images/logo-desktop.png";
+
 // ─── Slides (left banner) ─────────────────────────────────────────────────
 const SLIDES = [
   {
@@ -8,28 +9,28 @@ const SLIDES = [
     sub: "AfriVoucher is the best way to gift an experience.",
     cta: "SHOP NOW",
     cat: "Wellness",
-    img: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=700&q=80",
+    img: "https://res.cloudinary.com/dlrdkvxiz/image/upload/v1792269266/spa_r289dd.webp?w=700&q=80",
   },
   {
     title: "Send Mum a Proper Meal",
     sub: "Gift a traditional lunch, delivered to WhatsApp instantly.",
     cta: "BROWSE TRADITIONAL",
     cat: "Traditional Restaurants",
-    img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=700&q=80",
+    img: "https://res.cloudinary.com/dlrdkvxiz/image/upload/v1792269267/send-mum_qqist7.png?w=700&q=80",
   },
   {
     title: "Gift a Night to Remember",
     sub: "Live jazz evenings, studio sessions and concert vouchers.",
     cta: "SEE MUSIC",
     cat: "Music",
-    img: "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=700&q=80",
+    img: "https://res.cloudinary.com/dlrdkvxiz/image/upload/v1792269265/music_wpedsl.jpg?w=700&q=80",
   },
   {
     title: "15,000ft. One Jump.",
     sub: "Tandem skydives and adventures for the one who has everything.",
     cta: "VIEW ADVENTURES",
     cat: "Adventure",
-    img: "https://images.unsplash.com/photo-1601024445121-e5b82f020549?w=700&q=80",
+    img: "https://res.cloudinary.com/dlrdkvxiz/image/upload/v1792269266/skydive_lhip9i.jpg?w=700&q=80",
   },
 ];
 
@@ -162,6 +163,7 @@ export function HeroV2({ vouchers = [], onSearch, onCatSelect }) {
                 className="hv3-slide"
                 onClick={() => open(s.cat)}
               >
+                
                 <div className="hv3-copy">
                   <h1 className="hv3-title">{s.title}</h1>
                   <p className="hv3-sub">{s.sub}</p>

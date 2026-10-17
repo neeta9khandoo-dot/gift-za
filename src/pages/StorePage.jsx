@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect,  } from "react";
 import { HeroV2 } from "./HeroV2";
 import { HomeSEO, VoucherSEO } from "../components/Seo";
 import {
@@ -39,14 +39,14 @@ const getCatIcon = (cat) =>
 
 
 const CAT_TILES = [
-  { emoji: "☯", name: "Wellness",      cat: "Wellness",              img: "https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?w=900&h=400&fit=crop&q=80" },
-  { emoji: "⊕", name: "Traditional",   cat: "Traditional Restaurants", img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=900&h=400&fit=crop&q=80" },
-  { emoji: "♪", name: "Music",         cat: "Music",                 img: "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=900&h=400&fit=crop&q=80" },
-  { emoji: "✈", name: "Adventure",     cat: "Adventure",             img: "https://images.unsplash.com/photo-1601024445121-e5b82f020549?w=900&h=400&fit=crop&q=80" },
- { emoji: "✿", name: "Florists", cat: "Florists",                     img: "https://images.unsplash.com/photo-1455659817273-f96807779a8a?w=900&h=400&fit=crop&q=80"},
-  { emoji: "◈", name: "Dining & Wine", cat: "Dining & Wine",         img: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=900&h=400&fit=crop&q=80" },
-  { emoji: "✺", name: "Events",        cat: "Events",                img: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=900&h=400&fit=crop&q=80" },
-  { emoji: "◎", name: "Skills",        cat: "Skills",                img: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=900&h=400&fit=crop&q=80" },
+  { emoji: "☯", name: "Wellness",      cat: "Wellness",              img: "https://res.cloudinary.com/dlrdkvxiz/image/upload/v1792269266/spa_r289dd.webp?w=900&h=400&fit=crop&q=80" },
+  { emoji: "⊕", name: "Traditional",   cat: "Traditional Restaurants", img: "https://res.cloudinary.com/dlrdkvxiz/image/upload/v1792269267/send-mum_qqist7.png?w=900&h=400&fit=crop&q=80" },
+  { emoji: "♪", name: "Music",         cat: "Music",                 img: "https://res.cloudinary.com/dlrdkvxiz/image/upload/v1792269265/music_wpedsl.jpg?w=900&h=400&fit=crop&q=80" },
+  { emoji: "✈", name: "Adventure",     cat: "Adventure",             img: "https://res.cloudinary.com/dlrdkvxiz/image/upload/v1792269266/skydive_lhip9i.jpg?w=900&h=400&fit=crop&q=80" },
+ { emoji: "✿", name: "Florists", cat: "Florists",                     img: "https://res.cloudinary.com/dlrdkvxiz/image/upload/v1792270012/florists_yn20wz.jpg?w=900&h=400&fit=crop&q=80"},
+  { emoji: "◈", name: "Dining & Wine", cat: "Dining & Wine",         img: "https://res.cloudinary.com/dlrdkvxiz/image/upload/v1792270011/wine-tasting_fnvxbz.avif?w=900&h=400&fit=crop&q=80" },
+  { emoji: "✺", name: "Events",        cat: "Events",                img: "https://res.cloudinary.com/dlrdkvxiz/image/upload/v1792270275/events_xztuz0.jpg?w=900&h=400&fit=crop&q=80" },
+  { emoji: "◎", name: "Skills",        cat: "Skills",                img: "https://res.cloudinary.com/dlrdkvxiz/image/upload/v1792270274/skills_dcucqg.webp?w=900&h=400&fit=crop&q=80" },
 ];
 
 
@@ -96,7 +96,46 @@ const CAT_CARD_CSS = `
   .cc-title{font-size:1.5rem}
 }
 `;
- 
+ const CAT_SLIDER_CSS = `
+.cc-slider{position:relative}
+
+.cc-row{
+  display:flex !important;
+  flex-wrap:nowrap !important;
+  gap:20px;
+  overflow-x:auto;
+  scroll-snap-type:x mandatory;
+  scroll-behavior:smooth;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+  padding:8px 4px 18px;
+}
+.cc-row::-webkit-scrollbar{display:none}
+
+.cc-card{
+  flex:0 0 280px !important;
+  width:280px;
+  scroll-snap-align:start;
+}
+
+.cc-arrow{
+  position:absolute;top:42%;transform:translateY(-50%);z-index:5;
+  width:44px;height:44px;border-radius:50%;border:none;cursor:pointer;
+  background:#fff;color:#232a35;font-size:1.7rem;line-height:1;
+  box-shadow:0 6px 18px rgba(0,0,0,.22);
+  display:flex;align-items:center;justify-content:center;
+  transition:background .2s,color .2s,opacity .2s;
+}
+.cc-arrow:hover{background:#d98a35;color:#fff}
+.cc-arrow-l{left:-12px}
+.cc-arrow-r{right:-12px}
+.cc-arrow.hide{opacity:0;pointer-events:none}
+
+@media (max-width:900px){
+  .cc-card{flex:0 0 78% !important;width:78%}
+  .cc-arrow{display:none}   /* swipe on mobile */
+}
+`;
 const ALL_CATS = [
   "All",
   "Wellness",
@@ -158,46 +197,117 @@ function StarRating({ rating, reviewCount }) {
 
 
 function AvoCatGrid({ onCatSelect, vouchers = [] }) {
+  const rowRef = useRef(null);
+  const [canPrev, setCanPrev] = useState(false);
+  const [canNext, setCanNext] = useState(true);
+  const [paused, setPaused] = useState(false);
+
   const countFor = (cat) => vouchers.filter((v) => v.cat === cat).length;
- 
+
+  const updateArrows = () => {
+    const el = rowRef.current;
+    if (!el) return;
+    setCanPrev(el.scrollLeft > 4);
+    setCanNext(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
+  };
+
+  const slide = (dir) => {
+    const el = rowRef.current;
+    if (!el) return;
+    const card = el.querySelector(".cc-card");
+    const step = card ? card.offsetWidth + 20 : el.clientWidth * 0.8;
+    el.scrollBy({ left: dir * step, behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    updateArrows();
+    const el = rowRef.current;
+    if (!el) return;
+    el.addEventListener("scroll", updateArrows, { passive: true });
+    window.addEventListener("resize", updateArrows);
+    return () => {
+      el.removeEventListener("scroll", updateArrows);
+      window.removeEventListener("resize", updateArrows);
+    };
+  }, []);
+
+  // Auto-slide (pauses on hover/touch, loops back to the start at the end)
+  useEffect(() => {
+    if (paused) return;
+    const id = setInterval(() => {
+      const el = rowRef.current;
+      if (!el) return;
+      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 4) {
+        el.scrollTo({ left: 0, behavior: "smooth" });
+      } else {
+        slide(1);
+      }
+    }, 4000);
+    return () => clearInterval(id);
+  }, [paused]);
+
   return (
     <>
       <style>{CAT_CARD_CSS}</style>
+      <style>{CAT_SLIDER_CSS}</style>
       <section className="cc-wrap">
         <div className="cc-head">
           <h2 className="cc-title">Browse by Category</h2>
           <p className="cc-sub">Find the perfect experience for every occasion</p>
         </div>
- 
-        <div className="cc-row">
-          {CAT_TILES.map((t) => {
-            const n = countFor(t.cat);
-            return (
-              <div key={t.cat} className="cc-card" onClick={() => onCatSelect(t.cat)}>
-                <div className="cc-img">
-                  <img src={t.img} alt={t.name} loading="lazy" />
-                  <span className="cc-tag">{t.name}</span>
-                </div>
-                <div className="cc-body">
-                  <h3 className="cc-name">{CAT_BLURBS[t.cat] || t.name}</h3>
-                  <div className="cc-meta">
-                    <b>{n > 0 ? `${n} available` : "New experiences"}</b>
-                    {" · "}WhatsApp delivery
+
+        <div
+          className="cc-slider"
+          onMouseEnter={() => setPaused(true)}
+          onMouseLeave={() => setPaused(false)}
+          onTouchStart={() => setPaused(true)}
+        >
+          <button
+            className={`cc-arrow cc-arrow-l${canPrev ? "" : " hide"}`}
+            onClick={() => slide(-1)}
+            aria-label="Previous categories"
+          >
+            ‹
+          </button>
+
+          <div className="cc-row" ref={rowRef}>
+            {CAT_TILES.map((t) => {
+              const n = countFor(t.cat);
+              return (
+                <div key={t.cat} className="cc-card" onClick={() => onCatSelect(t.cat)}>
+                  <div className="cc-img">
+                    <img src={t.img} alt={t.name} loading="lazy" />
+                    <span className="cc-tag">{t.name}</span>
                   </div>
-                  <button
-                    className="cc-btn"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onCatSelect(t.cat);
-                    }}
-                  >
-                    <span className="cc-btn-icon">→</span>
-                    <span className="cc-btn-label">Browse Now</span>
-                  </button>
+                  <div className="cc-body">
+                    <h3 className="cc-name">{CAT_BLURBS[t.cat] || t.name}</h3>
+                    <div className="cc-meta">
+                      <b>{n > 0 ? `${n} available` : "New experiences"}</b>
+                      {" · "}WhatsApp delivery
+                    </div>
+                    <button
+                      className="cc-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onCatSelect(t.cat);
+                      }}
+                    >
+                      <span className="cc-btn-icon">→</span>
+                      <span className="cc-btn-label">Browse Now</span>
+                    </button>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
+
+          <button
+            className={`cc-arrow cc-arrow-r${canNext ? "" : " hide"}`}
+            onClick={() => slide(1)}
+            aria-label="Next categories"
+          >
+            ›
+          </button>
         </div>
       </section>
     </>

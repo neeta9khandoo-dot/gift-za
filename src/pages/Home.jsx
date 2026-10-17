@@ -20,7 +20,7 @@ import {
   catFromSlug,
   idFromSlug,
 } from "./paths";
- 
+import zimFlag from "../images/zim-map.png"
 import { Link } from "react-router-dom";
 import logoMobile from "../images/logo-mobile.png";
 import logoDesktop from "../images/logo-desktop.png";
@@ -452,7 +452,13 @@ const NAV_CSS = `
 .nv3-search button{width:52px;border:none;background:var(--av-orange);color:#fff;cursor:pointer;
   display:flex;align-items:center;justify-content:center}
 .nv3-search button:hover{background:var(--av-orange-deep)}
-
+/* ── proudly zimbabwean badge ── */
+.nv3-proud{display:flex;align-items:center;gap:8px;flex-shrink:0;margin-left:auto;
+  color:#fff;font-size:.62rem;font-weight:700;letter-spacing:.5px;
+  text-transform:uppercase;white-space:nowrap}
+.nv3-proud svg{width:28px;height:16px;border-radius:2px;display:block;
+  box-shadow:0 0 0 1px rgba(255,255,255,.25)}
+.nv3-proud em{font-style:normal;color:var(--av-orange)}
 /* ── user dropdown ── */
 .nv3-user{position:relative}
 .nv3-user-btn{background:none;border:none;cursor:pointer;display:flex;align-items:center;
@@ -485,6 +491,7 @@ const NAV_CSS = `
   .nv3-top{padding:0;height:auto;order:2;border-bottom:none; background:transparent}
   .nv3-social,.nv3-cart{display:none}
   .nv3-right{gap:12px}
+    .nv3-mobile .nv3-proud{margin:0 0 10px;color:#111;justify-content:center}
   .nv3-bar{display:none}
   .nv3-burger{display:flex;order:3;margin-left:8px}
   .nv3-mobile{display:none;background:#fff;border-bottom:3px solid var(--av-orange);padding:12px 16px 16px}
@@ -496,7 +503,20 @@ const NAV_CSS = `
   .nv3-mlink.active{color:var(--av-orange)}
 }
 `;
+const ZimFlag = () => (
+  <img
+    src={zimFlag}
+    alt="Zimbabwe flag"
+  />
 
+);
+
+const ProudBadge = () => (
+  <div className="nv3-proud">
+    <ZimFlag />
+    <span>Proudly <em>Zimbabwean</em></span>
+  </div>
+);
 function Nav({ page, setPage, user, onLogout, onSearch }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -739,12 +759,14 @@ function Nav({ page, setPage, user, onLogout, onSearch }) {
               </button>
             ))}
           </div>
+           <ProudBadge />
           <SearchPill />
         </div>
       </div>
 
       {/* Mobile menu */}
       <div className={`nv3-mobile${mobileOpen ? " open" : ""}`}>
+         <ProudBadge />
         <SearchPill />
         {navLinks.map(([p, label]) => (
           <button

@@ -6,9 +6,9 @@ import logoDesktop from "../images/logo-desktop-footer.png";
 import { categoryPath } from "../pages/paths";
 import ecocash from "../images/payments/ecocash.png";
 import omari from "../images/payments/omari.png";
-import worldremit from "../images/payments/worldremit.jpg";
-import remitly from "../images/payments/remitly.png";
-import wise from "../images/payments/wise.png";
+import worldremit from "../images/payments/visa.svg";
+import remitly from "../images/payments/mastercard.svg";
+import wise from "../images/payments/switch.svg";
 // Each link now has a real destination
 const EXPERIENCES = [
   { label: "Wellness & Spa", to: categoryPath("Wellness") },
@@ -43,7 +43,6 @@ const SOCIALS = [
 ];
 
 const PAYMENTS = [
-
   { name: "EcoCash", logo: ecocash },
   { name: "O'mari", logo: omari },
 
@@ -203,22 +202,22 @@ export default function Footer() {
             >
               Payments by
             </span>
-           {PAYMENTS.map(({ name, logo }) =>
-  logo ? (
-    <img
-      key={name}
-      className="pay-logo"
-      src={logo}
-      alt={name}
-      title={name}
-      loading="lazy"
-    />
-  ) : (
-    <span key={name} className="pay-badge">
-      {name}
-    </span>
-  ),
-)}
+            {PAYMENTS.map(({ name, logo }) =>
+              logo ? (
+                <img
+                  key={name}
+                  className="pay-logo"
+                  src={logo}
+                  alt={name}
+                  title={name}
+                  loading="lazy"
+                />
+              ) : (
+                <span key={name} className="pay-badge">
+                  {name}
+                </span>
+              ),
+            )}
           </div>
         </div>
       </div>
