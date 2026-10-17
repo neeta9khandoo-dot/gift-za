@@ -1055,16 +1055,24 @@ function ProspectingTool() {
 
 // ─── AddVoucherForm ───────────────────────────────────────────────────────
 function AddVoucherForm({ user, bizName, bizCategory, onSuccess }) {
+  const defaultCat = bizCategory || ALL_CATEGORIES[0];
+
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
-    category: bizCategory || "",
+    category: defaultCat,
     price: "",
     validity: "12",
     desc: "",
     includes: "",
     city: "",
   });
+   useEffect(() => {
+    setFormData((f) => ({
+      ...f,
+      category: bizCategory || f.category || ALL_CATEGORIES[0],
+    }));
+  }, [bizCategory]);
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
   const [formStatus, setFormStatus] = useState(null);
@@ -1085,7 +1093,7 @@ function AddVoucherForm({ user, bizName, bizCategory, onSuccess }) {
   const clearForm = () => {
     setFormData({
       name: "",
-      category: bizCategory || "",
+      category: defaultCat,
       price: "",
       validity: "12",
       desc: "",
