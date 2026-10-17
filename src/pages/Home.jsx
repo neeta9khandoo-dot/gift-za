@@ -272,264 +272,291 @@ export function AnnounceBannerV2() {
     </div>
   );
 } 
+
+const NAV_CSS = `
+.nv3{background:#fff;position:relative;z-index:200;font-family:inherit}
+.nv3-in{max-width:1280px;margin:0 auto;position:relative}
+ 
+/* ── logo notch ── */
+.nv3-logo{position:absolute;left:0;top:0;width:230px;height:109px;background:#fff;
+  border:none;border-bottom:2px solid #3a9be8;border-radius:0 0 26px 0;
+  display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;
+  font-size:1.35rem;font-weight:800;color:#3a9be8;z-index:3;padding:0 10px}
+.nv3-logo img{height:48px;width:auto}
+.nv3-logo span{color:#f0a030}
+ 
+/* ── top strip ── */
+.nv3-top{height:40px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px 0 260px}
+.nv3-social{display:flex;gap:18px;align-items:center}
+.nv3-social a{color:#111;display:flex}
+.nv3-social a:hover{color:#f0a030}
+.nv3-right{display:flex;align-items:center;gap:36px}
+.nv3-cart{position:relative;background:none;border:none;cursor:pointer;color:#f0a030;
+  display:flex;padding:0}
+.nv3-cart-badge{position:absolute;top:-4px;right:-5px;background:#3a9be8;color:#fff;
+  font-size:.52rem;font-weight:700;width:13px;height:13px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center}
+.nv3-login{background:none;border:none;cursor:pointer;color:#f0a030;font-weight:700;
+  font-size:.82rem;display:flex;align-items:center;gap:6px;padding:0}
+ 
+/* ── blue bar ── */
+.nv3-bar{margin-left:230px;height:69px;background:#3a9be8;border-radius:26px 0 0 0;
+  display:flex;align-items:center;justify-content:space-between;padding:0 24px 0 18px;gap:20px}
+.nv3-links{display:flex;height:100%;align-items:stretch;gap:2px;flex-wrap:nowrap}
+.nv3-link{position:relative;background:none;border:none;color:#fff;cursor:pointer;
+  font-weight:700;font-size:.66rem;letter-spacing:.4px;text-transform:uppercase;
+  padding:0 20px;white-space:nowrap}
+.nv3-link.active::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;
+  background:#f0a030;border-radius:0 0 2px 2px}
+.nv3-link:hover{background:rgba(255,255,255,.12)}
+.nv3-search{display:flex;align-items:stretch;background:#fff;border-radius:26px;
+  overflow:hidden;height:46px;width:240px;flex-shrink:0}
+.nv3-search input{flex:1;border:none;outline:none;padding:0 16px;font-size:.72rem;
+  min-width:0;background:transparent;color:#111}
+.nv3-search button{width:52px;border:none;background:#f0a030;color:#fff;cursor:pointer;
+  display:flex;align-items:center;justify-content:center}
+ 
+/* ── user dropdown ── */
+.nv3-user{position:relative}
+.nv3-user-btn{background:none;border:none;cursor:pointer;display:flex;align-items:center;
+  gap:8px;color:#f0a030;font-weight:700;font-size:.82rem;padding:0}
+.nv3-avatar{width:28px;height:28px;border-radius:50%;background:#3a9be8;color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:700}
+.nv3-dd{position:absolute;right:0;top:calc(100% + 10px);min-width:220px;background:#fff;
+  border-radius:12px;box-shadow:0 12px 36px rgba(0,0,0,.18);padding:8px;display:none;z-index:50}
+.nv3-dd.open{display:block}
+.nv3-dd-head{padding:10px 12px;border-bottom:1px solid #eee;margin-bottom:6px}
+.nv3-dd-name{font-weight:700;font-size:.85rem;color:#111}
+.nv3-dd-email{font-size:.72rem;color:#777;word-break:break-all}
+.nv3-dd-item{display:flex;align-items:center;gap:10px;width:100%;background:none;
+  border:none;text-align:left;padding:9px 12px;font-size:.82rem;color:#222;
+  border-radius:8px;cursor:pointer}
+.nv3-dd-item:hover{background:#eef6fd}
+.nv3-dd-item.danger{color:#dc2626}
+ 
+/* ── hamburger + mobile ── */
+.nv3-burger{display:none;background:none;border:none;cursor:pointer;width:34px;height:34px;
+  flex-direction:column;justify-content:center;gap:5px;padding:6px}
+.nv3-burger span{display:block;height:2px;background:#3a9be8;border-radius:2px}
+.nv3-mobile{display:none}
+ 
+@media (max-width:900px){
+  .nv3-logo{position:static;width:auto;height:64px;border:none;border-radius:0;
+    justify-content:flex-start;padding:0 16px;font-size:1.2rem}
+  .nv3-in{display:flex;align-items:center;justify-content:space-between;
+    border-bottom:2px solid #3a9be8;padding-right:12px}
+  .nv3-top{padding:0;height:auto;order:2}
+  .nv3-social,.nv3-cart{display:none}
+  .nv3-right{gap:12px}
+  .nv3-bar{display:none}
+  .nv3-burger{display:flex;order:3;margin-left:8px}
+  .nv3-mobile{display:none;background:#fff;border-bottom:2px solid #3a9be8;padding:12px 16px 16px}
+  .nv3-mobile.open{display:block}
+  .nv3-mobile .nv3-search{width:100%;border:1.5px solid #3a9be8;margin-bottom:10px}
+  .nv3-mlink{display:block;width:100%;text-align:left;background:none;border:none;
+    padding:12px 4px;font-size:.88rem;font-weight:600;color:#111;
+    border-bottom:1px solid #eee;cursor:pointer}
+  .nv3-mlink.active{color:#3a9be8}
+}
+`;
+ 
 function Nav({ page, setPage, user, onLogout, onSearch }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-const userRef = useRef(null);
-
-useEffect(() => {
-  const handleClickOutside = (e) => {
-    if (userRef.current && !userRef.current.contains(e.target)) {
-      setDropdownOpen(false);
-    }
-  };
-  document.addEventListener("mousedown", handleClickOutside);
-  return () => document.removeEventListener("mousedown", handleClickOutside);
-}, []);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const userRef = useRef(null);
+ 
+  useEffect(() => {
+    const onDown = (e) => {
+      if (userRef.current && !userRef.current.contains(e.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, []);
+ 
   const initials = user
-    ? (user.displayName || user.email || "Login")
+    ? (user.displayName || user.email || "U")
         .split(" ")
         .map((w) => w[0])
         .join("")
         .substring(0, 2)
         .toUpperCase()
-    : "Login";
+    : "";
+ 
   const navLinks = [
-    ["store", "Experiences"],
+    ["store", "Home"],
     ["partners", "For Partners"],
     ["redeem", "Redeem"],
+    ["help", "Help"],
+    ["contact", "Contact Us"],
     ["admin", "Admin"],
   ];
-  const handleNavClick = (p) => {
+ 
+  const go = (p) => {
     setPage(p);
     setMobileOpen(false);
+    setDropdownOpen(false);
   };
-
+ 
+  const SearchPill = () => (
+    <div className="nv3-search">
+      <input
+        placeholder="Search experiences....."
+        onChange={(e) => onSearch(e.target.value)}
+      />
+      <button aria-label="Search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <circle cx="11" cy="11" r="8" />
+          <path d="m21 21-4.35-4.35" />
+        </svg>
+      </button>
+    </div>
+  );
+ 
+  const menuItems = [
+    ["profile", "ti-user", "My Profile"],
+    ["favourites", "ti-heart", "Favourites"],
+    ["orders", "ti-ticket", "My Orders"],
+    ["notifications", "ti-bell", "Notifications"],
+    ["settings", "ti-settings", "Settings"],
+  ];
+ 
   return (
-    <nav className="nav">
-      <div className="nav-inner">
-        <button className="nav-logo" onClick={() => handleNavClick("store")}>
-          <img
-            src="/images/logo.png"
-            alt="AfriVoucher"
-            style={{
-              height: 48,
-              width: "auto",
-              marginRight: 8,
-              verticalAlign: "middle",
-            }}
-          />
+    <nav className="nv3">
+      <style>{NAV_CSS}</style>
+ 
+      <div className="nv3-in">
+        {/* Logo notch */}
+        <button className="nv3-logo" onClick={() => go("store")}>
+          <img src="/images/logo.png" alt="AfriVoucher" />
           Afri<span>Voucher</span>
         </button>
-        <button className="nav-address-btn">
-  <span className="nav-addr-pin">📍</span>
-  Zimbabwe
-  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{color:'var(--muted)'}}>
-    <path d="m6 9 6 6 6-6"/>
-  </svg>
-</button>
-        <div className="nav-search">
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            style={{ color: "var(--muted)", flexShrink: 0 }}
-          >
-            <circle cx="11" cy="11" r="8" />
-            <path d="m21 21-4.35-4.35" />
-          </svg>
-          <input
-            placeholder="Spa day, wine tasting, live music, events…"
-            onChange={(e) => onSearch(e.target.value)}
-          />
-        </div>
-        <div className="nav-links">
-          {navLinks.map(([p, label]) => (
-            <button
-              key={p}
-              className={`nav-link${page === p ? " active" : ""}`}
-              onClick={() => handleNavClick(p)}
-            >
-              {label}
+ 
+        {/* Top strip */}
+        <div className="nv3-top">
+          <div className="nv3-social">
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="3" y="3" width="18" height="18" rx="5" />
+                <circle cx="12" cy="12" r="4" />
+                <circle cx="17.5" cy="6.5" r="1" fill="currentColor" />
+              </svg>
+            </a>
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M14 8V6.5c0-.7.3-1 1-1h2V2h-3c-3 0-4.5 1.8-4.5 4.4V8H7v3.5h2.5V22H14V11.5h2.8L17.3 8z" />
+              </svg>
+            </a>
+            <a href="https://wa.me/263776109275" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M3 21l1.6-4.8A8.5 8.5 0 1 1 8 19.5z" />
+              </svg>
+            </a>
+          </div>
+ 
+          <div className="nv3-right">
+            <button className="nv3-cart" onClick={() => go("orders")} aria-label="My orders">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M7 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM1 2v2h2l3.6 7.6-1.4 2.4A2 2 0 0 0 7 17h12v-2H7.4l1.1-2h7.5a2 2 0 0 0 1.7-1l3.6-6.5A1 1 0 0 0 20.4 4H5.2l-.9-2z" />
+              </svg>
             </button>
-          ))}
+ 
+            {user ? (
+              <div className="nv3-user" ref={userRef}>
+                <button
+                  className="nv3-user-btn"
+                  onClick={() => setDropdownOpen((o) => !o)}
+                  aria-haspopup="true"
+                  aria-expanded={dropdownOpen}
+                >
+                  <span className="nv3-avatar">{initials}</span>
+                  {user.displayName || user.email?.split("@")[0]}
+                </button>
+                <div className={`nv3-dd${dropdownOpen ? " open" : ""}`} role="menu">
+                  <div className="nv3-dd-head">
+                    <div className="nv3-dd-name">{user.displayName || "My Account"}</div>
+                    <div className="nv3-dd-email">{user.email}</div>
+                  </div>
+                  {menuItems.map(([p, icon, label]) => (
+                    <button key={p} className="nv3-dd-item" role="menuitem" onClick={() => go(p)}>
+                      <i className={`ti ${icon}`} aria-hidden="true" /> {label}
+                    </button>
+                  ))}
+                  <button
+                    className="nv3-dd-item danger"
+                    role="menuitem"
+                    onClick={() => { onLogout(); setDropdownOpen(false); }}
+                  >
+                    <i className="ti ti-logout" aria-hidden="true" /> Sign Out
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button className="nv3-login" onClick={() => go("auth")}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3" />
+                </svg>
+                Login
+              </button>
+            )}
+          </div>
         </div>
-        <button className="nav-cta" onClick={() => handleNavClick("partners")}>
-          List Your Business
-        </button>
-        
-        {user && (
-  <div className="nav-user" ref={userRef}>
-    <button
-      className="nav-user-btn"
-      onClick={() => setDropdownOpen((o) => !o)}
-      aria-haspopup="true"
-      aria-expanded={dropdownOpen}
-    >
-      <div className="nav-avatar">{initials}</div>
-      <span className="nav-user-name">{user.displayName || user.email?.split("@")[0]}</span>
-      <svg
-        className={`nav-chevron${dropdownOpen ? " open" : ""}`}
-        width="14" height="14" viewBox="0 0 24 24"
-        fill="none" stroke="currentColor" strokeWidth="2.5"
-        aria-hidden="true"
-      >
-        <path d="m6 9 6 6 6-6" />
-      </svg>
-    </button>
-
-    <div className={`nav-dropdown${dropdownOpen ? " open" : ""}`} role="menu">
-      <div className="nav-dropdown-header">
-        <div className="nav-dropdown-name">{user.displayName || "My Account"}</div>
-        <div className="nav-dropdown-email">{user.email}</div>
-      </div>
-      <div className="nav-dropdown-section">
-        <button className="nav-dropdown-item" role="menuitem" onClick={() => { handleNavClick("profile"); setDropdownOpen(false); }}>
-          <i className="ti ti-user" aria-hidden="true" /> My Profile
-        </button>
-        <button className="nav-dropdown-item" role="menuitem" onClick={() => { handleNavClick("favourites"); setDropdownOpen(false); }}>
-          <i className="ti ti-heart" aria-hidden="true" /> Favourites
-        </button>
-        <button className="nav-dropdown-item" role="menuitem" onClick={() => { handleNavClick("orders"); setDropdownOpen(false); }}>
-          <i className="ti ti-ticket" aria-hidden="true" /> My Orders
-        </button>
-        <button className="nav-dropdown-item" role="menuitem" onClick={() => { handleNavClick("notifications"); setDropdownOpen(false); }}>
-          <i className="ti ti-bell" aria-hidden="true" /> Notifications
-        </button>
-      </div>
-      <div className="nav-dropdown-divider" />
-      <div className="nav-dropdown-section">
-        <button className="nav-dropdown-item" role="menuitem" onClick={() => { handleNavClick("settings"); setDropdownOpen(false); }}>
-          <i className="ti ti-settings" aria-hidden="true" /> Settings
-        </button>
-        <button className="nav-dropdown-item danger" role="menuitem" onClick={() => { onLogout(); setDropdownOpen(false); }}>
-          <i className="ti ti-logout" aria-hidden="true" /> Sign Out
-        </button>
-      </div>
-    </div>
-  </div>
-)}
-
-{!user && (
-  <div className="nav-avatar" onClick={() => handleNavClick("auth")} title="Sign In">
-    {initials}
-  </div>
-)}
+ 
+        {/* Hamburger (mobile only) */}
         <button
-          className={`nav-hamburger${mobileOpen ? " open" : ""}`}
+          className="nv3-burger"
           onClick={() => setMobileOpen((o) => !o)}
           aria-label="Menu"
         >
-          <span />
-          <span />
-          <span />
+          <span /><span /><span />
         </button>
-      </div>
-      <div className={`mobile-menu${mobileOpen ? " open" : ""}`}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 10,
-            background: "var(--white)",
-            border: "1.5px solid var(--border2)",
-            borderRadius: 10,
-            padding: "10px 14px",
-            marginBottom: 6,
-          }}
-        >
-          <svg
-            width="15"
-            height="15"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            style={{ color: "var(--muted)", flexShrink: 0 }}
-          >
-            <circle cx="11" cy="11" r="8" />
-            <path d="m21 21-4.35-4.35" />
-          </svg>
-          <input
-            placeholder="Spa, safari, music, events…"
-            onChange={(e) => onSearch(e.target.value)}
-            style={{
-              border: "none",
-              outline: "none",
-              background: "transparent",
-              fontFamily: "var(--sans)",
-              fontSize: ".88rem",
-              color: "var(--text)",
-              width: "100%",
-            }}
-          />
+ 
+        {/* Blue link bar (desktop) */}
+        <div className="nv3-bar">
+          <div className="nv3-links">
+            {navLinks.map(([p, label]) => (
+              <button
+                key={p}
+                className={`nv3-link${page === p ? " active" : ""}`}
+                onClick={() => go(p)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          <SearchPill />
         </div>
-        <div className="mobile-menu-divider" />
+      </div>
+ 
+      {/* Mobile menu */}
+      <div className={`nv3-mobile${mobileOpen ? " open" : ""}`}>
+        <SearchPill />
         {navLinks.map(([p, label]) => (
           <button
             key={p}
-            className={`mobile-menu-link${page === p ? " active" : ""}`}
-            onClick={() => handleNavClick(p)}
+            className={`nv3-mlink${page === p ? " active" : ""}`}
+            onClick={() => go(p)}
           >
             {label}
           </button>
         ))}
-        <div className="mobile-menu-divider" />
-        <button
-          className="mobile-menu-cta"
-          onClick={() => handleNavClick("partners")}
-        >
-          List Your Business
-        </button>
-         <div className="mobile-menu-divider" />
-  {navLinks.map(([p, label]) => (
-    <button key={p} className={`mobile-menu-link${page === p ? " active" : ""}`} onClick={() => handleNavClick(p)}>
-      {label}
-    </button>
-  ))}
-  <div className="mobile-menu-divider" />
-  <button className="mobile-menu-cta" onClick={() => handleNavClick("partners")}>
-    List Your Business
-  </button>
-
-  {user ? (
-    <>
-      <div className="mobile-menu-divider" />
-      <div className="mobile-user-header">
-        <div className="nav-avatar" style={{width:38,height:38,fontSize:".82rem"}}>{initials}</div>
-        <div>
-          <div className="mobile-user-name">{user.displayName || user.email?.split("@")[0]}</div>
-          <div className="mobile-user-email">{user.email}</div>
-        </div>
+        <button className="nv3-mlink" onClick={() => go("orders")}>My Orders</button>
+        {user ? (
+          <button
+            className="nv3-mlink"
+            style={{ color: "#dc2626" }}
+            onClick={() => { onLogout(); setMobileOpen(false); }}
+          >
+            Sign Out
+          </button>
+        ) : (
+          <button className="nv3-mlink" style={{ color: "#f0a030" }} onClick={() => go("auth")}>
+            Login
+          </button>
+        )}
       </div>
-      <button className="mobile-menu-link" onClick={() => { handleNavClick("profile"); setMobileOpen(false); }}>
-        <i className="ti ti-user" aria-hidden="true" /> My Profile
-      </button>
-      <button className="mobile-menu-link" onClick={() => { handleNavClick("favourites"); setMobileOpen(false); }}>
-        <i className="ti ti-heart" aria-hidden="true" /> Favourites
-      </button>
-      <button className="mobile-menu-link" onClick={() => { handleNavClick("vouchers"); setMobileOpen(false); }}>
-        <i className="ti ti-ticket" aria-hidden="true" /> My Vouchers
-      </button>
-      <button className="mobile-menu-link" onClick={() => { handleNavClick("settings"); setMobileOpen(false); }}>
-        <i className="ti ti-settings" aria-hidden="true" /> Settings
-      </button>
-      <div className="mobile-menu-divider" />
-      <button className="mobile-menu-link" onClick={() => { onLogout(); setMobileOpen(false); }} style={{color:"var(--terra)"}}>
-        <i className="ti ti-logout" aria-hidden="true" /> Sign Out
-      </button>
-    </>
-  ) : (
-    <button className="mobile-menu-link" onClick={() => { handleNavClick("auth"); setMobileOpen(false); }}
-      style={{color:"var(--leaf)",fontWeight:600}}>
-      Sign In
-    </button>
-  )}
-</div>
-      
     </nav>
   );
 }
