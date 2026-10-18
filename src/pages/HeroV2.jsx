@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useCallback, useRef } from "react";
 import flag from "../images/pngegg.png";
-import logo from "../images/logo-desktop.png";
+import logo from "../images/logo-desktop-blck.png";
 
 // ─── Slides (left banner) ─────────────────────────────────────────────────
 const SLIDES = [
@@ -128,35 +128,66 @@ const HERO_CSS = `
   height:var(--ah);opacity:0}
 .hv3-img.s-hid{left:100%;top:var(--nt);width:var(--nw);height:var(--nh);opacity:0}
 
-/* ── side promo card (matches the app icon) ── */
+/* ── side promo card: same language as the carousel ── */
 .hv3-side{
   position:relative;min-height:380px;border-radius:18px;overflow:hidden;
-  padding:28px;
-  display:flex;flex-direction:column;justify-content:space-between;
-  text-align:left;color:#fff;
-  background:linear-gradient(150deg,#d4802c 0%,#b84a16 100%);
-  box-shadow:0 10px 30px rgba(196,83,26,.3)}
+  padding:clamp(24px,2.4vw,36px);
+  display:flex;flex-direction:column;justify-content:space-between;gap:24px;
+  text-align:left;color:var(--av-dark);
+  background:#faf6f0;
+  border:1px solid rgba(35,42,53,.12);
+  isolation:isolate;
+}
+/* orange line along the top; grows from a short tick to full width on hover */
+.hv3-side::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:3px;z-index:2;
+  background:var(--av-orange);
+  transform:scaleX(.16);transform-origin:left;
+  transition:transform .9s cubic-bezier(.165,.84,.44,1);
+}
+.hv3-side:hover::before,.hv3-side:focus-within::before{transform:scaleX(1)}
+/* faint ring echoing the CTA, tucked in the corner */
+.hv3-side::after{
+  content:"";position:absolute;right:-70px;bottom:-70px;width:240px;height:240px;z-index:-1;
+  border-radius:50%;border:1px solid rgba(196,83,26,.22);
+  box-shadow:0 0 0 28px rgba(196,83,26,.05),0 0 0 29px rgba(196,83,26,.12);
+  pointer-events:none;
+}
 
-.hv3-side-top{display:flex;align-items:center;justify-content:space-between;gap:16px}
-.hv3-side-logo{height:34px;width:auto;max-width:60%;object-fit:contain}
-.hv3-side-flag{height:44px;width:auto;flex-shrink:0;
-  filter:drop-shadow(0 2px 6px rgba(0,0,0,.25))}
+.hv3-side-top{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding-bottom:18px;border-bottom:1px solid rgba(35,42,53,.12);
+}
+.hv3-side-logo{height:44px;width:auto;max-width:62%;object-fit:contain;object-position:left center}
+.hv3-side-flag{height:26px;width:auto;flex-shrink:0;border-radius:2px;
+  box-shadow:0 0 0 1px rgba(35,42,53,.18)}
 
 .hv3-side-body{min-width:0}
-.hv3-side-title{margin:0 0 12px;font-size:clamp(1.5rem,2.4vw,1.9rem);
-  line-height:1.15;font-weight:500;letter-spacing:.005em;color:#fff}
-.hv3-side-offer{display:inline-block;margin:0 0 12px;padding:6px 12px;
-  border-radius:999px;background:#fff;color:var(--av-orange-deep);
-  font-size:.85rem;font-weight:600;letter-spacing:.02em}
-.hv3-side-sub{margin:0;font-size:.95rem;line-height:1.5;
-  color:rgba(255,255,255,.92)}
+.hv3-side-eyebrow{
+  margin:0 0 14px;display:flex;align-items:center;gap:12px;
+  font-size:.7rem;font-weight:500;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--av-orange-deep);
+}
+.hv3-side-eyebrow::before{content:"";width:26px;height:1px;background:currentColor}
+.hv3-side-title{
+  margin:0 0 1em;font-size:clamp(1.15rem,1.9vw,1.6rem);font-weight:400;
+  line-height:1.25;letter-spacing:.1em;text-transform:uppercase;color:var(--av-dark);
+  overflow-wrap:break-word;text-wrap:balance;
+}
+.hv3-side-offer{
+  display:inline-block;margin:0 0 1.2em;padding:8px 14px;
+  border:1px solid var(--av-orange-deep);border-radius:0;background:transparent;
+  color:var(--av-orange-deep);
+  font-size:.7rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;line-height:1.4;
+  transition:background .5s cubic-bezier(.165,.84,.44,1),color .5s cubic-bezier(.165,.84,.44,1);
+}
+.hv3-side:hover .hv3-side-offer{background:var(--av-orange-deep);color:#fff}
+.hv3-side-sub{margin:0;font-size:.95rem;line-height:1.75;color:rgba(35,42,53,.62);max-width:34ch}
 
-.hv3-side-btn{align-self:flex-start;border:none;border-radius:999px;
-  padding:12px 24px;background:var(--av-dark);color:#fff;
-  font-size:.76rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;
-  transition:background .2s,transform .2s}
-.hv3-side-btn:hover{background:var(--av-dark-2);transform:translateY(-1px)}
-.hv3-side-btn:focus-visible{outline:2px solid #fff;outline-offset:3px}
+/* CTA reuses .hv3-cta (circular-arrow link); just set the size here */
+.hv3-side-cta{align-self:flex-start;font-size:.78rem}
+.hv3-side:hover .hv3-side-cta .hv3-cta-ring{border-color:var(--av-orange-deep);color:var(--av-orange-deep)}
+.hv3-side-cta:hover .hv3-cta-ring{background:var(--av-dark);border-color:var(--av-dark);color:#fff}
 
 /* ── narrower laptops/tablets: promo card drops underneath, carousel goes full width ── */
 @media (max-width:1200px){
@@ -377,29 +408,34 @@ export function HeroV2({ vouchers = [], onSearch, onCatSelect }) {
         </div>
 
         {/* ── Right: promo card ── */}
-        <div className="hv3-side">
-          <div className="hv3-side-top">
-            <img className="hv3-side-logo" src={logo} alt="AfriVoucher" />
-            <img className="hv3-side-flag" src={flag} alt="Zimbabwe flag" />
-          </div>
+       {/* ── Right: promo card ── */}
+<div className="hv3-side">
+  <div className="hv3-side-top">
+    <img className="hv3-side-logo" src={logo} alt="AfriVoucher" />
+    <img className="hv3-side-flag" src={flag} alt="Zimbabwe flag" />
+  </div>
 
-          <div className="hv3-side-body">
-            <h2 className="hv3-side-title">Treat them from afar</h2>
-            <span className="hv3-side-offer">
-              US$10 off vouchers over US$90
-            </span>
-            <p className="hv3-side-sub">
-              You pay from abroad. They enjoy it in Zimbabwe.
-            </p>
-          </div>
+  <div className="hv3-side-body">
+    <p className="hv3-side-eyebrow">Send from abroad</p>
+    <h2 className="hv3-side-title">Treat them from afar</h2>
+    <span className="hv3-side-offer">US$10 off vouchers over US$90</span>
+    <p className="hv3-side-sub">
+      You pay from abroad. They enjoy it in Zimbabwe.
+    </p>
+  </div>
 
-          <button
-            className="hv3-side-btn"
-            onClick={() => open("Traditional Restaurants")}
-          >
-            Send a gift
-          </button>
-        </div>
+  <button
+    className="hv3-cta hv3-side-cta"
+    onClick={() => open("Traditional Restaurants")}
+  >
+    <span className="hv3-cta-ring" aria-hidden="true">
+      <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="square">
+        <path d="M1 7h12M8 2l5 5-5 5" />
+      </svg>
+    </span>
+    Send a gift
+  </button>
+</div>
       </section>
     </>
   );

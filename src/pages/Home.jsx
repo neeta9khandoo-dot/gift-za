@@ -513,7 +513,10 @@ const NAV_CSS = `
   color:var(--nv-dim);font-family:var(--nv-display);font-size:.8rem;font-weight:600;
   letter-spacing:.2em;text-transform:uppercase;white-space:nowrap;
 }
-.nv3-proud svg{width:28px;height:16px;border-radius:0;display:block;box-shadow:0 0 0 1px rgba(255,255,255,.3)}
+.nv3-proud .nv3-proud-map{
+  width:auto;height:24px;max-width:none;flex:none;
+  object-fit:contain;border-radius:0;box-shadow:none;display:block;
+}
 .nv3-proud em{font-style:normal;color:var(--nv-y)}
 
 /* ── user dropdown ── */
@@ -575,9 +578,9 @@ const NAV_CSS = `
     display:flex;align-items:center;justify-content:space-between;
     background:var(--nv-bg);border-bottom:3px solid var(--nv-y);padding-right:12px;
   }
-  .nv3-top{padding:0;height:auto;order:2;border-bottom:none;background:transparent}
-  .nv3-social,.nv3-cart{display:none}
-  .nv3-right{gap:14px}
+      .nv3-mobile .nv3-proud{gap:10px;font-size:.76rem;letter-spacing:.18em}
+  .nv3-mobile .nv3-proud .nv3-proud-map{height:20px}
+ .nv3-top{display:none}
   .nv3-bar{display:none}
   .nv3-burger{display:flex;order:3;margin-left:8px}
 
@@ -594,6 +597,18 @@ const NAV_CSS = `
     font-family:var(--nv-display);font-weight:600;font-size:1.25rem;letter-spacing:.14em;text-transform:uppercase;
     transition:color .4s var(--nv-ease),padding-left .5s var(--nv-ease);
   }
+      .nv3-mlink.login{
+    margin-top:14px;text-align:center;border:1px solid var(--nv-y);
+    background:var(--nv-y);color:#000;
+    transition:background .4s var(--nv-ease),border-color .4s var(--nv-ease);
+  }
+  .nv3-mlink.login:hover{background:#fff;border-color:#fff;color:#000;padding-left:4px}
+  .nv3-mlink.danger{color:#ff6b6b}
+  .nv3-mlink.danger:hover{color:#ff8f8f}
+  .nv3-muser{
+    display:flex;align-items:center;gap:14px;padding:18px 4px 6px;margin-top:6px;
+    border-top:1px solid var(--nv-line);
+  }
   .nv3-mlink:hover{color:var(--nv-y);padding-left:12px}
   .nv3-mlink.active{color:var(--nv-y)}
 }
@@ -605,11 +620,7 @@ const NAV_CSS = `
 }
 `;
 const ZimFlag = () => (
-  <img
-    src={zimFlag}
-    alt="Zimbabwe flag"
-  />
-
+  <img className="nv3-proud-map" src={zimFlag} alt="" aria-hidden="true" />
 );
 
 const ProudBadge = () => (
@@ -881,26 +892,30 @@ function Nav({ page, setPage, user, onLogout, onSearch }) {
         <button className="nv3-mlink" onClick={() => go("orders")}>
           My Orders
         </button>
-        {user ? (
-          <button
-            className="nv3-mlink"
-            style={{ color: "#dc2626" }}
-            onClick={() => {
-              onLogout();
-              setMobileOpen(false);
-            }}
-          >
-            Sign Out
-          </button>
-        ) : (
-          <button
-            className="nv3-mlink"
-            style={{ color: "#f0a030" }}
-            onClick={() => go("auth")}
-          >
-            Login
-          </button>
-        )}
+      {user ? (
+  <>
+    <div className="nv3-muser">
+      <span className="nv3-avatar">{initials}</span>
+      <div>
+        <div className="nv3-dd-name">{user.displayName || "My Account"}</div>
+        <div className="nv3-dd-email">{user.email}</div>
+      </div>
+    </div>
+    <button
+      className="nv3-mlink danger"
+      onClick={() => {
+        onLogout();
+        setMobileOpen(false);
+      }}
+    >
+      Sign Out
+    </button>
+  </>
+) : (
+  <button className="nv3-mlink login" onClick={() => go("auth")}>
+    Login
+  </button>
+)}
       </div>
     </nav>
   );

@@ -243,39 +243,44 @@ export default function Footer() {
             </div>
 
             {/* Bottom bar */}
-            <div className="footer-bottom">
-              <p className="footer-legal">
-                © 2025 AfriVoucher (Pty) Ltd · All rights reserved · Registered
-                in Zimbabwe
-              </p>
-              <div className="footer-payments">
-                <span
-                  style={{
-                    fontSize: ".72rem",
-                    color: "rgba(245,240,232,.3)",
-                    marginRight: 4,
-                  }}
-                >
-                  Payments by
-                </span>
-                {PAYMENTS.map(({ name, logo }) =>
-                  logo ? (
-                    <img
-                      key={name}
-                      className="pay-logo"
-                      src={logo}
-                      alt={name}
-                      title={name}
-                      loading="lazy"
-                    />
-                  ) : (
-                    <span key={name} className="pay-badge">
-                      {name}
-                    </span>
-                  ),
-                )}
-              </div>
-            </div>
+  <div className="footer-bottom">
+  <p className="footer-legal">
+    © {new Date().getFullYear()} AfriVoucher (Pty) Ltd · All rights reserved · Registered
+    in Zimbabwe
+  </p>
+
+  <p className="footer-parent">
+    AfriVoucher <span>a subsidiary of</span> <strong>Gerbo Atlas</strong>
+  </p>
+
+  <div className="footer-payments">
+    <span
+      style={{
+        fontSize: ".72rem",
+        color: "rgba(245,240,232,.3)",
+        marginRight: 4,
+      }}
+    >
+      Payments by
+    </span>
+    {PAYMENTS.map(({ name, logo }) =>
+      logo ? (
+        <img
+          key={name}
+          className="pay-logo"
+          src={logo}
+          alt={name}
+          title={name}
+          loading="lazy"
+        />
+      ) : (
+        <span key={name} className="pay-badge">
+          {name}
+        </span>
+      ),
+    )}
+  </div>
+</div>
           </div>
         </footer>
       </div>

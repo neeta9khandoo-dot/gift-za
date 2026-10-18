@@ -230,6 +230,32 @@ footer{background:var(--black);color:rgba(255,255,255,.55);padding:48px 0 24px}
 .footer-link{font-size:.8rem;cursor:pointer;transition:color .15s}
 .footer-link:hover{color:#fff}
 .footer-bottom{border-top:1px solid rgba(255,255,255,.08);padding-top:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.footer-bottom{
+  display:grid;
+  grid-template-columns:1fr auto 1fr;   /* equal side columns keep the middle truly centred */
+  align-items:center;
+  gap:16px 24px;
+}
+.footer-bottom .footer-legal{justify-self:start}
+.footer-bottom .footer-payments{justify-self:end;flex-wrap:wrap;justify-content:flex-end}
+
+.footer-parent{
+  margin:0;text-align:center;
+  font-size:.72rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
+  color:rgba(255,255,255,.55);
+  line-height:1.6;
+}
+.footer-parent span{
+  color:rgba(255,255,255,.4);
+  text-transform:none;letter-spacing:.04em;font-style:italic;margin:0 2px;
+}
+.footer-parent strong{color:#fff;font-weight:700;letter-spacing:.2em}
+
+@media (max-width:900px){
+  .footer-bottom{grid-template-columns:1fr;justify-items:center;text-align:center}
+  .footer-bottom .footer-legal,
+  .footer-bottom .footer-payments{justify-self:center;justify-content:center}
+}
 .footer-legal{font-size:.72rem}
 .footer-payments{display:flex;align-items:center;gap:7px}
 .pay-badge{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:4px;padding:3px 9px;font-size:.68px;font-weight:600;color:rgba(255,255,255,.4)}
