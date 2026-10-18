@@ -448,52 +448,7 @@ footer{background:var(--black);color:rgba(255,255,255,.55);padding:48px 0 24px}
 .avs-trust-icon{font-size:1.1rem}
 .avs-trust-text{font-size:.7rem;font-weight:600;color:#333}
 .avs-voucher-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;padding:0 16px}
-.avs-v-card{background:#fff;border-radius:12px;overflow:hidden;border:1.5px solid #ececec;cursor:pointer;transition:border-color .18s,transform .18s}
-.avs-v-card:hover{border-color:var(--green-primary);transform:translateY(-2px)}
-.avs-v-img {
-  position: relative;
-  width: 100%;
-  height: 160px;        
-  overflow: hidden;
-  border-radius: 10px 10px 0 0;
-  background: var(--cream2, #f0ebe0);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
 
-.avs-v-img img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;        
-  object-position: center;  
-  transition: transform 0.35s ease;
-}
-  .avs-v-card:hover .avs-v-img img {
-  transform: scale(1.05);   /* subtle zoom on hover */
-}
-.avs-v-badge {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  z-index: 2;
-  font-size: .62rem;
-  font-weight: 700;
-  color: white;
-  padding: 3px 8px;
-  border-radius: 5px;
-  letter-spacing: 0.02em;
-  white-space: nowrap;
-}
-.avs-v-body{padding:9px 10px 11px}
-.avs-v-name{font-size:.75rem;font-weight:600;color:#111;margin-bottom:2px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.avs-v-loc{font-size:.65rem;color:#aaa;margin-bottom:7px}
-.avs-v-foot{display:flex;justify-content:space-between;align-items:center}
-.avs-v-price{font-size:.88rem;font-weight:800;color:#111;letter-spacing:-.3px}
-.avs-v-add{width:28px;height:28px;border-radius:50%;background:var(--green-primary);color:#fff;border:none;display:flex;align-items:center;justify-content:center;font-size:1.1rem;cursor:pointer;transition:background .15s,transform .15s;flex-shrink:0}
-.avs-v-add:hover{background:var(--green-dark);transform:scale(1.1)}
 .avs-occ-scroll{display:flex;gap:8px;padding:0 16px 4px;overflow-x:auto;scrollbar-width:none}
 .avs-occ-scroll::-webkit-scrollbar{display:none}
 .avs-occ{flex-shrink:0;background:#fff;border:1.5px solid #ececec;border-radius:12px;padding:12px 10px;text-align:center;cursor:pointer;width:88px;transition:border-color .15s,background .15s}
@@ -629,7 +584,200 @@ footer{background:var(--black);color:rgba(255,255,255,.55);padding:48px 0 24px}
   margin: 0;
   padding: 0;
 }
+.avs-v-card {
+  --ease: cubic-bezier(0.19, 1, 0.22, 1);
+  --ink: #281432;
+  --paper: #fff;
+  --stone: #f3f2f0;
+  --hair: rgba(40, 20, 50, 0.14);
 
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  cursor: pointer;
+  outline: none;
+  opacity: 0;
+  transform: translateY(24px);
+  animation: avs-rise 0.9s var(--ease) forwards;
+  animation-delay: calc(var(--i) * 70ms);
+}
+@keyframes avs-rise {
+  to { opacity: 1; transform: none; }
+}
+
+/* ---------- image ---------- */
+.avs-v-img {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--stone);
+  display: grid;
+  place-items: center;
+}
+.avs-v-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1);
+  transition: transform 1.4s var(--ease);
+  will-change: transform;
+}
+.avs-v-card:hover .avs-v-img img,
+.avs-v-card:focus-visible .avs-v-img img {
+  transform: scale(1.06);
+}
+.avs-v-fallback { font-size: 2.5rem; opacity: 0.6; }
+
+/* slide-up "View voucher" bar */
+.avs-v-view {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 14px 0;
+  text-align: center;
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #fff;
+  background: linear-gradient(to top, rgba(40, 20, 50, 0.78), rgba(40, 20, 50, 0));
+  transform: translateY(100%);
+  opacity: 0;
+  transition: transform 0.7s var(--ease), opacity 0.5s ease;
+}
+.avs-v-card:hover .avs-v-view,
+.avs-v-card:focus-visible .avs-v-view {
+  transform: none;
+  opacity: 1;
+}
+
+/* ---------- body ---------- */
+.avs-v-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 22px 4px 0;
+  flex: 1;
+}
+
+.avs-v-cat {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.68rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(40, 20, 50, 0.62);
+}
+.avs-v-cat::before {
+  content: "";
+  width: 18px;
+  height: 1px;
+  background: var(--accent);
+  transition: width 0.7s var(--ease);
+}
+.avs-v-card:hover .avs-v-cat::before { width: 34px; }
+
+.avs-v-name {
+  margin: 0;
+  font-weight: 400;
+  font-size: 1.15rem;
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+}
+/* underline sweeps in from the left */
+.avs-v-name span {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 1px;
+  transition: background-size 0.8s var(--ease);
+  padding-bottom: 2px;
+}
+.avs-v-card:hover .avs-v-name span,
+.avs-v-card:focus-visible .avs-v-name span {
+  background-size: 100% 1px;
+}
+
+.avs-v-loc {
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: rgba(40, 20, 50, 0.7);
+}
+.avs-v-loclabel {
+  display: block;
+  font-size: 0.64rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(40, 20, 50, 0.45);
+  margin-bottom: 2px;
+}
+.avs-v-partner {
+  all: unset;
+  cursor: pointer;
+  color: var(--ink);
+  border-bottom: 1px solid var(--hair);
+  transition: border-color 0.4s ease;
+}
+.avs-v-partner:hover,
+.avs-v-partner:focus-visible { border-color: var(--ink); }
+
+/* ---------- footer ---------- */
+.avs-v-foot {
+  margin-top: auto;
+  padding-top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--hair);
+}
+.avs-v-price {
+  font-size: 0.95rem;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+}
+
+.avs-v-add {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--ink);
+  border-radius: 0;
+  cursor: pointer;
+  transition: background 0.5s var(--ease), color 0.5s var(--ease);
+}
+.avs-v-add svg {
+  width: 11px;
+  height: 11px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.2;
+  transition: transform 0.7s var(--ease);
+}
+.avs-v-add:hover,
+.avs-v-card:hover .avs-v-add {
+  background: var(--ink);
+  color: #fff;
+}
+.avs-v-add:hover svg { transform: rotate(90deg); }
+
+/* ---------- a11y ---------- */
+.avs-v-card:focus-visible { outline: 1px solid var(--ink); outline-offset: 6px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .avs-v-card { animation: none; opacity: 1; transform: none; }
+  .avs-v-img img,
+  .avs-v-view,
+  .avs-v-name span,
+  .avs-v-add svg { transition: none; }
+}
 .avs-section {
   width: 100%;
   margin: 0 auto 32px;
@@ -650,14 +798,58 @@ footer{background:var(--black);color:rgba(255,255,255,.55);padding:48px 0 24px}
 
 /* section fills the remaining width (layout already has the side padding) */
 .avs-layout .avs-section{flex:1;min-width:0;margin:0;max-width:none;padding:18px 0 6px}
+/* ───────── Ad rail ───────── */
+.avs-ads{
+  --ad-h: clamp(320px, calc(100dvh - 32px), 720px);  /* one ad = about one screen, never taller */
+  --ad-gap: 16px;
 
-/* tall rail on the left */
-.avs-ads{flex:0 0 320px;width:280px;display:flex;flex-direction:column;gap:16px}
+  flex:0 0 320px;
+  width:320px;
 
+  /* stretch to the full height of the voucher grid (parent .avs-layout is align-items:stretch) */
+  align-self:stretch;
+  display:grid;
+  grid-template-rows:1fr 1fr;     /* top half = video zone, bottom half = image zone */
+  gap:var(--ad-gap);
 
+  /* even for a short grid, both ads still fit at full size */
+  min-height:calc(var(--ad-h) * 2 + var(--ad-gap));
+}
 
-.avs-slider{position:relative;flex:1 1 0;min-height:360px;overflow:hidden;
-  border-radius:14px;background:#fff;box-shadow:0 6px 18px rgba(26,32,41,.14)}
+/* each slider keeps a FIXED height and sticks while its half of the rail scrolls */
+.avs-ads > .avs-slider{
+  position:sticky;
+  top:16px;
+  align-self:start;
+  height:var(--ad-h);
+  min-height:0;
+  flex:none;
+}
+
+.avs-ads img,
+.avs-ads video{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.avs-slider{
+  position:relative;
+  overflow:hidden;
+  border-radius:14px;
+  background:#fff;
+  box-shadow:0 6px 18px rgba(26,32,41,.14);
+}
+
+  .avs-ads img,
+.avs-ads video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+  object-fit: cover;        /* use "contain" if you never want cropping */
+}
 
 .avs-slider-track{display:flex;height:100%;
   transition:transform .6s cubic-bezier(.4,0,.2,1)}
@@ -695,11 +887,7 @@ footer{background:var(--black);color:rgba(255,255,255,.55);padding:48px 0 24px}
   width: 100%;
 }
 
-/* ── Voucher card: uniform, no drift ── */
-.avs-v-card {
-  width: 100%;
-  box-sizing: border-box;
-}
+
 
 /* ── Category grid: 4 per row, centered ── */
 .avs-cat-grid {

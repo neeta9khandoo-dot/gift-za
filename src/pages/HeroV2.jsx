@@ -59,8 +59,8 @@ const HERO_CSS = `
 
 /* ── off-grid carousel: big image | copy | small next image (proportions from the reference) ── */
 .hv3-main{position:relative;aspect-ratio:1917/850;min-height:380px;container-type:inline-size;
-  border-radius:18px;overflow:hidden;background:#fff;border:1px solid rgba(35,42,53,.1);
-  box-shadow:0 10px 30px rgba(26,32,41,.12);touch-action:pan-y}
+  border-radius:18px;overflow:hidden;background:transparent;border:0px solid rgba(35,42,53,.1);
+  touch-action:pan-y}
 .hv3-main:focus-visible{outline:2px solid var(--av-orange-deep);outline-offset:3px}
 
 .hv3-left{position:absolute;z-index:2;left:56.2%;top:0;width:23%;height:68%;

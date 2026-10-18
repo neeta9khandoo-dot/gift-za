@@ -116,47 +116,45 @@ const FAQS = [
 ];
 
 const CONTACT_ITEMS = [
-  { icon: "💬", label: "WhatsApp", value: "+263 77 610 9275", href: "https://wa.me/27676056777" },
-  { icon: "📧", label: "Email", value: "support@afrivoucher.com", href: "mailto:support@afrivoucher.com" },
-  { icon: "🕐", label: "Hours", value: "Mon–Fri, 8am–6pm CAT", href: null },
+  { label: "WhatsApp", value: "+263 77 610 9275", href: "https://wa.me/27676056777" },
+  { label: "Email", value: "support@afrivoucher.com", href: "mailto:support@afrivoucher.com" },
+  { label: "Hours", value: "Mon–Fri, 8am–6pm CAT", href: null },
 ];
 
-function FaqItem({ q, a }) {
+const NAV_LINKS = [
+  { label: "← Back to store", target: "store" },
+  { label: "Privacy Policy", target: "privacy" },
+  { label: "Terms of Service", target: "terms" },
+  { label: "Redeem a Voucher", target: "redeem" },
+];
+
+const pad = (n) => String(n).padStart(2, "0");
+
+function FaqItem({ id, q, a }) {
   const [open, setOpen] = useState(false);
   return (
-    <div style={{
-      borderBottom: "1px solid var(--border)",
-    }}>
+    <div className={"hc-item" + (open ? " open" : "")}>
       <button
+        type="button"
+        className="hc-q"
+        aria-expanded={open}
+        aria-controls={`${id}-panel`}
+        id={`${id}-btn`}
         onClick={() => setOpen((o) => !o)}
-        style={{
-          width: "100%", background: "none", border: "none",
-          cursor: "pointer", display: "flex", justifyContent: "space-between",
-          alignItems: "center", gap: 16,
-          padding: "16px 0", textAlign: "left",
-          fontFamily: "var(--sans)",
-        }}
       >
-        <span style={{ fontSize: ".9rem", fontWeight: 600, color: "var(--black)", lineHeight: 1.4 }}>
-          {q}
-        </span>
-        <span style={{
-          fontSize: "1.1rem", color: "var(--muted)", flexShrink: 0,
-          transform: open ? "rotate(45deg)" : "rotate(0deg)",
-          transition: "transform .2s",
-          display: "inline-block",
-        }}>
-          +
-        </span>
+        <span className="hc-q-text">{q}</span>
+        <span className="hc-plus" aria-hidden="true" />
       </button>
-      {open && (
-        <p style={{
-          fontSize: ".86rem", color: "var(--sub)", lineHeight: 1.75,
-          paddingBottom: 16, margin: 0,
-        }}>
-          {a}
-        </p>
-      )}
+      <div
+        className="hc-a-wrap"
+        id={`${id}-panel`}
+        role="region"
+        aria-labelledby={`${id}-btn`}
+      >
+        <div className="hc-a-inner">
+          <p className="hc-a">{a}</p>
+        </div>
+      </div>
     </div>
   );
 }
@@ -172,208 +170,303 @@ export default function HelpCentrePage({ setPage }) {
     : FAQS;
 
   return (
-    <>
+    <div className="hc-page">
+      <style>{HELP_CSS}</style>
+
       {/* ── Hero ── */}
-      <div style={{
-        background: "var(--black)",
-        padding: "64px 24px 56px",
-        textAlign: "center",
-        position: "relative",
-        overflow: "hidden",
-      }}>
-        <div style={{
-          position: "absolute", inset: 0,
-          background: "radial-gradient(ellipse at 50% 0%, rgba(26,122,60,.18), transparent 65%)",
-          pointerEvents: "none",
-        }} />
-        <div style={{ position: "relative", maxWidth: 600, margin: "0 auto" }}>
-          <p style={{
-            fontSize: ".72rem", fontWeight: 700, textTransform: "uppercase",
-            letterSpacing: 1.5, color: "rgba(255,255,255,.45)", marginBottom: 12,
-          }}>
-            ✦ Help Centre
-          </p>
-          <h1 style={{
-            fontSize: "clamp(2rem, 4vw, 3rem)", fontWeight: 800,
-            color: "#fff", lineHeight: 1.05,
-            letterSpacing: "-.5px", marginBottom: 12,
-          }}>
-            How can we help?
-          </h1>
-          <p style={{ color: "rgba(255,255,255,.5)", fontSize: ".92rem", lineHeight: 1.65 }}>
+      <header className="hc-hero">
+        <div className="hc-wrap">
+          <p className="hc-eyebrow">Help Centre</p>
+          <h1 className="hc-h1">How can we help?</h1>
+          <p className="hc-lede">
             Answers to the most common questions about buying, redeeming and
             managing AfriVoucher gift experiences.
           </p>
         </div>
-      </div>
+      </header>
 
-      {/* ── Category filter pills ── */}
-      <div style={{
-        background: "#fff", borderBottom: "1px solid var(--border)",
-        padding: "0 20px", overflowX: "auto",
-        display: "flex", gap: 0,
-      }}>
-        <div style={{
-          display: "flex", gap: 0,
-          maxWidth: "var(--max)", margin: "0 auto",
-        }}>
+      {/* ── Category tabs ── */}
+      <nav className="hc-tabs" aria-label="Help topics">
+        <div className="hc-tabs-row">
           <button
+            type="button"
+            className={"hc-tab" + (!activeCategory ? " on" : "")}
             onClick={() => setActiveCategory(null)}
-            style={{
-              padding: "14px 18px", background: "none",
-              border: "none", borderBottom: `3px solid ${!activeCategory ? "var(--red)" : "transparent"}`,
-              fontFamily: "var(--sans)", fontSize: ".8rem", fontWeight: 600,
-              color: !activeCategory ? "var(--red)" : "var(--sub)",
-              cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0,
-              transition: "all .15s",
-            }}
           >
             All topics
           </button>
-          {FAQS.map(({ category, icon }) => (
+          {FAQS.map(({ category }) => (
             <button
+              type="button"
               key={category}
-              onClick={() => setActiveCategory(category === activeCategory ? null : category)}
-              style={{
-                padding: "14px 18px", background: "none",
-                border: "none",
-                borderBottom: `3px solid ${activeCategory === category ? "var(--red)" : "transparent"}`,
-                fontFamily: "var(--sans)", fontSize: ".8rem", fontWeight: 600,
-                color: activeCategory === category ? "var(--red)" : "var(--sub)",
-                cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0,
-                transition: "all .15s", display: "flex", alignItems: "center", gap: 6,
-              }}
+              className={"hc-tab" + (activeCategory === category ? " on" : "")}
+              onClick={() =>
+                setActiveCategory(category === activeCategory ? null : category)
+              }
             >
-              <span>{icon}</span> {category}
+              {category}
             </button>
           ))}
         </div>
-      </div>
+      </nav>
 
       {/* ── FAQ sections ── */}
-      <div style={{ background: "var(--bg2)", minHeight: "60vh" }}>
-        <div className="container" style={{ maxWidth: 760, padding: "40px 24px 80px" }}>
-          {filtered.map(({ category, icon, items }) => (
-            <div key={category} style={{ marginBottom: 36 }}>
-              <div style={{
-                display: "flex", alignItems: "center", gap: 10, marginBottom: 16,
-              }}>
-                <span style={{ fontSize: "1.3rem" }}>{icon}</span>
-                <h2 style={{
-                  fontSize: "1rem", fontWeight: 700, color: "var(--black)",
-                  letterSpacing: "-.15px", margin: 0,
-                }}>
-                  {category}
-                </h2>
-              </div>
-              <div style={{
-                background: "#fff", border: "1px solid var(--border)",
-                borderRadius: 14, padding: "0 24px",
-              }}>
-                {items.map((item) => (
-                  <FaqItem key={item.q} q={item.q} a={item.a} />
-                ))}
-              </div>
-            </div>
-          ))}
+      <main className="hc-body">
+        <div className="hc-wrap">
+          {filtered.map(({ category, items }) => {
+            const num = FAQS.findIndex((g) => g.category === category) + 1;
+            return (
+              <section key={category} className="hc-group">
+                <div className="hc-group-head">
+                  <span className="hc-num">{pad(num)}</span>
+                  <h2 className="hc-group-title">{category}</h2>
+                  <span className="hc-count">{items.length} questions</span>
+                </div>
+                <div className="hc-list">
+                  {items.map((item, i) => (
+                    <FaqItem
+                      key={item.q}
+                      id={`faq-${num}-${i}`}
+                      q={item.q}
+                      a={item.a}
+                    />
+                  ))}
+                </div>
+              </section>
+            );
+          })}
 
-          {/* ── Still need help? contact card ── */}
-          <div style={{
-            background: "#fff", border: "1px solid var(--border)",
-            borderRadius: 16, padding: "28px 28px 24px",
-            marginTop: 8,
-          }}>
-            <h3 style={{
-              fontSize: "1rem", fontWeight: 700, color: "var(--black)",
-              marginBottom: 4,
-            }}>
-              Still need help?
-            </h3>
-            <p style={{
-              fontSize: ".84rem", color: "var(--sub)", lineHeight: 1.6,
-              marginBottom: 20,
-            }}>
-              Our support team is available Monday to Friday. We typically
-              respond within a few hours.
-            </p>
-            <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-              {CONTACT_ITEMS.map(({ icon, label, value, href }) => (
-                <div key={label} style={{
-                  flex: "1 1 160px",
-                  background: "var(--bg2)", border: "1px solid var(--border)",
-                  borderRadius: 10, padding: "14px 16px",
-                }}>
-                  <div style={{ fontSize: "1.2rem", marginBottom: 6 }}>{icon}</div>
-                  <div style={{
-                    fontSize: ".65rem", fontWeight: 700, textTransform: "uppercase",
-                    letterSpacing: 1, color: "var(--muted)", marginBottom: 4,
-                  }}>
-                    {label}
-                  </div>
+          {/* ── Still need help? ── */}
+          <section className="hc-contact">
+            <div className="hc-contact-head">
+              <h3 className="hc-contact-title">Still need help?</h3>
+              <p className="hc-contact-sub">
+                Our support team is available Monday to Friday. We typically
+                respond within a few hours.
+              </p>
+            </div>
+
+            <div className="hc-tiles">
+              {CONTACT_ITEMS.map(({ label, value, href }) => (
+                <div key={label} className="hc-tile">
+                  <div className="hc-tile-label">{label}</div>
                   {href ? (
                     <a
                       href={href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      style={{
-                        fontSize: ".82rem", fontWeight: 600,
-                        color: "var(--red)", textDecoration: "none",
-                      }}
+                      className="hc-tile-value link"
                     >
                       {value}
                     </a>
                   ) : (
-                    <div style={{ fontSize: ".82rem", fontWeight: 600, color: "var(--black)" }}>
-                      {value}
-                    </div>
+                    <div className="hc-tile-value">{value}</div>
                   )}
                 </div>
               ))}
             </div>
-            <div style={{ marginTop: 20 }}>
-              <a
-                href="https://wa.me/27676056777"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  display: "inline-flex", alignItems: "center", gap: 8,
-                  padding: "12px 22px", background: "#25D366", color: "#fff",
-                  borderRadius: 8, fontFamily: "var(--sans)",
-                  fontSize: ".85rem", fontWeight: 700, textDecoration: "none",
-                  transition: "opacity .15s",
-                }}
-              >
-                💬 Chat with us on WhatsApp
-              </a>
-            </div>
-          </div>
 
-          {/* ── Bottom nav links ── */}
-          <div style={{
-            marginTop: 32, display: "flex", gap: 10, flexWrap: "wrap",
-          }}>
-            {[
-              { label: "← Back to store", target: "store" },
-              { label: "Privacy Policy",  target: "privacy" },
-              { label: "Terms of Service", target: "terms" },
-              { label: "Redeem a Voucher", target: "redeem" },
-            ].map(({ label, target }) => (
+            <a
+              href="https://wa.me/27676056777"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hc-cta"
+            >
+              <span>Chat with us on WhatsApp</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M3 12h17M14 6l6 6-6 6" />
+              </svg>
+            </a>
+          </section>
+
+          {/* ── Bottom links ── */}
+          <div className="hc-links">
+            {NAV_LINKS.map(({ label, target }) => (
               <button
+                type="button"
                 key={label}
+                className="hc-link"
                 onClick={() => setPage(target)}
-                style={{
-                  background: "none", border: "none",
-                  color: "var(--red)", fontWeight: 700,
-                  fontSize: ".82rem", cursor: "pointer", padding: 0,
-                  fontFamily: "var(--sans)",
-                }}
               >
                 {label}
               </button>
             ))}
           </div>
         </div>
-      </div>
-    </>
+      </main>
+    </div>
   );
 }
+
+/* ═══════════════════════════ Styles ═══════════════════════════ */
+const HELP_CSS = `
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600&display=swap');
+
+.hc-page{
+  --y:#FFF200; --bg:#0b0b0b; --card:#161616;
+  --line:rgba(255,255,255,.16); --dim:rgba(255,255,255,.62);
+  --ease:cubic-bezier(.19,1,.22,1);
+  --display:'Barlow Condensed','Arial Narrow',Impact,sans-serif;
+  --body:'Barlow',system-ui,sans-serif;
+  background:var(--bg);color:#fff;font-family:var(--body);min-height:100vh;width:100%;
+}
+.hc-page *{box-sizing:border-box}
+.hc-wrap{max-width:1100px;margin:0 auto;padding:0 24px}
+
+/* ───── hero ───── */
+.hc-hero{padding:72px 0 56px;border-bottom:1px solid var(--line)}
+.hc-eyebrow{
+  display:flex;align-items:center;gap:12px;margin:0 0 18px;
+  font-size:.72rem;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--dim);
+}
+.hc-eyebrow::before{content:"";width:26px;height:2px;background:var(--y)}
+.hc-h1{
+  margin:0 0 18px;font-family:var(--display);font-weight:700;
+  font-size:clamp(2.6rem,7vw,5.2rem);line-height:.92;letter-spacing:.015em;text-transform:uppercase;
+  text-wrap:balance;
+}
+.hc-lede{margin:0;max-width:560px;font-size:1rem;line-height:1.7;color:var(--dim)}
+
+/* ───── tabs ───── */
+.hc-tabs{border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none;background:var(--bg)}
+.hc-tabs::-webkit-scrollbar{display:none}
+.hc-tabs-row{display:flex;max-width:1100px;margin:0 auto;padding:0 24px}
+.hc-tab{
+  flex:none;position:relative;padding:18px 20px;background:none;border:0;border-radius:0;cursor:pointer;
+  font-family:var(--display);font-weight:600;font-size:1rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--dim);white-space:nowrap;transition:color .4s var(--ease);
+}
+.hc-tab::after{
+  content:"";position:absolute;left:20px;right:20px;bottom:-1px;height:3px;background:var(--y);
+  transform:scaleX(0);transform-origin:left;transition:transform .6s var(--ease);
+}
+.hc-tab:hover{color:#fff}
+.hc-tab.on{color:#fff}
+.hc-tab.on::after{transform:scaleX(1)}
+.hc-tab:first-child{padding-left:0}
+.hc-tab:first-child::after{left:0}
+.hc-tab:focus-visible{outline:1px solid var(--y);outline-offset:-4px}
+
+/* ───── groups ───── */
+.hc-body{padding:20px 0 90px}
+.hc-group{
+  display:grid;grid-template-columns:300px minmax(0,1fr);gap:56px;
+  padding:48px 0;border-bottom:1px solid var(--line);
+}
+.hc-group-head{position:sticky;top:96px;align-self:start}
+.hc-num{
+  display:block;margin-bottom:10px;
+  font-family:var(--display);font-weight:600;font-size:1rem;letter-spacing:.14em;color:var(--y);
+}
+.hc-group-title{
+  margin:0 0 12px;font-family:var(--display);font-weight:700;
+  font-size:clamp(1.6rem,2.6vw,2.2rem);line-height:1;letter-spacing:.03em;text-transform:uppercase;
+  text-wrap:balance;overflow-wrap:anywhere;
+}
+.hc-count{font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+
+/* ───── accordion ───── */
+.hc-list{border-top:1px solid var(--line)}
+.hc-item{border-bottom:1px solid var(--line);position:relative}
+.hc-item::before{
+  content:"";position:absolute;left:0;top:-1px;height:2px;width:100%;background:var(--y);
+  transform:scaleX(0);transform-origin:left;transition:transform .8s var(--ease);
+}
+.hc-item.open::before{transform:scaleX(1)}
+.hc-q{
+  width:100%;display:flex;align-items:center;justify-content:space-between;gap:24px;
+  padding:22px 0;background:none;border:0;border-radius:0;cursor:pointer;text-align:left;color:#fff;
+  font-family:var(--body);
+}
+.hc-q-text{font-size:1.02rem;font-weight:600;line-height:1.4;transition:color .4s}
+.hc-q:hover .hc-q-text,.hc-item.open .hc-q-text{color:var(--y)}
+.hc-q:focus-visible{outline:1px solid var(--y);outline-offset:2px}
+
+/* square plus -> cross */
+.hc-plus{
+  position:relative;flex:none;width:38px;height:38px;border:1px solid rgba(255,255,255,.5);
+  transition:background .5s var(--ease),border-color .5s var(--ease),transform .6s var(--ease);
+}
+.hc-plus::before,.hc-plus::after{
+  content:"";position:absolute;left:50%;top:50%;width:12px;height:1.5px;background:#fff;
+  transform:translate(-50%,-50%);transition:background .4s,transform .6s var(--ease);
+}
+.hc-plus::after{transform:translate(-50%,-50%) rotate(90deg)}
+.hc-q:hover .hc-plus{border-color:var(--y)}
+.hc-item.open .hc-plus{background:var(--y);border-color:var(--y)}
+.hc-item.open .hc-plus::before,.hc-item.open .hc-plus::after{background:#000}
+.hc-item.open .hc-plus::after{transform:translate(-50%,-50%) rotate(0deg)}
+
+/* smooth height without JS measurement */
+.hc-a-wrap{display:grid;grid-template-rows:0fr;transition:grid-template-rows .7s var(--ease)}
+.hc-item.open .hc-a-wrap{grid-template-rows:1fr}
+.hc-a-inner{overflow:hidden}
+.hc-a{
+  margin:0;padding:0 62px 26px 0;max-width:680px;
+  font-size:.95rem;line-height:1.8;color:var(--dim);
+  opacity:0;transform:translateY(-6px);transition:opacity .5s ease,transform .7s var(--ease);
+}
+.hc-item.open .hc-a{opacity:1;transform:none;transition-delay:.1s}
+
+/* ───── contact ───── */
+.hc-contact{margin-top:56px;padding:40px;background:var(--card);position:relative}
+.hc-contact::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:var(--y)}
+.hc-contact-title{
+  margin:0 0 10px;font-family:var(--display);font-weight:700;
+  font-size:clamp(1.7rem,3vw,2.4rem);line-height:1;letter-spacing:.03em;text-transform:uppercase;
+}
+.hc-contact-sub{margin:0 0 28px;max-width:520px;font-size:.92rem;line-height:1.7;color:var(--dim)}
+.hc-tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:28px}
+.hc-tile{padding:20px;border:1px solid var(--line);transition:border-color .5s var(--ease)}
+.hc-tile:hover{border-color:var(--y)}
+.hc-tile-label{margin-bottom:8px;font-size:.64rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+.hc-tile-value{
+  font-family:var(--display);font-weight:600;font-size:1.25rem;letter-spacing:.04em;line-height:1.2;
+  overflow-wrap:anywhere;color:#fff;text-decoration:none;
+}
+.hc-tile-value.link{display:inline-block;border-bottom:1px solid var(--line);transition:color .3s,border-color .3s}
+.hc-tile-value.link:hover{color:var(--y);border-color:var(--y)}
+
+.hc-cta{
+  display:inline-flex;align-items:center;justify-content:space-between;gap:28px;
+  padding:16px 22px;background:var(--y);color:#000;border:1px solid var(--y);border-radius:0;text-decoration:none;
+  font-family:var(--display);font-weight:700;font-size:1.05rem;letter-spacing:.16em;text-transform:uppercase;
+  transition:background .5s var(--ease),border-color .5s var(--ease);
+}
+.hc-cta svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:transform .6s var(--ease)}
+.hc-cta:hover{background:#fff;border-color:#fff}
+.hc-cta:hover svg{transform:translateX(6px)}
+.hc-cta:focus-visible{outline:2px solid #fff;outline-offset:3px}
+
+/* ───── bottom links ───── */
+.hc-links{display:flex;flex-wrap:wrap;gap:12px 28px;margin-top:40px}
+.hc-link{
+  position:relative;padding:4px 0;background:none;border:0;cursor:pointer;color:#fff;
+  font-family:var(--display);font-weight:600;font-size:.95rem;letter-spacing:.16em;text-transform:uppercase;
+}
+.hc-link::after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--y);
+  transform:scaleX(0);transform-origin:left;transition:transform .6s var(--ease);
+}
+.hc-link:hover{color:var(--y)}
+.hc-link:hover::after{transform:scaleX(1)}
+.hc-link:focus-visible{outline:1px solid var(--y);outline-offset:4px}
+
+/* ───── responsive ───── */
+@media (max-width:900px){
+  .hc-group{grid-template-columns:1fr;gap:24px;padding:36px 0}
+  .hc-group-head{position:static}
+  .hc-tiles{grid-template-columns:1fr}
+}
+@media (max-width:600px){
+  .hc-wrap,.hc-tabs-row{padding:0 16px}
+  .hc-hero{padding:48px 0 40px}
+  .hc-contact{padding:28px 20px}
+  .hc-a{padding-right:0}
+  .hc-cta{width:100%}
+  .hc-q-text{font-size:.96rem}
+}
+@media (prefers-reduced-motion:reduce){
+  .hc-a-wrap,.hc-a,.hc-plus,.hc-plus::before,.hc-plus::after,.hc-item::before,.hc-tab::after,.hc-cta svg,.hc-link::after{transition:none}
+}
+`;

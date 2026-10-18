@@ -140,166 +140,276 @@ const CAT_GRID_CSS = `
   .cc-card:hover .cc-img img{transform:none}
 }
 `;
+const CAT_MENU_CSS = `
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&display=swap');
 
-function AvoCatGrid({ onCatSelect, vouchers = [] }) {
-  const rowRef = useRef(null);
-  const resumeTimer = useRef(null);
-  const [canPrev, setCanPrev] = useState(false);
-  const [canNext, setCanNext] = useState(true);
-  const [paused, setPaused] = useState(false);
-  const [thumb, setThumb] = useState({ w: 100, x: 0 });
+.cm-wrap{
+  --ease:cubic-bezier(.19,1,.22,1);
+  --y:#FFF200;
+  --bg:#0b0b0b;
+  --line:rgba(255,255,255,.55);
+  --font:'Syne','Arial Black',system-ui,sans-serif;
+
+  display:grid;
+  grid-template-columns:300px minmax(0,1fr) minmax(280px,33%);
+  height:clamp(520px,82dvh,780px);
+  background:var(--bg);
+  color:#fff;
+  font-family:var(--font);
+  overflow:hidden;
+}
+.cm-wrap *{box-sizing:border-box;margin:0;padding:0}
+.cm-wrap button{font-family:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:left}
+
+/* ───────── left list ───────── */
+.cm-list{padding:44px 28px;overflow-y:auto;scrollbar-width:none}
+.cm-list::-webkit-scrollbar{display:none}
+.cm-list-label{
+  font-size:.72rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(255,255,255,.5);margin-bottom:30px;
+}
+.cm-list ul{list-style:none;display:flex;flex-direction:column;gap:6px}
+.cm-item{
+  position:relative;display:block;width:100%;
+  padding:9px 0 9px 0;
+  font-size:1.02rem;font-weight:600;letter-spacing:.01em;line-height:1.25;
+  color:rgba(255,255,255,.55);
+  transition:color .4s var(--ease),padding-left .5s var(--ease);
+}
+.cm-item::before{
+  content:"";position:absolute;left:0;top:50%;width:0;height:2px;background:var(--y);
+  transform:translateY(-50%);transition:width .5s var(--ease);
+}
+.cm-item.on,.cm-item:hover{color:#fff;padding-left:22px}
+.cm-item.on::before,.cm-item:hover::before{width:14px}
+.cm-item:focus-visible{outline:1px solid var(--y);outline-offset:2px}
+
+/* ───────── centre hero ───────── */
+.cm-hero{position:relative;overflow:hidden;cursor:pointer;background:#222;outline:none}
+.cm-hero:focus-visible{outline:1px solid var(--y);outline-offset:-4px}
+.cm-hero-img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;
+  opacity:0;transform:scale(1.06);
+  transition:opacity .9s var(--ease),transform 1.8s var(--ease);
+}
+.cm-hero-img.on{opacity:1;transform:scale(1)}
+.cm-hero-shade{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(0,0,0,.72) 0%,rgba(0,0,0,.18) 38%,transparent 62%);
+}
+.cm-hero-copy{
+  position:absolute;left:clamp(24px,4vw,64px);right:24px;bottom:clamp(28px,5vh,60px);
+  animation:cm-up .8s var(--ease) both;
+}
+@keyframes cm-up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.cm-hero-title{
+  font-size:clamp(1.9rem,4.4vw,3.6rem);font-weight:800;line-height:1;
+  letter-spacing:.005em;text-transform:uppercase;
+  text-wrap:balance;overflow-wrap:anywhere;
+  max-width:14ch;
+}
+.cm-hero-meta{
+  margin-top:12px;font-size:.7rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(255,255,255,.75);
+}
+.cm-more{
+  display:inline-flex;align-items:center;gap:14px;margin-top:22px;
+  font-size:.78rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+}
+
+/* ───────── circular chevron ───────── */
+.cm-circle{
+  width:40px;height:40px;flex:none;border-radius:50%;
+  border:1px solid var(--line);
+  display:grid;place-items:center;
+  transition:background .5s var(--ease),border-color .5s var(--ease),transform .6s var(--ease);
+}
+.cm-circle svg{width:14px;height:14px;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transition:stroke .4s}
+.cm-hero:hover .cm-circle,
+.cm-tile:hover .cm-circle,
+.cm-tile.on .cm-circle{background:#fff;border-color:#fff;transform:translateX(4px)}
+.cm-hero:hover .cm-circle svg,
+.cm-tile:hover .cm-circle svg,
+.cm-tile.on .cm-circle svg{stroke:#000}
+
+/* ───────── right tiles ───────── */
+.cm-tiles{
+  display:flex;flex-direction:column;
+  overflow-y:auto;scroll-snap-type:y mandatory;scrollbar-width:none;
+}
+.cm-tiles::-webkit-scrollbar{display:none}
+.cm-tile{
+  position:relative;flex:0 0 33.3334%;min-height:0;overflow:hidden;
+  scroll-snap-align:start;background:#2a2a2a;
+  display:flex;align-items:flex-end;justify-content:space-between;gap:12px;
+  padding:0 26px 26px 30px;
+  border-bottom:1px solid #0b0b0b;
+}
+.cm-tile img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;
+  filter:grayscale(.3);
+  transition:transform 1.4s var(--ease),filter .8s ease;
+}
+.cm-tile:hover img,.cm-tile.on img{transform:scale(1.06);filter:none}
+.cm-tile-shade{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(0,0,0,.62),rgba(0,0,0,0) 55%);
+}
+/* yellow edge on the active tile */
+.cm-tile::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--y);z-index:2;
+  transform:scaleY(0);transform-origin:top;transition:transform .6s var(--ease);
+}
+.cm-tile.on::before{transform:scaleY(1)}
+.cm-tile:focus-visible{outline:1px solid var(--y);outline-offset:-4px}
+
+.cm-tile-name{
+  position:relative;z-index:1;
+  font-size:clamp(.85rem,1.15vw,1.05rem);font-weight:700;letter-spacing:.02em;
+  text-transform:uppercase;line-height:1.15;
+  text-wrap:balance;overflow-wrap:anywhere;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.cm-tile .cm-circle{position:relative;z-index:1}
+
+/* ───────── tablet & mobile ───────── */
+@media (max-width:1100px){
+  .cm-wrap{grid-template-columns:230px minmax(0,1fr) minmax(240px,34%)}
+  .cm-list{padding:36px 20px}
+}
+@media (max-width:900px){
+  .cm-wrap{
+    grid-template-columns:1fr;
+    grid-template-rows:auto clamp(260px,58vw,420px) auto;
+    height:auto;
+  }
+  /* list becomes a horizontal chip row */
+  .cm-list{padding:20px 16px 14px;overflow:visible}
+  .cm-list-label{margin-bottom:12px}
+  .cm-list ul{flex-direction:row;overflow-x:auto;gap:8px;scrollbar-width:none}
+  .cm-list ul::-webkit-scrollbar{display:none}
+  .cm-item{
+    width:auto;white-space:nowrap;padding:9px 16px;font-size:.78rem;
+    border:1px solid rgba(255,255,255,.3);border-radius:999px;
+  }
+  .cm-item::before{display:none}
+  .cm-item.on,.cm-item:hover{padding-left:16px;background:#fff;color:#000;border-color:#fff}
+
+  /* tiles become a horizontal snap row */
+  .cm-tiles{flex-direction:row;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory}
+  .cm-tile{flex:0 0 64%;height:200px;padding:0 16px 16px 18px;border-bottom:0;border-right:1px solid #0b0b0b}
+  .cm-tile::before{top:auto;height:3px;width:100%;transform:scaleX(0);transform-origin:left}
+  .cm-tile.on::before{transform:scaleX(1)}
+}
+@media (prefers-reduced-motion:reduce){
+  .cm-hero-img,.cm-tile img,.cm-circle,.cm-item,.cm-item::before,.cm-tile::before{transition:none}
+  .cm-hero-copy{animation:none}
+}
+`;
+function AvoCatShowcase({ onCatSelect, vouchers = [] }) {
+  const [active, setActive] = useState(0);
+  const tilesRef = useRef(null);
 
   const countFor = (cat) => vouchers.filter((v) => v.cat === cat).length;
+  const current = CAT_TILES[active];
+  const n = countFor(current.cat);
 
-  const reduceMotion = () =>
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  const updateArrows = () => {
-    const el = rowRef.current;
-    if (!el) return;
-    const max = el.scrollWidth - el.clientWidth;
-    const w = Math.min(100, (el.clientWidth / el.scrollWidth) * 100);
-    const x = max > 0 ? (el.scrollLeft / max) * (100 - w) : 0;
-    setThumb({ w, x });
-    setCanPrev(el.scrollLeft > 4);
-    setCanNext(el.scrollLeft < max - 4);
+  // hovering the left list also scrolls the right column to that tile
+  const goTo = (i) => {
+    setActive(i);
+    const box = tilesRef.current;
+    const tile = box?.children[i];
+    if (box && tile) {
+      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      box.scrollTo({
+        [window.innerWidth <= 900 ? "left" : "top"]:
+          window.innerWidth <= 900 ? tile.offsetLeft : tile.offsetTop,
+        behavior: reduce ? "auto" : "smooth",
+      });
+    }
   };
 
-  const slide = (dir) => {
-    const el = rowRef.current;
-    if (!el) return;
-    const card = el.querySelector(".cc-card");
-    const gap = parseFloat(getComputedStyle(el).columnGap) || 20;
-    const step = card ? card.offsetWidth + gap : el.clientWidth * 0.8;
-    el.scrollBy({
-      left: dir * step,
-      behavior: reduceMotion() ? "auto" : "smooth",
-    });
-  };
-
-  useEffect(() => {
-    updateArrows();
-    const el = rowRef.current;
-    if (!el) return;
-    el.addEventListener("scroll", updateArrows, { passive: true });
-    window.addEventListener("resize", updateArrows);
-    return () => {
-      el.removeEventListener("scroll", updateArrows);
-      window.removeEventListener("resize", updateArrows);
-      clearTimeout(resumeTimer.current);
-    };
-  }, []);
-
-  // Auto-slide (pauses on hover/focus/touch, loops back to the start at the end)
-  useEffect(() => {
-    if (paused || reduceMotion()) return;
-    const id = setInterval(() => {
-      const el = rowRef.current;
-      if (!el) return;
-      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 4) {
-        el.scrollTo({ left: 0, behavior: "smooth" });
-      } else {
-        slide(1);
-      }
-    }, 4000);
-    return () => clearInterval(id);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [paused]);
-
-  const onTouchEnd = () => {
-    clearTimeout(resumeTimer.current);
-    resumeTimer.current = setTimeout(() => setPaused(false), 6000);
-  };
+  const Chevron = () => (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M9 5l7 7-7 7" />
+    </svg>
+  );
 
   return (
     <>
-      <style>{CAT_GRID_CSS}</style>
-      <section className="cc-wrap">
-        <div className="cc-head">
-          <h2 className="cc-title">BROWSE BY CATEGORY</h2>
-          <p className="cc-sub">
-            Find the perfect experience for every occasion
-          </p>
+      <style>{CAT_MENU_CSS}</style>
+      <section className="cm-wrap" aria-label="Browse by category">
+        {/* ───── left list ───── */}
+        <nav className="cm-list">
+          <div className="cm-list-label">Categories</div>
+          <ul>
+            {CAT_TILES.map((t, i) => (
+              <li key={t.cat}>
+                <button
+                  type="button"
+                  className={"cm-item" + (i === active ? " on" : "")}
+                  onMouseEnter={() => goTo(i)}
+                  onFocus={() => goTo(i)}
+                  onClick={() => onCatSelect(t.cat)}
+                >
+                  {t.name}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        {/* ───── centre hero (crossfades) ───── */}
+        <div
+          className="cm-hero"
+          role="link"
+          tabIndex={0}
+          onClick={() => onCatSelect(current.cat)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              onCatSelect(current.cat);
+            }
+          }}
+        >
+          {CAT_TILES.map((t, i) => (
+            <img
+              key={t.cat}
+              src={t.img}
+              alt={i === active ? t.name : ""}
+              className={"cm-hero-img" + (i === active ? " on" : "")}
+              loading={i === 0 ? "eager" : "lazy"}
+            />
+          ))}
+          <div className="cm-hero-shade" />
+          <div className="cm-hero-copy" key={current.cat}>
+            <h2 className="cm-hero-title">{current.name}</h2>
+            <p className="cm-hero-meta">
+              {n > 0 ? `${n} available` : "New experiences"} · WhatsApp delivery
+            </p>
+            <span className="cm-more">
+              Discover more
+              <span className="cm-circle"><Chevron /></span>
+            </span>
+          </div>
         </div>
 
-        <div
-          className="cc-slider"
-          onMouseEnter={() => setPaused(true)}
-          onMouseLeave={() => setPaused(false)}
-          onFocus={() => setPaused(true)}
-          onBlur={() => setPaused(false)}
-          onTouchStart={() => setPaused(true)}
-          onTouchEnd={onTouchEnd}
-        >
-          <div className="cc-row" ref={rowRef}>
-            {CAT_TILES.map((t) => {
-              const n = countFor(t.cat);
-              return (
-                <div
-                  key={t.cat}
-                  className="cc-card"
-                  role="link"
-                  tabIndex={0}
-                  onClick={() => onCatSelect(t.cat)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      onCatSelect(t.cat);
-                    }
-                  }}
-                >
-                  <div className="cc-img">
-                    <img src={t.img} alt={t.name} loading="lazy" />
-                  </div>
-                  <div className="cc-body">
-                    <h3 className="cc-name">{t.name}</h3>
-                    <p className="cc-desc">{CAT_BLURBS[t.cat] || t.name}</p>
-                    <div className="cc-meta">
-                      <b>{n > 0 ? `${n} available` : "New experiences"}</b>
-                      {" · "}WhatsApp delivery
-                    </div>
-                    <button
-                      className="cc-btn"
-                      tabIndex={-1}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onCatSelect(t.cat);
-                      }}
-                    >
-                      Browse now
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          <div className="cc-controls">
-            <div className="cc-progress" aria-hidden="true">
-              <div
-                className="cc-progress-thumb"
-                style={{ width: `${thumb.w}%`, left: `${thumb.x}%` }}
-              />
-            </div>
-            <div className="cc-arrows">
-              <button
-                className="cc-arrow"
-                onClick={() => slide(-1)}
-                disabled={!canPrev}
-                aria-label="Previous categories"
-              >
-                ‹
-              </button>
-              <button
-                className="cc-arrow"
-                onClick={() => slide(1)}
-                disabled={!canNext}
-                aria-label="Next categories"
-              >
-                ›
-              </button>
-            </div>
-          </div>
+        {/* ───── right tiles: all categories ───── */}
+        <div className="cm-tiles" ref={tilesRef}>
+          {CAT_TILES.map((t, i) => (
+            <button
+              type="button"
+              key={t.cat}
+              className={"cm-tile" + (i === active ? " on" : "")}
+              onMouseEnter={() => setActive(i)}
+              onClick={() => onCatSelect(t.cat)}
+            >
+              <img src={t.img} alt="" loading="lazy" />
+              <span className="cm-tile-shade" />
+              <span className="cm-tile-name">{t.name}</span>
+              <span className="cm-circle"><Chevron /></span>
+            </button>
+          ))}
         </div>
       </section>
     </>
@@ -498,11 +608,179 @@ const getExpiryDate = (v) => {
   }
   return null;
 };
- 
+ const FLASH_DEALS_CSS = `
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600&display=swap');
+
+.fd-wrap{
+  --y:#FFF200;
+  --bg:#0b0b0b;
+  --card:#161616;
+  --line:rgba(255,255,255,.16);
+  --dim:rgba(255,255,255,.62);
+  --ease:cubic-bezier(.19,1,.22,1);
+  --gap:20px;
+  --display:'Barlow Condensed','Arial Narrow',Impact,sans-serif;
+  --body:'Barlow',system-ui,sans-serif;
+
+  container:fd / inline-size;      /* responds to its own width, not the viewport */
+  background:var(--bg);
+  color:#fff;
+  font-family:var(--body);
+  padding:48px 0 36px;
+  width:100%;
+  margin:0 0 32px;
+}
+.fd-wrap *{box-sizing:border-box}
+
+/* ───────── header ───────── */
+.fd-head{padding:0 24px;margin:0 0 28px}
+.fd-title{
+  margin:0 0 12px;
+  font-family:var(--display);font-weight:700;
+  font-size:clamp(1.9rem,6cqw,3rem);line-height:.95;
+  letter-spacing:.02em;text-transform:uppercase;
+  display:flex;align-items:center;gap:16px;
+}
+.fd-title::before{content:"";width:6px;height:1em;background:var(--y);flex:none}
+.fd-sub{
+  margin:0;font-size:.72rem;font-weight:500;
+  letter-spacing:.22em;text-transform:uppercase;color:var(--dim);
+}
+
+/* ───────── slider ───────── */
+.fd-slider{padding:0 24px}
+.fd-row{
+  display:flex;gap:var(--gap);
+  overflow-x:auto;scroll-snap-type:x mandatory;
+  scrollbar-width:none;padding-bottom:4px;
+}
+.fd-row::-webkit-scrollbar{display:none}
+
+/* ───────── card ───────── */
+.fd-card{
+  flex:0 0 calc((100% - var(--gap) * 3) / 4);
+  container-type:inline-size;
+  scroll-snap-align:start;
+  position:relative;display:flex;flex-direction:column;
+  background:var(--card);border-radius:0;
+  cursor:pointer;outline:none;overflow:hidden;
+}
+/* sweep bar on hover, coloured by urgency */
+.fd-card::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:3px;z-index:3;
+  background:var(--b,var(--y));
+  transform:scaleX(0);transform-origin:left;
+  transition:transform .8s var(--ease);
+}
+.fd-card:hover::before,.fd-card:focus-visible::before{transform:scaleX(1)}
+.fd-card:focus-visible{outline:1px solid var(--y);outline-offset:4px}
+
+.fd-img{position:relative;aspect-ratio:4/3;overflow:hidden;background:#222;display:grid;place-items:center}
+.fd-img img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;
+  filter:grayscale(.35) contrast(1.05);
+  transform:scale(1);
+  transition:transform 1.4s var(--ease),filter .8s ease;
+}
+.fd-card:hover .fd-img img,.fd-card:focus-visible .fd-img img{transform:scale(1.07);filter:none}
+.fd-img::after{
+  content:"";position:absolute;inset:auto 0 0 0;height:45%;
+  background:linear-gradient(to top,var(--card),transparent);pointer-events:none;
+}
+.fd-fallback{font-size:2.4rem;opacity:.6;position:relative;z-index:1}
+.fd-num{
+  position:absolute;top:14px;left:16px;z-index:2;
+  font-family:var(--display);font-weight:600;font-size:.95rem;letter-spacing:.14em;
+}
+.fd-badge{
+  position:absolute;top:0;right:0;z-index:2;
+  background:var(--b);color:#fff;
+  padding:7px 12px;border-radius:0;
+  font-family:var(--display);font-weight:700;font-size:.8rem;
+  letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;
+}
+
+/* ───────── body ───────── */
+.fd-body{display:flex;flex-direction:column;gap:12px;padding:6px 18px 20px;flex:1}
+.fd-name{
+  margin:0;
+  font-family:var(--display);font-weight:700;
+  font-size:clamp(1.1rem,8cqw,1.6rem);line-height:1.04;
+  letter-spacing:.03em;text-transform:uppercase;
+  text-wrap:balance;overflow-wrap:anywhere;
+  min-height:2.08em;                         /* two lines reserved, cards stay level */
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+
+/* urgency bar: shorter = closer to expiry */
+.fd-urgency{height:3px;background:var(--line);position:relative;overflow:hidden}
+.fd-urgency span{
+  position:absolute;inset:0 auto 0 0;width:var(--left);background:var(--b);
+  transform-origin:left;transition:transform .9s var(--ease);
+}
+.fd-card:hover .fd-urgency span{transform:scaleX(.94)}
+
+.fd-meta{font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+.fd-meta b{color:var(--b);font-weight:600}
+
+.fd-foot{
+  margin-top:auto;padding-top:14px;border-top:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+}
+.fd-price{font-family:var(--display);font-weight:700;font-size:1.35rem;letter-spacing:.04em}
+
+.fd-btn{
+  padding:10px 18px;background:transparent;color:#fff;
+  border:1px solid rgba(255,255,255,.7);border-radius:0;
+  font-family:var(--display);font-weight:600;font-size:.9rem;
+  letter-spacing:.14em;text-transform:uppercase;cursor:pointer;
+  transition:background .5s var(--ease),color .5s var(--ease),border-color .5s var(--ease);
+}
+.fd-card:hover .fd-btn,.fd-btn:hover{background:var(--y);color:#000;border-color:var(--y)}
+
+/* ───────── controls ───────── */
+.fd-controls{display:flex;align-items:center;gap:28px;margin-top:26px}
+.fd-progress{flex:1;height:1px;background:var(--line);position:relative}
+.fd-progress-thumb{
+  position:absolute;top:-1px;height:3px;background:var(--y);
+  transition:left .35s ease,width .35s ease;
+}
+.fd-arrows{display:flex;gap:10px}
+.fd-arrow{
+  width:46px;height:46px;display:grid;place-items:center;padding:0;
+  background:transparent;color:#fff;border:1px solid rgba(255,255,255,.5);border-radius:0;
+  font-size:1.5rem;line-height:1;cursor:pointer;
+  transition:background .4s var(--ease),color .4s var(--ease),border-color .4s var(--ease);
+}
+.fd-arrow:hover:not(:disabled){background:var(--y);color:#000;border-color:var(--y)}
+.fd-arrow:disabled{opacity:.25;cursor:default}
+
+/* ───────── responsive (by container width) ───────── */
+@container fd (max-width:1000px){
+  .fd-card{flex-basis:calc((100% - var(--gap) * 2) / 3)}
+}
+@container fd (max-width:700px){
+  .fd-wrap,.fd-card{--gap:14px}
+  .fd-card{flex-basis:calc((100% - var(--gap)) / 2)}
+  .fd-head,.fd-slider{padding:0 16px}
+  .fd-body{padding:4px 14px 16px}
+  .fd-arrows{display:none}
+}
+@container fd (max-width:440px){
+  .fd-card{flex-basis:76%}
+}
+@media (prefers-reduced-motion:reduce){
+  .fd-card::before,.fd-img img,.fd-btn,.fd-urgency span{transition:none}
+}
+`;
 const daysUntil = (date) =>
   Math.ceil((date.getTime() - Date.now()) / 86400000);
- 
 function AvoFlashDeals({ vouchers = [], onOpen }) {
+  const rowRef = useRef(null);
+  const [canPrev, setCanPrev] = useState(false);
+  const [canNext, setCanNext] = useState(true);
+  const [thumb, setThumb] = useState({ w: 100, x: 0 });
+
   const expiring = React.useMemo(
     () =>
       vouchers
@@ -515,76 +793,160 @@ function AvoFlashDeals({ vouchers = [], onOpen }) {
         .slice(0, 10),
     [vouchers]
   );
- 
+
+  const reduceMotion = () =>
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const updateArrows = () => {
+    const el = rowRef.current;
+    if (!el) return;
+    const max = el.scrollWidth - el.clientWidth;
+    const w = Math.min(100, (el.clientWidth / el.scrollWidth) * 100);
+    const x = max > 0 ? (el.scrollLeft / max) * (100 - w) : 0;
+    setThumb({ w, x });
+    setCanPrev(el.scrollLeft > 4);
+    setCanNext(el.scrollLeft < max - 4);
+  };
+
+  const slide = (dir) => {
+    const el = rowRef.current;
+    if (!el) return;
+    const card = el.querySelector(".fd-card");
+    const gap = parseFloat(getComputedStyle(el).columnGap) || 20;
+    const step = card ? card.offsetWidth + gap : el.clientWidth * 0.8;
+    el.scrollBy({ left: dir * step, behavior: reduceMotion() ? "auto" : "smooth" });
+  };
+
+  useEffect(() => {
+    updateArrows();
+    const el = rowRef.current;
+    if (!el) return;
+    el.addEventListener("scroll", updateArrows, { passive: true });
+    window.addEventListener("resize", updateArrows);
+    return () => {
+      el.removeEventListener("scroll", updateArrows);
+      window.removeEventListener("resize", updateArrows);
+    };
+  }, [expiring.length]);
+
   if (expiring.length === 0) return null;
- 
+
   const badge = (days) => {
     if (days <= 7) return { bg: "#dc2626", label: days <= 1 ? "Last day" : `${days} days left` };
     if (days <= 30) return { bg: "#f59e0b", label: `${days} days left` };
     return { bg: "#16a34a", label: `${days} days left` };
   };
- 
+
   return (
-    <div className="avs-section">
-      <div className="avs-section-head">
-        <span className="avs-section-title">
-          <span style={{ marginRight: 5, fontWeight: 900 }}>✦</span>
-          Expiring Soon
-        </span>
-        <span style={{ fontSize: ".7rem", color: "#888", fontWeight: 600 }}>
-          Grab them before they go
-        </span>
-      </div>
- 
-      <div className="avs-hscroll">
-        {expiring.map(({ v, exp, days }) => {
-          const b = badge(days);
-          const img = v.imageUrl || v.img;
-          return (
-            <div key={v.id} className="avs-deal-card" onClick={() => onOpen?.(v)}>
-              <div className="avs-deal-img">
-                {img ? (
-                  <img
-                    src={img}
-                    alt={v.name}
-                    loading="lazy"
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                      position: "absolute",
-                      inset: 0,
-                    }}
-                  />
-                ) : (
-                  <span style={{ fontSize: "2rem", position: "relative", zIndex: 1 }}>
-                    {getCatIcon(v.cat)}
-                  </span>
-                )}
-                <span className="avs-off-badge" style={{ background: b.bg, color: "#fff" }}>
-                  {b.label}
-                </span>
-              </div>
- 
-              <div className="avs-deal-body">
-                <div className="avs-deal-name">{v.name}</div>
-                <div className="avs-price-row">
-                  <span className="avs-price-now">{fmt(v.price)}</span>
+    <>
+      <style>{FLASH_DEALS_CSS}</style>
+      <section className="fd-wrap" aria-label="Expiring soon">
+        <div className="fd-head">
+          <h2 className="fd-title">Expiring Soon</h2>
+          <p className="fd-sub">Grab them before they go</p>
+        </div>
+
+        <div className="fd-slider">
+          <div className="fd-row" ref={rowRef}>
+            {expiring.map(({ v, exp, days }, i) => {
+              const b = badge(days);
+              const img = v.imageUrl || v.img;
+              const open = () => onOpen?.(v);
+              return (
+                <div
+                  key={v.id}
+                  className="fd-card"
+                  style={{ "--b": b.bg, "--left": `${Math.max(6, Math.min(100, (days / 60) * 100))}%` }}
+                  role="link"
+                  tabIndex={0}
+                  onClick={open}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      open();
+                    }
+                  }}
+                >
+                  <div className="fd-img">
+                    {img ? (
+                      <img src={img} alt={v.name} loading="lazy" />
+                    ) : (
+                      <span className="fd-fallback">{getCatIcon(v.cat)}</span>
+                    )}
+                    <span className="fd-num">{String(i + 1).padStart(2, "0")}</span>
+                    <span className="fd-badge">{b.label}</span>
+                  </div>
+
+                  <div className="fd-body">
+                    <h3 className="fd-name">{v.name}</h3>
+
+                    <div className="fd-urgency" aria-hidden="true">
+                      <span />
+                    </div>
+
+                    <div className="fd-meta">
+                      Expires{" "}
+                      <b>
+                        {exp.toLocaleDateString("en-GB", {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        })}
+                      </b>
+                    </div>
+
+                    <div className="fd-foot">
+                      <span className="fd-price">{fmt(v.price)}</span>
+                      <button
+                        type="button"
+                        className="fd-btn"
+                        tabIndex={-1}
+                        aria-label={`View ${v.name}`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          open();
+                        }}
+                      >
+                        View
+                      </button>
+                    </div>
+                  </div>
                 </div>
-                <div className="avs-stock-lbl" style={{ color: b.bg, fontWeight: 600 }}>
-                  Expires{" "}
-                  {exp.toLocaleDateString("en-GB", {
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric",
-                  })}
-                </div>
-              </div>
+              );
+            })}
+          </div>
+
+          <div className="fd-controls">
+            <div className="fd-progress" aria-hidden="true">
+              <div
+                className="fd-progress-thumb"
+                style={{ width: `${thumb.w}%`, left: `${thumb.x}%` }}
+              />
             </div>
-          );
-        })}
-      </div>
-    </div>
+            <div className="fd-arrows">
+              <button
+                type="button"
+                className="fd-arrow"
+                onClick={() => slide(-1)}
+                disabled={!canPrev}
+                aria-label="Previous deals"
+              >
+                ‹
+              </button>
+              <button
+                type="button"
+                className="fd-arrow"
+                onClick={() => slide(1)}
+                disabled={!canNext}
+                aria-label="Next deals"
+              >
+                ›
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
 function AvoTrustStrip() {
@@ -609,8 +971,8 @@ function AvoTrustStrip() {
   );
 }
 
-function AvoVoucherCard({ voucher: v, onOpen, onPartnerOpen }) {
-  const badgeBg =
+function AvoVoucherCard({ voucher: v, index = 0, onOpen, onPartnerOpen }) {
+  const accent =
     {
       Music: "#5839b4",
       Events: "#b4396e",
@@ -618,51 +980,70 @@ function AvoVoucherCard({ voucher: v, onOpen, onPartnerOpen }) {
       Florists: "#b4396c",
     }[v.cat] || "var(--green-primary)";
 
+  const open = () => onOpen(v);
+
   return (
-    <div className="avs-v-card" onClick={() => onOpen(v)}>
+    <article
+      className="avs-v-card"
+      style={{ "--accent": accent, "--i": index }}
+      onClick={open}
+      onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), open())}
+      role="link"
+      tabIndex={0}
+    >
       <div className="avs-v-img">
         {v.imageUrl || v.img ? (
           <img src={v.imageUrl || v.img} alt={v.name} loading="lazy" />
         ) : (
-          <span style={{ fontSize: "2.5rem" }}>{getCatIcon(v.cat)}</span>
+          <span className="avs-v-fallback">{getCatIcon(v.cat)}</span>
         )}
-        <span className="avs-v-badge" style={{ background: badgeBg }}>
-          {v.cat}
-        </span>
+        <span className="avs-v-view">View voucher</span>
       </div>
+
       <div className="avs-v-body">
-        <div className="avs-v-name">{v.name}</div>
-         {v.partnerRating > 0 && (
-    <StarRating
-      rating={v.partnerRating}
-      reviewCount={v.partnerReviewCount}
-    />
-  )}
-       <div className="avs-v-loc">
-  📍{" "}
-  <span
-    onClick={(e) => { e.stopPropagation(); onPartnerOpen?.(v.partnerId); }}
-    style={{ textDecoration: "underline", cursor: "pointer", color: "var(--green-primary)" }}
-  >
-    {v.partner}
-  </span>{" "}
-  · {v.city}
-</div>
+        <div className="avs-v-cat">{v.cat}</div>
+
+        <h3 className="avs-v-name">
+          <span>{v.name}</span>
+        </h3>
+
+        {v.partnerRating > 0 && (
+          <StarRating rating={v.partnerRating} reviewCount={v.partnerReviewCount} />
+        )}
+
+        <div className="avs-v-loc">
+          <span className="avs-v-loclabel">Available at</span>
+          <button
+            type="button"
+            className="avs-v-partner"
+            onClick={(e) => {
+              e.stopPropagation();
+              onPartnerOpen?.(v.partnerId);
+            }}
+          >
+            {v.partner}
+          </button>
+          <span className="avs-v-city"> · {v.city}</span>
+        </div>
+
         <div className="avs-v-foot">
           <span className="avs-v-price">{fmt(v.price)}</span>
           <button
+            type="button"
             className="avs-v-add"
             onClick={(e) => {
               e.stopPropagation();
-              onOpen(v);
+              open();
             }}
             aria-label={`Buy ${v.name}`}
           >
-            +
+            <svg viewBox="0 0 12 12" aria-hidden="true">
+              <path d="M6 0v12M0 6h12" />
+            </svg>
           </button>
         </div>
       </div>
-    </div>
+    </article>
   );
 }
 
@@ -1191,7 +1572,7 @@ const [filteredResults, setFilteredResults] = useState([]);
       <HomeSEO />
      <HeroV2 vouchers={vouchers} onCatSelect={handleCatSelect} />
       {/* Category grid */}
-     <AvoCatGrid onCatSelect={handleCatSelect} vouchers={vouchers} />
+     <AvoCatShowcase onCatSelect={handleCatSelect} vouchers={vouchers} />
 
       {/* Flash deals */}
      <AvoFlashDeals vouchers={vouchers} onOpen={onVoucherOpen} />
@@ -1199,7 +1580,7 @@ const [filteredResults, setFilteredResults] = useState([]);
       {/* Category filter tabs */}
      <div
   className="cats-section"
-  style={{ position: "sticky", top: 64, zIndex: 90 }}
+  style={{ position: "relative", top: 64, zIndex: 1 }}
 >
   <div className="avs-wrap">
     <AvoSearchBar
