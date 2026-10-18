@@ -50,6 +50,7 @@ const CAT_TILES = [
 ];
 
 
+// eslint-disable-next-line no-unused-vars
 const CAT_BLURBS = {
   Wellness: "Spa days, massages & pamper packages",
   "Traditional Restaurants": "Send a proper home-cooked meal",
@@ -65,6 +66,7 @@ const CAT_BLURBS = {
 // Uses your existing CAT_TILES and CAT_BLURBS.
 // This replaces CAT_CARD_CSS and CAT_SLIDER_CSS: delete both and use CAT_GRID_CSS.
 
+// eslint-disable-next-line no-unused-vars
 const CAT_GRID_CSS = `
 .cc-wrap{
   --cc-bg:#fff;
