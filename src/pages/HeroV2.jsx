@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useCallback, useRef } from "react";
 import flag from "../images/pngegg.png";
 import logo from "../images/logo-desktop.png";

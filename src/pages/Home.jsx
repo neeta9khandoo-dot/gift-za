@@ -187,7 +187,7 @@ const HERO_CSS = `
 .hv3-dot.on{background:var(--av-orange);width:20px;border-radius:4px}
 
 /* ── side promo card (matches the app icon) ── */
-.hv3-side{position:relative;height:345px;border-radius:18px;overflow:hidden;
+.hv3-side{position:relative;height:245px;border-radius:18px;overflow:hidden;
   background:linear-gradient(145deg,var(--av-orange-light) 0%,var(--av-orange-deep) 100%);
   display:flex;flex-direction:column;align-items:center;
   text-align:center;padding:16px 18px 0;
