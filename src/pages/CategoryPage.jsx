@@ -172,7 +172,7 @@ export default function CategoryPage({
       <div
         style={{
           position: "relative",
-          minHeight: 380,
+          minHeight: 580,
           display: "flex",
           alignItems: "flex-end",
           overflow: "hidden",
@@ -190,31 +190,6 @@ export default function CategoryPage({
             backgroundRepeat: "no-repeat",
           }}
         />
-
-        <button
-          onClick={onBack}
-          style={{
-            position: "absolute",
-            top: 24,
-            left: 32,
-            background: "rgba(255,255,255,.15)",
-            backdropFilter: "blur(8px)",
-            border: "1px solid rgba(255,255,255,.25)",
-            borderRadius: 10,
-            padding: "9px 16px",
-            color: "#fff",
-            fontFamily: "var(--sans)",
-            fontSize: ".8rem",
-            fontWeight: 600,
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            gap: 7,
-            zIndex: 2,
-          }}
-        >
-          ← Back
-        </button>
 
         <div
           style={{

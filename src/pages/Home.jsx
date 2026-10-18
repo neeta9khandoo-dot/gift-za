@@ -405,22 +405,22 @@ const NAV_CSS = `
   --av-dark-2:#1a2029;
   --av-orange:#d98a35;
   --av-orange-deep:#c4531a;
+  --av-line:rgba(35,42,53,.12);
 }
-.nv3{background:var(--av-dark);position:relative;z-index:200;font-family:inherit}
+.nv3{background:#fff;position:relative;z-index:200;font-family:inherit}
 .nv3-in{margin:0 auto;position:relative}
 
-/* ── logo (no background, sits on the dark header) ── */
+/* ── logo (original colours, sits on the white header) ── */
 .nv3-logo{position:absolute;left:24px;top:18px;width:240px;height:109px;background:transparent;
   border:none;display:flex;align-items:center;justify-content:flex-start;cursor:pointer;
   z-index:3;padding:0}
 .nv3-logo picture{display:flex;align-items:center;height:90%}
-.nv3-logo img{height:auto;max-height:64px;width:auto;max-width:100%;display:block;
-  filter:brightness(0) invert(1)} /* remove this line once you export a white PNG */
+.nv3-logo img{height:auto;max-height:64px;width:auto;max-width:100%;display:block}
 
 /* ── top strip ── */
 .nv3-top{height:40px;display:flex;align-items:center;justify-content:space-between;
-  padding:0 24px 0 290px;background:white;
-  border-bottom:1px solid rgba(255,255,255,.08)}
+  padding:0 24px 0 290px;background:#fff;
+  border-bottom:1px solid var(--av-line)}
 .nv3-social{display:flex;gap:18px;align-items:center}
 .nv3-social a{color:rgb(156, 70, 0);display:flex}
 .nv3-social a:hover{color:var(--av-orange)}
@@ -432,21 +432,27 @@ const NAV_CSS = `
   display:flex;align-items:center;justify-content:center}
 .nv3-login{background:none;border:none;cursor:pointer;color:var(--av-orange);font-weight:700;
   font-size:.82rem;display:flex;align-items:center;gap:6px;padding:0}
-.nv3-login:hover{color:#fff}
+.nv3-login:hover{color:var(--av-orange-deep)}
 
 /* ── main bar (full width, edge to edge) ── */
-.nv3-bar{margin-left:0;height:69px;background:var(--av-dark);border-radius:0;
+.nv3-bar{margin-left:0;height:69px;background:#fff;border-radius:0;
   display:flex;align-items:center;justify-content:space-between;
   padding:0 24px 0 290px;gap:20px;border-bottom:3px solid var(--av-orange)}
 .nv3-links{display:flex;height:100%;align-items:stretch;gap:2px;flex-wrap:nowrap}
-.nv3-link{position:relative;background:none;border:none;color:#fff;cursor:pointer;
+.nv3-link{position:relative;background:none;border:none;color:var(--av-dark);cursor:pointer;
   font-weight:700;font-size:.66rem;letter-spacing:.4px;text-transform:uppercase;
   padding:0 20px;white-space:nowrap}
+.nv3-link.active{color:var(--av-orange-deep)}
 .nv3-link.active::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;
   background:var(--av-orange);border-radius:0 0 2px 2px}
-.nv3-link:hover{background:rgba(255,255,255,.08)}
+.nv3-link:hover{background:rgba(35,42,53,.06)}
+.nv3-link:focus-visible,.nv3-login:focus-visible,.nv3-cart:focus-visible,
+.nv3-user-btn:focus-visible,.nv3-burger:focus-visible,.nv3-mlink:focus-visible{
+  outline:2px solid var(--av-orange-deep);outline-offset:-2px}
 .nv3-search{display:flex;align-items:stretch;background:#fff;border-radius:26px;
-  overflow:hidden;height:46px;width:240px;flex-shrink:0}
+  overflow:hidden;height:46px;width:240px;flex-shrink:0;
+  border:1.5px solid var(--av-line)}
+.nv3-search:focus-within{border-color:var(--av-orange)}
 .nv3-search input{flex:1;border:none;outline:none;padding:0 16px;font-size:.72rem;
   min-width:0;background:transparent;color:#111}
 .nv3-search button{width:52px;border:none;background:var(--av-orange);color:#fff;cursor:pointer;
@@ -454,11 +460,11 @@ const NAV_CSS = `
 .nv3-search button:hover{background:var(--av-orange-deep)}
 /* ── proudly zimbabwean badge ── */
 .nv3-proud{display:flex;align-items:center;gap:8px;flex-shrink:0;margin-left:auto;
-  color:#fff;font-size:.62rem;font-weight:700;letter-spacing:.5px;
+  color:var(--av-dark);font-size:.62rem;font-weight:700;letter-spacing:.5px;
   text-transform:uppercase;white-space:nowrap}
 .nv3-proud svg{width:28px;height:16px;border-radius:2px;display:block;
-  box-shadow:0 0 0 1px rgba(255,255,255,.25)}
-.nv3-proud em{font-style:normal;color:var(--av-orange)}
+  box-shadow:0 0 0 1px rgba(35,42,53,.2)}
+.nv3-proud em{font-style:normal;color:var(--av-orange-deep)}
 /* ── user dropdown ── */
 .nv3-user{position:relative}
 .nv3-user-btn{background:none;border:none;cursor:pointer;display:flex;align-items:center;
@@ -466,6 +472,7 @@ const NAV_CSS = `
 .nv3-avatar{width:28px;height:28px;border-radius:50%;background:var(--av-orange);color:#fff;
   display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:700}
 .nv3-dd{position:absolute;right:0;top:calc(100% + 10px);min-width:220px;background:#fff;
+  border:1px solid var(--av-line);
   border-radius:12px;box-shadow:0 12px 36px rgba(0,0,0,.18);padding:8px;display:none;z-index:50}
 .nv3-dd.open{display:block}
 .nv3-dd-head{padding:10px 12px;border-bottom:1px solid #eee;margin-bottom:6px}
@@ -480,27 +487,28 @@ const NAV_CSS = `
 /* ── hamburger + mobile ── */
 .nv3-burger{display:none;background:none;border:none;cursor:pointer;width:34px;height:34px;
   flex-direction:column;justify-content:center;gap:5px;padding:6px}
-.nv3-burger span{display:block;height:2px;background:#fff;border-radius:2px}
+.nv3-burger span{display:block;height:2px;background:var(--av-dark);border-radius:2px}
 .nv3-mobile{display:none}
 
 @media (max-width:900px){
   .nv3-logo{position:static;width:auto;height:64px;padding:0 12px}
   .nv3-logo img{max-height:40px}
   .nv3-in{display:flex;align-items:center;justify-content:space-between;
-    background:var(--av-dark);border-bottom:3px solid var(--av-orange);padding-right:12px}
-  .nv3-top{padding:0;height:auto;order:2;border-bottom:none; background:transparent}
+    background:#fff;border-bottom:3px solid var(--av-orange);padding-right:12px}
+  .nv3-top{padding:0;height:auto;order:2;border-bottom:none;background:transparent}
   .nv3-social,.nv3-cart{display:none}
   .nv3-right{gap:12px}
-    .nv3-mobile .nv3-proud{margin:0 0 10px;color:#111;justify-content:center}
+  .nv3-mobile .nv3-proud{margin:0 0 10px;color:#111;justify-content:center}
   .nv3-bar{display:none}
   .nv3-burger{display:flex;order:3;margin-left:8px}
-  .nv3-mobile{display:none;background:#fff;border-bottom:3px solid var(--av-orange);padding:12px 16px 16px}
+  .nv3-mobile{display:none;background:#fff;border-bottom:3px solid var(--av-orange);
+    border-top:1px solid var(--av-line);padding:12px 16px 16px}
   .nv3-mobile.open{display:block}
   .nv3-mobile .nv3-search{width:100%;border:1.5px solid var(--av-dark);margin-bottom:10px}
   .nv3-mlink{display:block;width:100%;text-align:left;background:none;border:none;
     padding:12px 4px;font-size:.88rem;font-weight:600;color:#111;
     border-bottom:1px solid #eee;cursor:pointer}
-  .nv3-mlink.active{color:var(--av-orange)}
+  .nv3-mlink.active{color:var(--av-orange-deep)}
 }
 `;
 const ZimFlag = () => (

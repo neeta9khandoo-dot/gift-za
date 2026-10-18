@@ -61,81 +61,250 @@ const CAT_BLURBS = {
   Skills: "Workshops, classes & learning gifts",
 };
  
-const CAT_CARD_CSS = `
-.cc-wrap{margin:0 auto;padding:36px 16px 12px}
-.cc-head{text-align:center;margin-bottom:26px}
-.cc-title{font-size:1.9rem;font-weight:800;letter-spacing:1px;margin:0;color:#111}
-.cc-sub{font-size:.8rem;color:#444;margin:4px 0 0}
-.cc-row{display:flex;gap:24px;overflow-x:auto;scroll-snap-type:x mandatory;
-  padding:6px 4px 28px;scrollbar-width:none}
-.cc-row::-webkit-scrollbar{display:none}
-.cc-card{flex:0 0 calc((100% - 48px) / 3);scroll-snap-align:start;background:#fff;
-  box-shadow:0 8px 30px rgba(0,0,0,.10);cursor:pointer;
-  transition:transform .25s,box-shadow .25s}
-.cc-card:hover{transform:translateY(-4px);box-shadow:0 14px 36px rgba(0,0,0,.16)}
-.cc-img{position:relative;height:168px;overflow:hidden;background:#e8eef4}
-.cc-img img{width:100%;height:100%;object-fit:cover;display:block}
-.cc-tag{position:absolute;top:0;left:0;background:#fff;color:#111;
-  font-size:.82rem;font-weight:500;padding:12px 20px 14px;
-  border-radius:0 0 22px 0}
-.cc-body{padding:18px 24px 20px}
-.cc-name{font-size:1rem;font-weight:700;letter-spacing:.8px;line-height:1.5;
-  color:#111;margin:0 0 14px;min-height:3em}
-.cc-meta{font-size:.72rem;color:#222;margin-bottom:16px}
-.cc-meta b{color:#e11d1d;font-weight:500}
-.cc-btn{display:flex;margin:0 auto;width:max-content;border:none;padding:0;
-  cursor:pointer;background:none}
-.cc-btn-icon{background:#f0a030;color:#fff;width:43px;height:42px;
-  display:flex;align-items:center;justify-content:center;font-size:1.1rem}
-.cc-btn-label{background:#3a9be8;color:#fff;font-weight:700;font-size:.78rem;
-  padding:0 24px;height:42px;display:flex;align-items:center;letter-spacing:.3px}
-.cc-card:hover .cc-btn-label{background:#2b86d1}
-@media (max-width:900px){.cc-card{flex-basis:calc((100% - 24px) / 2)}}
-@media (max-width:560px){
-  .cc-card{flex-basis:82%}
-  .cc-title{font-size:1.5rem}
-}
-`;
- const CAT_SLIDER_CSS = `
-.cc-slider{position:relative}
+// Needs: import React, { useRef, useState, useEffect } from "react";
+// Uses your existing CAT_TILES and CAT_BLURBS.
+// This replaces CAT_CARD_CSS and CAT_SLIDER_CSS: delete both and use CAT_GRID_CSS.
 
-.cc-row{
-  display:flex !important;
-  flex-wrap:nowrap !important;
-  gap:20px;
-  overflow-x:auto;
-  scroll-snap-type:x mandatory;
-  scroll-behavior:smooth;
-  -webkit-overflow-scrolling:touch;
-  scrollbar-width:none;
-  padding:8px 4px 18px;
-}
+const CAT_GRID_CSS = `
+.cc-wrap{
+  --cc-bg:#fff;
+  --cc-ink:#232a35;
+  --cc-muted:rgba(35,42,53,.68);
+  --cc-line:rgba(35,42,53,.18);
+  --cc-accent:#c4531a;
+  --cc-pad:max(24px,calc((100% - 1280px)/2));
+  background:var(--cc-bg);color:var(--cc-ink);
+  padding:64px 0 56px;box-sizing:border-box;overflow:hidden}
+.cc-wrap *,.cc-wrap *::before,.cc-wrap *::after{box-sizing:border-box}
+
+/* ── centred intro ── */
+.cc-head{max-width:680px;margin:0 auto 40px;padding:0 24px;text-align:center}
+.cc-title{margin:0 0 14px;font-size:clamp(1.8rem,3.4vw,2.6rem);font-weight:400;
+  letter-spacing:.01em;line-height:1.15}
+.cc-sub{margin:0;font-size:1rem;line-height:1.6;color:var(--cc-muted)}
+
+/* ── horizontal row of tall cards ── */
+.cc-row{display:flex;gap:20px;overflow-x:auto;
+  padding:0 var(--cc-pad);
+  scroll-snap-type:x mandatory;scroll-padding-inline:var(--cc-pad);
+  scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .cc-row::-webkit-scrollbar{display:none}
 
-.cc-card{
-  flex:0 0 280px !important;
-  width:280px;
-  scroll-snap-align:start;
-}
+.cc-card{flex:0 0 clamp(250px,22vw,300px);scroll-snap-align:start;cursor:pointer;
+  display:flex;flex-direction:column}
+.cc-card:focus-visible{outline:2px solid var(--cc-accent);outline-offset:4px}
+.cc-img{position:relative;aspect-ratio:3/4;overflow:hidden;background:#ececec}
+.cc-img img{width:100%;height:100%;object-fit:cover;display:block;
+  transition:transform .8s cubic-bezier(.2,.6,.2,1)}
+.cc-card:hover .cc-img img{transform:scale(1.04)}
 
-.cc-arrow{
-  position:absolute;top:42%;transform:translateY(-50%);z-index:5;
-  width:44px;height:44px;border-radius:50%;border:none;cursor:pointer;
-  background:#fff;color:#232a35;font-size:1.7rem;line-height:1;
-  box-shadow:0 6px 18px rgba(0,0,0,.22);
-  display:flex;align-items:center;justify-content:center;
-  transition:background .2s,color .2s,opacity .2s;
-}
-.cc-arrow:hover{background:#d98a35;color:#fff}
-.cc-arrow-l{left:-12px}
-.cc-arrow-r{right:-12px}
-.cc-arrow.hide{opacity:0;pointer-events:none}
+.cc-body{display:flex;flex-direction:column;gap:8px;flex:1;padding:18px 2px 0}
+.cc-name{margin:0;font-size:.95rem;font-weight:600;letter-spacing:.14em;
+  text-transform:uppercase;line-height:1.35}
+.cc-desc{margin:0;font-size:.92rem;line-height:1.55;color:var(--cc-muted);
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.cc-meta{font-size:.78rem;color:var(--cc-muted);margin-bottom:6px}
+.cc-meta b{color:var(--cc-ink);font-weight:600}
+.cc-btn{align-self:flex-start;margin-top:auto;padding:0 0 3px;background:none;border:none;
+  border-bottom:1px solid currentColor;font:inherit;font-size:.78rem;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--cc-ink);cursor:pointer;
+  transition:color .2s}
+.cc-btn:hover{color:var(--cc-accent)}
+.cc-btn:focus-visible{outline:2px solid var(--cc-accent);outline-offset:4px}
 
-@media (max-width:900px){
-  .cc-card{flex:0 0 78% !important;width:78%}
-  .cc-arrow{display:none}   /* swipe on mobile */
+/* ── progress line + arrows ── */
+.cc-controls{display:flex;align-items:center;gap:32px;margin-top:36px;
+  padding:0 var(--cc-pad)}
+.cc-progress{flex:1;position:relative;height:2px;background:var(--cc-line)}
+.cc-progress-thumb{position:absolute;top:0;height:100%;background:var(--cc-ink);
+  transition:left .2s ease,width .2s ease}
+.cc-arrows{display:flex;gap:10px}
+.cc-arrow{width:44px;height:44px;border-radius:50%;border:1px solid var(--cc-line);
+  background:transparent;color:var(--cc-ink);font-size:1.4rem;line-height:1;
+  display:flex;align-items:center;justify-content:center;padding:0 0 2px;cursor:pointer;
+  transition:background .2s,color .2s,border-color .2s}
+.cc-arrow:hover:not(:disabled){background:var(--cc-ink);color:var(--cc-bg);border-color:var(--cc-ink)}
+.cc-arrow:disabled{opacity:.3;cursor:default}
+.cc-arrow:focus-visible{outline:2px solid var(--cc-accent);outline-offset:3px}
+
+@media (max-width:600px){
+  .cc-wrap{padding:44px 0 40px}
+  .cc-head{margin-bottom:28px}
+  .cc-row{gap:14px}
+  .cc-card{flex-basis:72vw}
+  .cc-controls{margin-top:24px}
+  .cc-arrows{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  .cc-img img,.cc-progress-thumb,.cc-arrow,.cc-btn{transition:none}
+  .cc-card:hover .cc-img img{transform:none}
 }
 `;
+
+function AvoCatGrid({ onCatSelect, vouchers = [] }) {
+  const rowRef = useRef(null);
+  const resumeTimer = useRef(null);
+  const [canPrev, setCanPrev] = useState(false);
+  const [canNext, setCanNext] = useState(true);
+  const [paused, setPaused] = useState(false);
+  const [thumb, setThumb] = useState({ w: 100, x: 0 });
+
+  const countFor = (cat) => vouchers.filter((v) => v.cat === cat).length;
+
+  const reduceMotion = () =>
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const updateArrows = () => {
+    const el = rowRef.current;
+    if (!el) return;
+    const max = el.scrollWidth - el.clientWidth;
+    const w = Math.min(100, (el.clientWidth / el.scrollWidth) * 100);
+    const x = max > 0 ? (el.scrollLeft / max) * (100 - w) : 0;
+    setThumb({ w, x });
+    setCanPrev(el.scrollLeft > 4);
+    setCanNext(el.scrollLeft < max - 4);
+  };
+
+  const slide = (dir) => {
+    const el = rowRef.current;
+    if (!el) return;
+    const card = el.querySelector(".cc-card");
+    const gap = parseFloat(getComputedStyle(el).columnGap) || 20;
+    const step = card ? card.offsetWidth + gap : el.clientWidth * 0.8;
+    el.scrollBy({
+      left: dir * step,
+      behavior: reduceMotion() ? "auto" : "smooth",
+    });
+  };
+
+  useEffect(() => {
+    updateArrows();
+    const el = rowRef.current;
+    if (!el) return;
+    el.addEventListener("scroll", updateArrows, { passive: true });
+    window.addEventListener("resize", updateArrows);
+    return () => {
+      el.removeEventListener("scroll", updateArrows);
+      window.removeEventListener("resize", updateArrows);
+      clearTimeout(resumeTimer.current);
+    };
+  }, []);
+
+  // Auto-slide (pauses on hover/focus/touch, loops back to the start at the end)
+  useEffect(() => {
+    if (paused || reduceMotion()) return;
+    const id = setInterval(() => {
+      const el = rowRef.current;
+      if (!el) return;
+      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 4) {
+        el.scrollTo({ left: 0, behavior: "smooth" });
+      } else {
+        slide(1);
+      }
+    }, 4000);
+    return () => clearInterval(id);
+  }, [paused]);
+
+  const onTouchEnd = () => {
+    clearTimeout(resumeTimer.current);
+    resumeTimer.current = setTimeout(() => setPaused(false), 6000);
+  };
+
+  return (
+    <>
+      <style>{CAT_GRID_CSS}</style>
+      <section className="cc-wrap">
+        <div className="cc-head">
+          <h2 className="cc-title">BROWSE BY CATEGORY</h2>
+          <p className="cc-sub">
+            Find the perfect experience for every occasion
+          </p>
+        </div>
+
+        <div
+          className="cc-slider"
+          onMouseEnter={() => setPaused(true)}
+          onMouseLeave={() => setPaused(false)}
+          onFocus={() => setPaused(true)}
+          onBlur={() => setPaused(false)}
+          onTouchStart={() => setPaused(true)}
+          onTouchEnd={onTouchEnd}
+        >
+          <div className="cc-row" ref={rowRef}>
+            {CAT_TILES.map((t) => {
+              const n = countFor(t.cat);
+              return (
+                <div
+                  key={t.cat}
+                  className="cc-card"
+                  role="link"
+                  tabIndex={0}
+                  onClick={() => onCatSelect(t.cat)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      onCatSelect(t.cat);
+                    }
+                  }}
+                >
+                  <div className="cc-img">
+                    <img src={t.img} alt={t.name} loading="lazy" />
+                  </div>
+                  <div className="cc-body">
+                    <h3 className="cc-name">{t.name}</h3>
+                    <p className="cc-desc">{CAT_BLURBS[t.cat] || t.name}</p>
+                    <div className="cc-meta">
+                      <b>{n > 0 ? `${n} available` : "New experiences"}</b>
+                      {" · "}WhatsApp delivery
+                    </div>
+                    <button
+                      className="cc-btn"
+                      tabIndex={-1}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onCatSelect(t.cat);
+                      }}
+                    >
+                      Browse now
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="cc-controls">
+            <div className="cc-progress" aria-hidden="true">
+              <div
+                className="cc-progress-thumb"
+                style={{ width: `${thumb.w}%`, left: `${thumb.x}%` }}
+              />
+            </div>
+            <div className="cc-arrows">
+              <button
+                className="cc-arrow"
+                onClick={() => slide(-1)}
+                disabled={!canPrev}
+                aria-label="Previous categories"
+              >
+                ‹
+              </button>
+              <button
+                className="cc-arrow"
+                onClick={() => slide(1)}
+                disabled={!canNext}
+                aria-label="Next categories"
+              >
+                ›
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
+  );
+}
+
 const ALL_CATS = [
   "All",
   "Wellness",
@@ -196,124 +365,124 @@ function StarRating({ rating, reviewCount }) {
 }
 
 
-function AvoCatGrid({ onCatSelect, vouchers = [] }) {
-  const rowRef = useRef(null);
-  const [canPrev, setCanPrev] = useState(false);
-  const [canNext, setCanNext] = useState(true);
+
+const VIDEO_ADS = [
+  {
+    id: "v1",
+    src: "https://res.cloudinary.com/dlrdkvxiz/video/upload/v1748835069/axis-y_y1jjj6.mp4",
+    poster: "../images/ad1.avif",
+    alt: "Anantara Skincare",
+    href: "https://anantara.africa",
+  },
+  {
+    id: "v2",
+    src: "https://res.cloudinary.com/dlrdkvxiz/video/upload/v1748835057/axis_knbydr.mp4",
+    poster: "../images/ad1.avif",
+    alt: "Anantara Skincare",
+    href: "https://anantara.africa",
+  },
+];
+
+const IMAGE_ADS = [
+  {
+    id: "i1",
+    src: "https://res.cloudinary.com/dlrdkvxiz/image/upload/v1748917646/sun-exposure-4_dm39g5.jpg",
+    alt: "Aureum Skincare",
+    href: "https://anantara.africa",
+  },
+  {
+    id: "i2",
+    src: "https://res.cloudinary.com/dlrdkvxiz/image/upload/v1748916173/breakouts-1_vjrs3n.jpg",
+    alt: "Aureum Skincare",
+    href: "https://anantara.africa",
+  },
+];
+
+function AdSlider({ items, type, interval = 6000 }) {
+  const [i, setI] = useState(0);
   const [paused, setPaused] = useState(false);
+  const videoRefs = useRef([]);
 
-  const countFor = (cat) => vouchers.filter((v) => v.cat === cat).length;
-
-  const updateArrows = () => {
-    const el = rowRef.current;
-    if (!el) return;
-    setCanPrev(el.scrollLeft > 4);
-    setCanNext(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
-  };
-
-  const slide = (dir) => {
-    const el = rowRef.current;
-    if (!el) return;
-    const card = el.querySelector(".cc-card");
-    const step = card ? card.offsetWidth + 20 : el.clientWidth * 0.8;
-    el.scrollBy({ left: dir * step, behavior: "smooth" });
-  };
-
+  // auto-advance (pauses on hover)
   useEffect(() => {
-    updateArrows();
-    const el = rowRef.current;
-    if (!el) return;
-    el.addEventListener("scroll", updateArrows, { passive: true });
-    window.addEventListener("resize", updateArrows);
-    return () => {
-      el.removeEventListener("scroll", updateArrows);
-      window.removeEventListener("resize", updateArrows);
-    };
-  }, []);
+    if (paused || items.length < 2) return;
+    const t = setInterval(() => setI((c) => (c + 1) % items.length), interval);
+    return () => clearInterval(t);
+  }, [paused, items.length, interval]);
 
-  // Auto-slide (pauses on hover/touch, loops back to the start at the end)
+  // only the visible video plays, which saves mobile data
   useEffect(() => {
-    if (paused) return;
-    const id = setInterval(() => {
-      const el = rowRef.current;
-      if (!el) return;
-      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 4) {
-        el.scrollTo({ left: 0, behavior: "smooth" });
-      } else {
-        slide(1);
-      }
-    }, 4000);
-    return () => clearInterval(id);
-  }, [paused]);
+    if (type !== "video") return;
+    videoRefs.current.forEach((v, idx) => {
+      if (!v) return;
+      if (idx === i) v.play().catch(() => {});
+      else v.pause();
+    });
+  }, [i, type]);
 
   return (
-    <>
-      <style>{CAT_CARD_CSS}</style>
-      <style>{CAT_SLIDER_CSS}</style>
-      <section className="cc-wrap">
-        <div className="cc-head">
-          <h2 className="cc-title">Browse by Category</h2>
-          <p className="cc-sub">Find the perfect experience for every occasion</p>
-        </div>
-
-        <div
-          className="cc-slider"
-          onMouseEnter={() => setPaused(true)}
-          onMouseLeave={() => setPaused(false)}
-          onTouchStart={() => setPaused(true)}
-        >
-          <button
-            className={`cc-arrow cc-arrow-l${canPrev ? "" : " hide"}`}
-            onClick={() => slide(-1)}
-            aria-label="Previous categories"
+    <div
+      className="avs-slider"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      <div
+        className="avs-slider-track"
+        style={{ transform: `translateX(-${i * 100}%)` }}
+      >
+        {items.map((a, idx) => (
+          <a
+            key={a.id}
+            className="avs-ad"
+            href={a.href}
+            target="_blank"
+            rel="sponsored noopener noreferrer"
+            aria-label={a.alt}
           >
-            ‹
-          </button>
+            <span className="avs-ad-tag">Ad</span>
+            {type === "video" ? (
+              <video
+                ref={(el) => (videoRefs.current[idx] = el)}
+                muted
+                loop
+                playsInline
+                preload={idx === 0 ? "auto" : "metadata"}
+                poster={a.poster}
+                aria-hidden="true"
+              >
+                <source src={a.src} type="video/mp4" />
+              </video>
+            ) : (
+              <img src={a.src} alt={a.alt} loading="lazy" />
+            )}
+          </a>
+        ))}
+      </div>
 
-          <div className="cc-row" ref={rowRef}>
-            {CAT_TILES.map((t) => {
-              const n = countFor(t.cat);
-              return (
-                <div key={t.cat} className="cc-card" onClick={() => onCatSelect(t.cat)}>
-                  <div className="cc-img">
-                    <img src={t.img} alt={t.name} loading="lazy" />
-                    <span className="cc-tag">{t.name}</span>
-                  </div>
-                  <div className="cc-body">
-                    <h3 className="cc-name">{CAT_BLURBS[t.cat] || t.name}</h3>
-                    <div className="cc-meta">
-                      <b>{n > 0 ? `${n} available` : "New experiences"}</b>
-                      {" · "}WhatsApp delivery
-                    </div>
-                    <button
-                      className="cc-btn"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onCatSelect(t.cat);
-                      }}
-                    >
-                      <span className="cc-btn-icon">→</span>
-                      <span className="cc-btn-label">Browse Now</span>
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          <button
-            className={`cc-arrow cc-arrow-r${canNext ? "" : " hide"}`}
-            onClick={() => slide(1)}
-            aria-label="Next categories"
-          >
-            ›
-          </button>
+      {items.length > 1 && (
+        <div className="avs-slider-dots">
+          {items.map((a, d) => (
+            <button
+              key={a.id}
+              className={`avs-slider-dot${d === i ? " on" : ""}`}
+              onClick={() => setI(d)}
+              aria-label={`Show ${a.alt}`}
+            />
+          ))}
         </div>
-      </section>
-    </>
+      )}
+    </div>
   );
 }
 
+function AdRail() {
+  return (
+    <aside className="avs-ads" aria-label="Sponsored">
+      <AdSlider items={VIDEO_ADS} type="video" interval={7000} />
+      <AdSlider items={IMAGE_ADS} type="image" interval={5000} />
+    </aside>
+  );
+}
 const getExpiryDate = (v) => {
   if (v.expiryDate) {
     const d = new Date(v.expiryDate);
@@ -1051,17 +1220,10 @@ const [filteredResults, setFilteredResults] = useState([]);
 </div>
 
       {/* Voucher grid */}
+      <div className="avs-layout">
+  <AdRail />
      <div className="avs-section">
-  <div className="avs-section-head">
-    <span className="avs-section-title">
-      {currentCat === "All" ? "All experiences" : currentCat}
-      <span style={{ fontSize: ".72rem", fontWeight: 400, color: "#aaa", marginLeft: 6 }}>
-        {loading ? "Loading…" : `${filteredResults.length} available`}
-      </span>
-    </span>
-    {/* sort is now inside AvoSearchBar, remove the select here */}
-  </div>
-
+ 
   <div className="avs-voucher-grid">
     {loading ? (
       [...Array(8)].map((_, i) => <SkeletonVoucherCard key={i} />)
@@ -1082,7 +1244,7 @@ const [filteredResults, setFilteredResults] = useState([]);
     )}
   </div>
 </div>
-
+</div>
       {/* Occasions */}
       <AvoOccasions />
 

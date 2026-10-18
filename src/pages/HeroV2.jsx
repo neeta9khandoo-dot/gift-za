@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback, useRef } from "react";
 import flag from "../images/pngegg.png";
 import logo from "../images/logo-desktop.png";
 
@@ -34,7 +34,10 @@ const SLIDES = [
   },
 ];
 
+const AUTOPLAY_SECONDS = 5.5; // also drives the progress ring on the active bullet
+
 const HERO_CSS = `
+@import url('https://fonts.googleapis.com/css2?family=Cabin:wght@400;500;600&display=swap');
 :root{
   --av-dark:#232a35;
   --av-dark-2:#1a2029;
@@ -42,49 +45,92 @@ const HERO_CSS = `
   --av-orange-light:#e8a93f;
   --av-orange-deep:#c4531a;
   --av-kraft:#c9a27a;
+  --av-font:"Gill Sans","Gill Sans MT",Cabin,Calibri,"Trebuchet MS",sans-serif;
 }
-.hv3{margin:0 auto;padding:20px 16px 8px;display:grid;
-  grid-template-columns:2fr 1fr;gap:24px}
+.hv3{box-sizing:border-box;width:100%;margin:0 auto;padding:20px 16px 8px;
+  display:grid;grid-template-columns:2fr 1fr;gap:24px}
+.hv3 *,.hv3 *::before,.hv3 *::after{box-sizing:border-box}
+.hv3 > *{min-width:0}
+.hv3{font-family:var(--av-font)}
+.hv3 button{font-family:inherit}
+.hv3-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);
+  white-space:nowrap}
 
-/* ── main slider ── */
-.hv3-main{position:relative;height:345px;border-radius:18px;overflow:hidden;
-  background:var(--av-dark);
-  background-image:radial-gradient(circle at 20% 20%,rgba(255,255,255,.05) 0 2px,transparent 3px),
-                   radial-gradient(circle at 70% 60%,rgba(255,255,255,.04) 0 2px,transparent 3px);
-  background-size:46px 46px;
-  box-shadow:0 10px 30px rgba(26,32,41,.25)}
-.hv3-track{display:flex;height:100%;transition:transform .6s cubic-bezier(.4,0,.2,1)}
-.hv3-slide{flex:0 0 100%;position:relative;display:flex;align-items:center;cursor:pointer}
-.hv3-copy{position:relative;z-index:2;padding:0 0 0 56px;max-width:60%}
-.hv3-title{font-size:clamp(1.8rem,4.2vw,3rem);font-weight:800;line-height:1.1;
-  color:#fff;margin:0 0 12px;letter-spacing:-.5px}
-.hv3-sub{font-size:1.15rem;color:rgba(255,255,255,.75);margin:0 0 22px;font-weight:300}
-.hv3-cta{background:var(--av-orange);border:none;padding:11px 22px;border-radius:999px;
-  font-weight:800;font-size:.78rem;letter-spacing:.5px;color:#fff;cursor:pointer;
-  transition:background .2s,transform .2s}
-.hv3-cta:hover{background:var(--av-orange-deep);transform:translateY(-1px)}
-.hv3-img{position:absolute;right:0;bottom:0;height:100%;width:42%;
-  object-fit:cover;object-position:center top;
-  -webkit-mask-image:linear-gradient(to right,transparent 0,#000 28%);
-  mask-image:linear-gradient(to right,transparent 0,#000 28%)}
-.hv3-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:5;
-  width:50px;height:50px;border-radius:50%;border:none;background:#fff;
-  box-shadow:0 4px 14px rgba(0,0,0,.3);font-size:1.6rem;font-weight:700;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;
-  line-height:1;padding:0 0 3px}
-.hv3-arrow.prev{left:12px;color:var(--av-dark)}
-.hv3-arrow.next{right:12px;color:var(--av-orange)}
-.hv3-arrow:hover{transform:translateY(-50%) scale(1.08)}
-.hv3-dots{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);
-  display:flex;gap:6px;z-index:5}
-.hv3-dot{width:7px;height:7px;border-radius:50%;border:none;padding:0;
-  background:rgba(255,255,255,.35);cursor:pointer;transition:all .3s}
-.hv3-dot.on{background:var(--av-orange);width:20px;border-radius:4px}
+/* ── off-grid carousel: big image | copy | small next image (proportions from the reference) ── */
+.hv3-main{position:relative;aspect-ratio:1917/850;min-height:380px;container-type:inline-size;
+  border-radius:18px;overflow:hidden;background:#fff;border:1px solid rgba(35,42,53,.1);
+  box-shadow:0 10px 30px rgba(26,32,41,.12);touch-action:pan-y}
+.hv3-main:focus-visible{outline:2px solid var(--av-orange-deep);outline-offset:3px}
+
+.hv3-left{position:absolute;z-index:2;left:56.2%;top:0;width:23%;height:68%;
+  display:flex;align-items:center;text-align:left}
+.hv3-caps{width:100%;display:grid;justify-items:start}
+
+/* captions cross-fade and slide in from the left */
+.hv3-cap{grid-area:1/1;opacity:0;visibility:hidden;transform:translateX(-20px);
+  transition:opacity .5s ease,transform .5s cubic-bezier(.165,.84,.44,1),visibility 0s linear .5s}
+.hv3-cap.on{opacity:1;visibility:visible;transform:none;
+  transition:opacity .5s ease .15s,transform .5s cubic-bezier(.165,.84,.44,1) .15s,visibility 0s}
+.hv3-title{margin:0 0 .9em;font-size:clamp(.95rem,1.55cqw,1.5rem);font-weight:400;
+  line-height:1.25;letter-spacing:.1em;text-transform:uppercase;color:var(--av-dark);
+  overflow-wrap:break-word}
+.hv3-sub{margin:0 0 1.7em;font-size:clamp(.8rem,1.1cqw,1rem);line-height:1.75;
+  color:rgba(35,42,53,.62)}
+
+/* circular-arrow link button */
+.hv3-cta{display:inline-flex;align-items:center;gap:14px;background:none;border:none;
+  padding:0;cursor:pointer;color:var(--av-dark);font-size:clamp(.68rem,.9cqw,.8rem);font-weight:500;
+  letter-spacing:.14em;text-transform:uppercase;text-align:left}
+.hv3-cta-ring{flex:0 0 auto;width:36px;height:36px;border-radius:50%;
+  border:1px solid currentColor;display:flex;align-items:center;justify-content:center;
+  transition:background .3s,color .3s}
+.hv3-cta-ring svg{width:14px;height:14px;transition:transform .3s}
+.hv3-cta:hover .hv3-cta-ring{background:var(--av-dark);color:#fff}
+.hv3-cta:hover .hv3-cta-ring svg{transform:translateX(2px)}
+.hv3-cta:focus-visible,.hv3-bullet:focus-visible,.hv3-img:focus-visible{
+  outline:2px solid var(--av-orange-deep);outline-offset:3px}
+
+/* bullets with a progress ring on the active one */
+.hv3-bullets{position:absolute;z-index:2;right:47.4%;top:93.2%;transform:translateY(-50%);
+  display:flex;gap:2px}
+.hv3-bullet{width:24px;height:24px;border:none;background:none;padding:0;cursor:pointer;
+  display:flex;align-items:center;justify-content:center}
+.hv3-bullet svg{width:16px;height:16px;overflow:visible}
+.hv3-bullet .dot{fill:var(--av-dark);opacity:.35;transition:opacity .3s}
+.hv3-bullet.on .dot{opacity:1}
+.hv3-bullet .ring{fill:none;stroke:var(--av-orange);stroke-width:1.5;
+  stroke-dasharray:45.55;stroke-dashoffset:45.55;
+  transform:rotate(-90deg);transform-origin:8px 8px;transform-box:view-box}
+.hv3-bullet.on .ring{animation:hv3-ring ${AUTOPLAY_SECONDS}s linear forwards}
+.hv3-bullets.paused .ring{animation-play-state:paused}
+@keyframes hv3-ring{to{stroke-dashoffset:0}}
+
+.hv3-stage{position:absolute;inset:0;z-index:1;pointer-events:none;
+  --al:0%;--at:0%;--aw:52.6%;--ah:87.6%;
+  --nl:82.5%;--nt:26.4%;--nw:17.5%;--nh:61.2%}
+.hv3-img{position:absolute;overflow:hidden;border-radius:0;background:#ececec;
+  pointer-events:none;
+  transition:left .8s cubic-bezier(.165,.84,.44,1),top .8s cubic-bezier(.165,.84,.44,1),
+    width .8s cubic-bezier(.165,.84,.44,1),height .8s cubic-bezier(.165,.84,.44,1),
+    opacity .6s ease}
+.hv3-img img{width:100%;height:100%;object-fit:cover;display:block;
+  -webkit-user-drag:none;user-select:none}
+/* current slide: big, on the left */
+.hv3-img.s-act{left:var(--al);top:var(--at);width:var(--aw);height:var(--ah);
+  opacity:1;pointer-events:auto;cursor:pointer}
+/* next slide: small and dimmed until it slides across to the left */
+.hv3-img.s-nxt{left:var(--nl);top:var(--nt);width:var(--nw);height:var(--nh);
+  opacity:.85;pointer-events:auto;cursor:pointer}
+.hv3-img.s-nxt:hover{opacity:1}
+/* previous slide exits left; the rest wait off-screen on the right */
+.hv3-img.s-prv{left:calc(var(--aw) * -1 - 10%);top:var(--at);width:var(--aw);
+  height:var(--ah);opacity:0}
+.hv3-img.s-hid{left:100%;top:var(--nt);width:var(--nw);height:var(--nh);opacity:0}
 
 /* ── side promo card (matches the app icon) ── */
 .hv3-side{
-  position:relative;height:345px;border-radius:18px;overflow:hidden;
-  padding:28px;box-sizing:border-box;
+  position:relative;min-height:380px;border-radius:18px;overflow:hidden;
+  padding:28px;
   display:flex;flex-direction:column;justify-content:space-between;
   text-align:left;color:#fff;
   background:linear-gradient(150deg,#d4802c 0%,#b84a16 100%);
@@ -97,44 +143,76 @@ const HERO_CSS = `
 
 .hv3-side-body{min-width:0}
 .hv3-side-title{margin:0 0 12px;font-size:clamp(1.5rem,2.4vw,1.9rem);
-  line-height:1.15;font-weight:800;letter-spacing:-.4px;color:#fff}
+  line-height:1.15;font-weight:500;letter-spacing:.005em;color:#fff}
 .hv3-side-offer{display:inline-block;margin:0 0 12px;padding:6px 12px;
   border-radius:999px;background:#fff;color:var(--av-orange-deep);
-  font-size:.85rem;font-weight:700}
+  font-size:.85rem;font-weight:600;letter-spacing:.02em}
 .hv3-side-sub{margin:0;font-size:.95rem;line-height:1.5;
   color:rgba(255,255,255,.92)}
 
 .hv3-side-btn{align-self:flex-start;border:none;border-radius:999px;
   padding:12px 24px;background:var(--av-dark);color:#fff;
-  font-size:.85rem;font-weight:700;cursor:pointer;
+  font-size:.76rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;
   transition:background .2s,transform .2s}
 .hv3-side-btn:hover{background:var(--av-dark-2);transform:translateY(-1px)}
 .hv3-side-btn:focus-visible{outline:2px solid #fff;outline-offset:3px}
 
-@media (max-width:900px){
-  .hv3-side{height:auto;min-height:290px;gap:20px}
+/* ── narrower laptops/tablets: promo card drops underneath, carousel goes full width ── */
+@media (max-width:1200px){
+  .hv3{grid-template-columns:1fr;gap:16px}
+  .hv3-side{min-height:290px;gap:20px}
 }
-@media (max-width:520px){
-  .hv3-side{padding:22px}
+
+/* ── tablet / phone: image strip on top, copy and bullets underneath ── */
+@media (max-width:760px){
+  .hv3-main{aspect-ratio:auto;min-height:0;container-type:normal}
+  .hv3-stage{position:relative;inset:auto;height:260px;
+    --al:16px;--at:16px;--aw:58%;--ah:calc(100% - 32px);
+    --nl:calc(70% - 16px);--nt:34%;--nw:30%;--nh:60%}
+  .hv3-img{border-radius:4px}
+  .hv3-left{position:static;width:auto;height:auto;padding:20px 20px 0}
+  .hv3-title{font-size:1.1rem}
+  .hv3-sub{font-size:.95rem}
+  .hv3-cta{font-size:.74rem}
+  .hv3-bullets{position:static;transform:none;padding:12px 16px 18px}
+}
+@media (max-width:600px){
+  .hv3{padding:12px 12px 4px;gap:12px}
+  .hv3-main{border-radius:14px}
+  .hv3-stage{height:220px;
+    --al:12px;--at:12px;--aw:60%;--ah:calc(100% - 24px);
+    --nl:calc(70% - 12px);--nt:36%;--nw:30%;--nh:58%}
+  .hv3-cta{min-height:44px}
+  .hv3-side{padding:22px;min-height:260px;border-radius:14px}
   .hv3-side-logo{height:28px}
   .hv3-side-flag{height:36px}
+  .hv3-side-title{font-size:1.5rem}
+  .hv3-side-btn{width:100%;align-self:stretch;min-height:44px;text-align:center}
+}
+
+@media (max-width:360px){
+  .hv3-side-offer{font-size:.8rem}
+}
+
+/* reduced motion: no sliding, no auto-advance (the ring stays full) */
+@media (prefers-reduced-motion:reduce){
+  .hv3-cap,.hv3-cap.on,.hv3-img{transition:none}
+  .hv3-bullet.on .ring{animation:none;stroke-dashoffset:0}
+  .hv3-cta-ring,.hv3-cta-ring svg,.hv3-side-btn{transition:none}
 }
 `;
+
+const SWIPE_THRESHOLD = 40; // px
 
 export function HeroV2({ vouchers = [], onSearch, onCatSelect }) {
   const [i, setI] = useState(0);
   const [paused, setPaused] = useState(false);
+  const touch = useRef({ x: 0, y: 0, moved: false });
 
   const go = useCallback(
     (dir) => setI((c) => (c + dir + SLIDES.length) % SLIDES.length),
     [],
   );
-
-  useEffect(() => {
-    if (paused) return;
-    const t = setInterval(() => go(1), 5500);
-    return () => clearInterval(t);
-  }, [paused, go]);
 
   // Navigate to a category if the parent supplies a handler,
   // otherwise fall back to the search handler.
@@ -143,78 +221,160 @@ export function HeroV2({ vouchers = [], onSearch, onCatSelect }) {
     else if (onSearch) onSearch(cat);
   };
 
+  // ── Touch swipe support ──
+  const onTouchStart = (e) => {
+    const t = e.touches[0];
+    touch.current = { x: t.clientX, y: t.clientY, moved: false };
+    setPaused(true);
+  };
+
+  const onTouchEnd = (e) => {
+    const t = e.changedTouches[0];
+    const dx = t.clientX - touch.current.x;
+    const dy = t.clientY - touch.current.y;
+    if (Math.abs(dx) > SWIPE_THRESHOLD && Math.abs(dx) > Math.abs(dy)) {
+      touch.current.moved = true;
+      go(dx < 0 ? 1 : -1);
+    }
+    setPaused(false);
+  };
+
+  // Ignore the click that follows a swipe
+  const wasSwipe = () => {
+    if (touch.current.moved) {
+      touch.current.moved = false;
+      return true;
+    }
+    return false;
+  };
+
+  const n = SLIDES.length;
+  const next = (i + 1) % n;
+  const stateOf = (idx) => {
+    const rel = (idx - i + n) % n;
+    if (rel === 0) return "act";
+    if (rel === 1) return "nxt";
+    if (rel === n - 1) return "prv";
+    return "hid";
+  };
+
   return (
     <>
       <style>{HERO_CSS}</style>
       <section className="hv3">
-        {/* ── Left: main slider ── */}
+        {/* ── Left: off-grid carousel ── */}
         <div
           className="hv3-main"
+          role="region"
+          aria-roledescription="carousel"
+          aria-label="Featured offers"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "ArrowRight") go(1);
+            if (e.key === "ArrowLeft") go(-1);
+          }}
           onMouseEnter={() => setPaused(true)}
           onMouseLeave={() => setPaused(false)}
+          onTouchStart={onTouchStart}
+          onTouchEnd={onTouchEnd}
         >
-          <div
-            className="hv3-track"
-            style={{ transform: `translateX(-${i * 100}%)` }}
-          >
-            {SLIDES.map((s) => (
-              <div
-                key={s.title}
-                className="hv3-slide"
-                onClick={() => open(s.cat)}
-              >
-                
-                <div className="hv3-copy">
-                  <h1 className="hv3-title">{s.title}</h1>
-                  <p className="hv3-sub">{s.sub}</p>
-                  <button
-                    className="hv3-cta"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      open(s.cat);
-                    }}
-                  >
-                    {s.cta} ›
-                  </button>
+          <div className="hv3-stage">
+            {SLIDES.map((s, idx) => {
+              const st = stateOf(idx);
+              return (
+                <div
+                  key={s.title}
+                  className={`hv3-img s-${st}`}
+                  role={st === "nxt" ? "button" : undefined}
+                  tabIndex={st === "nxt" ? 0 : undefined}
+                  aria-hidden={st === "act" || st === "nxt" ? undefined : true}
+                  aria-label={
+                    st === "nxt" ? `Next slide: ${s.title}` : undefined
+                  }
+                  onClick={() => {
+                    if (wasSwipe()) return;
+                    if (st === "act") open(s.cat);
+                    else if (st === "nxt") go(1);
+                  }}
+                  onKeyDown={(e) => {
+                    if (st === "nxt" && (e.key === "Enter" || e.key === " ")) {
+                      e.preventDefault();
+                      go(1);
+                    }
+                  }}
+                >
+                  <img
+                    src={s.img}
+                    alt={st === "act" ? s.title : ""}
+                    loading="lazy"
+                    draggable="false"
+                  />
                 </div>
-                <img
-                  className="hv3-img"
-                  src={s.img}
-                  alt={s.title}
-                  loading="lazy"
-                />
-              </div>
-            ))}
+              );
+            })}
           </div>
 
-          <button
-            className="hv3-arrow prev"
-            onClick={() => go(-1)}
-            aria-label="Previous"
-          >
-            ‹
-          </button>
-          <button
-            className="hv3-arrow next"
-            onClick={() => go(1)}
-            aria-label="Next"
-          >
-            ›
-          </button>
+          <div className="hv3-left">
+            <div className="hv3-caps">
+              {SLIDES.map((s, idx) => (
+                <div
+                  key={s.title}
+                  className={`hv3-cap${idx === i ? " on" : ""}`}
+                  aria-hidden={idx !== i}
+                >
+                  <h2 className="hv3-title">{s.title}</h2>
+                  <p className="hv3-sub">{s.sub}</p>
+                  <button className="hv3-cta" onClick={() => open(s.cat)}>
+                    <span className="hv3-cta-ring" aria-hidden="true">
+                      <svg
+                        viewBox="0 0 14 14"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.4"
+                        strokeLinecap="square"
+                      >
+                        <path d="M1 7h12M8 2l5 5-5 5" />
+                      </svg>
+                    </span>
+                    {s.cta}
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
 
-          <div className="hv3-dots">
+          <div
+            className={`hv3-bullets${paused ? " paused" : ""}`}
+            role="group"
+            aria-label="Carousel navigation"
+          >
             {SLIDES.map((_, d) => (
               <button
                 key={d}
-                className={`hv3-dot${d === i ? " on" : ""}`}
+                className={`hv3-bullet${d === i ? " on" : ""}`}
                 onClick={() => setI(d)}
-                aria-label={`Slide ${d + 1}`}
-              />
+                aria-label={`Slide ${d + 1} of ${SLIDES.length}`}
+                aria-current={d === i}
+              >
+                <svg viewBox="0 0 16 16" aria-hidden="true">
+                  <circle className="dot" cx="8" cy="8" r="3.2" />
+                  <circle
+                    className="ring"
+                    cx="8"
+                    cy="8"
+                    r="7.25"
+                    onAnimationEnd={() => go(1)}
+                  />
+                </svg>
+              </button>
             ))}
+          </div>
+
+          <div className="hv3-sr" aria-live="polite" aria-atomic="true">
+            Showing slide {i + 1} of {SLIDES.length}
           </div>
         </div>
 
-        {/* ── Right: promo card ── */}
         {/* ── Right: promo card ── */}
         <div className="hv3-side">
           <div className="hv3-side-top">
