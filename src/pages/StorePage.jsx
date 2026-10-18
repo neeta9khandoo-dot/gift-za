@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect,  } from "react";
 import { HeroV2 } from "./HeroV2";
 import { HomeSEO, VoucherSEO } from "../components/Seo";
+import { CATEGORIES, SYMBOLS } from "../categories";
 import {
   Flower2,
   Cake,
@@ -16,25 +17,12 @@ import { AvoSearchBar, AvoEmptyState } from "./AvoSearch";
 const ZAR_TO_USD = 16.53;
 
 const fmt = (n) =>
-  `US$${(Number(n) / ZAR_TO_USD).toLocaleString("en-US", {
+  `US$${Number(n).toLocaleString("en-US", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   })}`;
 
-const getCatIcon = (cat) =>
-  ({
-    Wellness: "☯",
-    Beauty: "✦",
-    Adventure: "✈",
-    "Dining & Wine": "◈",
-    "Traditional Restaurants": "⊕",
-    Stays: "⌂",
-    Skills: "◎",
-    Music: "♪",
-    Events: "✺",
-    Florists: "✿",
-    Other: "◆",
-  })[cat] || "◆";
+
 
 
 
@@ -47,6 +35,8 @@ const CAT_TILES = [
   { emoji: "◈", name: "Dining & Wine", cat: "Dining & Wine",         img: "https://res.cloudinary.com/dlrdkvxiz/image/upload/v1792270011/wine-tasting_fnvxbz.avif?w=900&h=400&fit=crop&q=80" },
   { emoji: "✺", name: "Events",        cat: "Events",                img: "https://res.cloudinary.com/dlrdkvxiz/image/upload/v1792270275/events_xztuz0.jpg?w=900&h=400&fit=crop&q=80" },
   { emoji: "◎", name: "Skills",        cat: "Skills",                img: "https://res.cloudinary.com/dlrdkvxiz/image/upload/v1792270274/skills_dcucqg.webp?w=900&h=400&fit=crop&q=80" },
+  { emoji: "✚", name: "Medical",  cat: "Medical & Pharmacy",  img: "https://res.cloudinary.com/dlrdkvxiz/image/upload/v1792349723/pharmacy-1_w5mxte.jpg?w=900&h=400&fit=crop&q=80" },
+  { emoji: "❂", name: "Cakes & Bakery", cat: "Cakes & Bakery", img: "https://res.cloudinary.com/dlrdkvxiz/image/upload/v1792349723/cakes-1_wem6kk.webp?w=900&h=400&fit=crop&q=80" },
 ];
 
 
@@ -308,6 +298,70 @@ const CAT_MENU_CSS = `
   .cm-hero-copy{animation:none}
 }
 `;
+const PAGE_SIZE = 40;
+
+// Remember which categories the user clicks, so we can rank them first
+const INTEREST_KEY = "avo_cat_interest";
+const loadInterest = () => {
+  try { return JSON.parse(localStorage.getItem(INTEREST_KEY)) || {}; }
+  catch { return {}; }
+};
+const saveInterest = (obj) => {
+  try { localStorage.setItem(INTEREST_KEY, JSON.stringify(obj)); } catch {}
+};
+
+// Builds [1, "…", 4, 5, 6, "…", 12]
+const getPageList = (page, total) => {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+  const pages = new Set([1, total, page - 1, page, page + 1]);
+  const sorted = [...pages].filter((p) => p >= 1 && p <= total).sort((a, b) => a - b);
+  const out = [];
+  sorted.forEach((p, i) => {
+    if (i && p - sorted[i - 1] > 1) out.push("…");
+    out.push(p);
+  });
+  return out;
+};
+
+const PAGINATION_CSS = `
+.pg{display:flex;align-items:center;justify-content:center;gap:10px;
+  margin:40px 0 24px;flex-wrap:wrap}
+.pg button{min-width:36px;height:36px;border-radius:50%;border:1px solid transparent;
+  background:transparent;color:#222;font:inherit;font-size:.9rem;cursor:pointer;
+  display:grid;place-items:center;padding:0;transition:background .2s,color .2s}
+.pg button:hover:not(:disabled):not(.on){background:#f0f0f0}
+.pg button.on{background:#222;color:#fff;font-weight:600}
+.pg button.arrow{border-color:#ccc;font-size:1.2rem;padding-bottom:2px}
+.pg button:disabled{opacity:.35;cursor:default}
+.pg-dots{min-width:20px;text-align:center;color:#888}
+.pg button:focus-visible{outline:2px solid #c4531a;outline-offset:2px}
+`;
+
+function Pagination({ page, totalPages, onChange }) {
+  if (totalPages <= 1) return null;
+  return (
+    <>
+      <style>{PAGINATION_CSS}</style>
+      <nav className="pg" aria-label="Pagination">
+        <button className="arrow" disabled={page === 1}
+          onClick={() => onChange(page - 1)} aria-label="Previous page">‹</button>
+
+        {getPageList(page, totalPages).map((p, i) =>
+          p === "…" ? (
+            <span key={`d${i}`} className="pg-dots">…</span>
+          ) : (
+            <button key={p} className={p === page ? "on" : ""}
+              aria-current={p === page ? "page" : undefined}
+              onClick={() => onChange(p)}>{p}</button>
+          )
+        )}
+
+        <button className="arrow" disabled={page === totalPages}
+          onClick={() => onChange(page + 1)} aria-label="Next page">›</button>
+      </nav>
+    </>
+  );
+}
 function AvoCatShowcase({ onCatSelect, vouchers = [] }) {
   const [active, setActive] = useState(0);
   const tilesRef = useRef(null);
@@ -417,34 +471,11 @@ function AvoCatShowcase({ onCatSelect, vouchers = [] }) {
     </>
   );
 }
+const getCatIcon = (cat) => SYMBOLS[cat] || "◆";
 
-const ALL_CATS = [
-  "All",
-  "Wellness",
-  "Hair & Beauty",
-  "Adventure",
-  "Dining & Wine",
-  "Traditional Restaurants",
-  "Stays",
-  "Skills",
-  "Music",
-  "Events",
-  "Florists",
-];
+const ALL_CATS = ["All", ...CATEGORIES.filter((c) => c.name !== "Other").map((c) => c.name)];
 
-const CAT_ICONS = {
-  All:                      "★",
-  Wellness:                 "☯",
-  "Hair & Beauty":          "✦",
-  Adventure:                "✈",
-  "Dining & Wine":          "◈",
-  "Traditional Restaurants":"⊕",
-  Stays:                    "⌂",
-  Florists:                 "✿",
-  Skills:                   "◎",
-  Music:                    "♪",
-  Events:                   "✺",
-};
+const CAT_ICONS = { All: "★", ...SYMBOLS };
 
 // ─── Sub-components ───────────────────────────────────────────────────────
 function StarRating({ rating, reviewCount }) {
@@ -1259,7 +1290,7 @@ function CheckoutDrawer({ voucher: v, onClose, onSuccess }) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         reference: `AV-${Date.now()}`,
-        amount: (v.price / 16.53).toFixed(2), // adjust if Paynow account is ZAR/ZWL not USD
+        amount: Number(v.price).toFixed(2),
         buyerEmail: form.buyerEmail,
         buyerName: form.buyerName,
         recipientPhone: form.recipientPhone,
@@ -1556,16 +1587,49 @@ export default function StorePage({
   user,
 }) {
  
-  const [currentCat, setCurrentCat] = useState("All");
+const [currentCat, setCurrentCat] = useState("All");
 const [sortVal, setSortVal] = useState("default");
 const [filteredResults, setFilteredResults] = useState([]);
+const [searchQuery, setSearchQuery] = useState("");   // fed by AvoSearchBar (step 4)
+const [page, setPage_] = useState(1);
+const [interest, setInterest] = useState(loadInterest);
+const gridTopRef = useRef(null);
 
-  const handleCatSelect = (cat) => {
-    setCurrentCat(cat);
-    onCatSelect?.(cat);
-  };
+const handleCatSelect = (cat) => {
+  setCurrentCat(cat);
+  if (cat !== "All") {
+    setInterest((prev) => {
+      const next = { ...prev, [cat]: (prev[cat] || 0) + 1 };
+      saveInterest(next);
+      return next;
+    });
+  }
+  onCatSelect?.(cat);
+};
 
-  
+// Recommended order: only when NOT searching and no manual sort chosen.
+// Categories the user cares about come first, cheapest first inside each.
+const ranked = React.useMemo(() => {
+  const isDefault = !searchQuery.trim() && sortVal === "default";
+  if (!isDefault) return filteredResults;
+  return [...filteredResults].sort((a, b) => {
+    const ia = interest[a.cat] || 0;
+    const ib = interest[b.cat] || 0;
+    if (ia !== ib) return ib - ia;                    // favourite categories first
+    return Number(a.price) - Number(b.price);         // then cheapest
+  });
+}, [filteredResults, searchQuery, sortVal, interest]);
+
+const totalPages = Math.max(1, Math.ceil(ranked.length / PAGE_SIZE));
+const pageItems = ranked.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+// back to page 1 whenever the result set changes
+useEffect(() => { setPage_(1); }, [currentCat, sortVal, searchQuery, filteredResults.length]);
+
+const goToPage = (p) => {
+  setPage_(p);
+  gridTopRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+};
 
   return (
     
@@ -1594,6 +1658,7 @@ const [filteredResults, setFilteredResults] = useState([]);
       onResults={setFilteredResults}
       sortVal={sortVal}
       onSortChange={setSortVal}
+      onQueryChange={setSearchQuery}
     />
   </div>
 </div>
@@ -1606,27 +1671,24 @@ const [filteredResults, setFilteredResults] = useState([]);
       {/* Voucher grid */}
       <div className="avs-layout">
   <AdRail />
-     <div className="avs-section">
- 
+    <div className="avs-section" ref={gridTopRef}>
   <div className="avs-voucher-grid">
     {loading ? (
       [...Array(8)].map((_, i) => <SkeletonVoucherCard key={i} />)
-    ) : filteredResults.length === 0 ? (
-      <AvoEmptyState
-        query=""     
-        currentCat={currentCat}
-        onClear={() => handleCatSelect("All")}
-      />
+    ) : ranked.length === 0 ? (
+      <AvoEmptyState query={searchQuery} currentCat={currentCat}
+        onClear={() => handleCatSelect("All")} />
     ) : (
-      filteredResults.map((v) => (
-        <AvoVoucherCard 
-        key={v.id} voucher={v} 
-        onOpen={onVoucherOpen} 
-        onPartnerOpen={onPartnerOpen}
-        />
+      pageItems.map((v) => (
+        <AvoVoucherCard key={v.id} voucher={v}
+          onOpen={onVoucherOpen} onPartnerOpen={onPartnerOpen} />
       ))
     )}
   </div>
+
+  {!loading && (
+    <Pagination page={page} totalPages={totalPages} onChange={goToPage} />
+  )}
 </div>
 </div>
       {/* Occasions */}

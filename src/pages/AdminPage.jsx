@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { CATEGORIES, EMOJIS } from "../categories"; 
 import {
   BarChart,
   Bar,
@@ -39,18 +40,12 @@ const db = getFirestore(firebaseApp);
 
 const WORKER_URL = process.env.REACT_APP_WORKER_URL;
 const UPLOAD_SECRET = process.env.REACT_APP_UPLOAD_SECRET;
-/*
 const fmtUSD = (n) =>
-  `$${(Number(n) / ZAR_TO_USD).toLocaleString("en-US", {
+  `US$${Number(n).toLocaleString("en-US", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   })}`;
-*/
-const fmtZAR = (n) =>
-  `R ${Number(n).toLocaleString("en-ZA", {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  })}`;
+
 
 const genCode = () =>
   "VCH-" +
@@ -60,36 +55,9 @@ const genCode = () =>
     )
     .join("");
 
-const getCatIcon = (cat) =>
-  ({
-    Wellness: "🧖",
-    Beauty: "💅",
-    Adventure: "🪂",
-    "Dining & Wine": "🍷",
-    "Traditional Restaurants": "🍲",
-    Stays: "🏡",
-    Skills: "📚",
-    Music: "🎵",
-    Events: "🎪",
-    Florists: "🌸",
-    Other: "🎁",
-  })[cat] || "🎁";
+const getCatIcon = (cat) => EMOJIS[cat] || "🎁";
 
-const ALL_CATEGORIES = [
-  "Wellness",
-  "Beauty",
-  "Adventure",
-  "Dining & Wine",
-  "Traditional Restaurants",
-  "Stays",
-  "Skills",
-  "Music",
-  "Events",
-  "Florists",
-  "Other",
-];
-
-// ─── Styles ───────────────────────────────────────────────────────────────
+const ALL_CATEGORIES = CATEGORIES.map((c) => c.name);
 const S = {
   // Layout
   page: {
@@ -489,7 +457,7 @@ function AnalyticsSection({ vouchers, sold }) {
   const kpis = [
     {
       label: "Total Revenue",
-      value: fmtZAR(totalRev),
+      value: fmtUSD(totalRev),
       accent: "#e8410c",
       icon: "💰",
     },
@@ -562,12 +530,10 @@ function AnalyticsSection({ vouchers, sold }) {
                     tick={{ fontSize: 10, fill: "#a0a0b8" }}
                     axisLine={false}
                     tickLine={false}
-                    tickFormatter={(v) =>
-                      `R${v >= 1000 ? (v / 1000).toFixed(0) + "k" : v}`
-                    }
+                    tickFormatter={(v) => `$${v >= 1000 ? (v / 1000).toFixed(0) + "k" : v}`}
                   />
                   <Tooltip
-                    formatter={(v) => [fmtZAR(v), "Revenue"]}
+                    formatter={(v) => [fmtUSD(v), "Revenue"]}
                     contentStyle={{
                       borderRadius: 6,
                       border: "1px solid #e8e8ee",
@@ -1258,7 +1224,8 @@ await addDoc(collection(db, "all_vouchers"), {
                 type="number"
                 value={formData.price}
                 onChange={setF("price")}
-                placeholder="780"
+                placeholder="45"
+                step="0.01"
               />
             </div>
             <div style={S.formGroup}>
@@ -1694,7 +1661,7 @@ export default function AdminPage({ user, onLogout }) {
                               whiteSpace: "nowrap",
                             }}
                           >
-                            {fmtZAR(v.price || 0)}
+                            {fmtUSD(v.price || 0)}
                           </td>
                           <td style={{ ...S.td, color: "#5a5a72" }}>
                             {v.city || "—"}

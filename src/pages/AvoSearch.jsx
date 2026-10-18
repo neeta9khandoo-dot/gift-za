@@ -22,6 +22,7 @@ export function AvoSearchBar({
   vouchers = [],
   onResults,
   sortVal,
+  onQueryChange,
   onSortChange,
 }) {
   const [query, setQuery] = useState("");
@@ -55,7 +56,8 @@ export function AvoSearchBar({
     onResults?.(results);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query, currentCat, priceRange, sortVal, vouchers]);
-
+// inside AvoSearchBar
+useEffect(() => { onQueryChange?.(query); }, [query]);
   const ZAR_TO_USD = 16.53;
   const fmtUSD = (n) => `US$${(n / ZAR_TO_USD).toFixed(0)}`;
 
